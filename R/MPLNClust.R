@@ -129,26 +129,14 @@ BIC_function = function(ll, k, n, run, gmin, gmax, dataset){
   BICmodel<-seq(gmin, gmax, 1)[grep(min(BIC,na.rm = TRUE), BIC)]
   BICmodel_labels<-run[[grep(min(BIC,na.rm = TRUE), BIC)]]$allresults$clusterlabels
   BICMessage<-NA
-  
   if (max(BICmodel_labels)!=BICmodel){
     BICmodel<-max(BICmodel_labels)
     BICMessage<-"Spurious or empty cluster resulted."
   }
-  
-  annotation_row_BIC = data.frame(
-    Cluster = factor(BICmodel_labels))
-  rownames(annotation_row_BIC) = rownames(dataset)
-  BICheatmap=function(){
-    pheatmap(as.matrix(dataset), show_colnames = T, annotation_row = annotation_row_BIC, fontface="italic", legend = T, scale ="row",border_color = "black", cluster_row = FALSE, cluster_col = FALSE,color =  rev(redgreen(75)) ) 
-  }
-
-  
   BICresults<-list(allBICvalues=BIC,
                    BICmodelselected=BICmodel,
                    BICmodelselected_labels=BICmodel_labels,
-                   BICMessage=BICMessage,
-                   BICHeatmap=BICheatmap())
-  graphics.off()
+                   BICMessage=BICMessage)
   class(BICresults) <- "BIC"
   return(BICresults)
 }  
@@ -165,27 +153,14 @@ ICL_function = function(bIc, gmax, gmin, run, dataset){
   ICLmodel<-seq(gmin, gmax, 1)[grep(min(ICL, na.rm = TRUE), ICL)]
   ICLmodel_labels<-run[[grep(min(ICL, na.rm = TRUE), ICL)]]$allresults$clusterlabels
   ICLMessage<-NA
-  
   if (max(ICLmodel_labels)!=ICLmodel){
     ICLmodel<-max(ICLmodel_labels)
     ICLMessage<-"Spurious or empty cluster resulted."
   }
-  
-  annotation_row_ICL = data.frame(
-    Cluster = factor(ICLmodel_labels))
-  rownames(annotation_row_ICL) = rownames(dataset)
-  
-  ICLheatmap=function(){
-    pheatmap(as.matrix(dataset), show_colnames = T, annotation_row = annotation_row_ICL, fontface="italic", legend = T, scale ="row",border_color = "black", cluster_row = FALSE, cluster_col = FALSE, color =  rev(redgreen(75)) ) 
-  }
-
-  
   ICLresults<-list(allICLvalues=ICL,
                    ICLmodelselected=ICLmodel,
                    ICLmodelselected_labels=ICLmodel_labels,
-                   ICLMessage=ICLMessage,
-                   ICLHeatmap=ICLheatmap())
-  graphics.off()
+                   ICLMessage=ICLMessage)
   class(ICLresults) <- "ICL"
   return(ICLresults)
 }
@@ -201,21 +176,10 @@ AIC_function = function(ll, k, run, gmin, gmax, dataset){
     AICmodel<-max(AICmodel_labels)
     AICMessage<-"Spurious or empty cluster resulted."
   }
-  
-  annotation_row_AIC = data.frame(
-    Cluster = factor(AICmodel_labels))
-  rownames(annotation_row_AIC) = rownames(dataset)
-  
-  AICheatmap=function(){
-    pheatmap(as.matrix(dataset), show_colnames = T, annotation_row = annotation_row_AIC, fontface="italic", legend = T, scale ="row",border_color = "black", cluster_row = FALSE, cluster_col = FALSE, color =  rev(redgreen(75)) ) 
-  }
-  
   AICresults<-list(allAICvalues=AIC,
                    AICmodelselected=AICmodel,
                    AICmodelselected_labels=AICmodel_labels,
-                   AICMessage=AICMessage,
-                   AICHeatmap=AICheatmap())
-  graphics.off()
+                   AICMessage=AICMessage)
   class(AICresults) <- "AIC"
   return(AICresults)
 }  
@@ -226,27 +190,14 @@ AIC3_function = function(ll, k, run, gmin, gmax, dataset){
   AIC3model<-seq(gmin, gmax, 1)[grep(min(AIC3,na.rm = TRUE), AIC3)]
   AIC3model_labels<-run[[grep(min(AIC3,na.rm = TRUE), AIC3)]]$allresults$clusterlabels
   AIC3Message<-NA
-  
   if (max(AIC3model_labels)!=AIC3model){
     AIC3model<-max(AIC3model_labels)
     AIC3Message<-"Spurious or empty cluster resulted."
   }
-  
-  annotation_row_AIC3 = data.frame(
-    Cluster = factor(AIC3model_labels))
-  rownames(annotation_row_AIC3) = rownames(dataset)
-  
-  AIC3heatmap=function(){
-    pheatmap(as.matrix(dataset), show_colnames = T, annotation_row = annotation_row_AIC3, fontface="italic", legend = T, scale ="row",border_color = "black", cluster_row = FALSE, cluster_col = FALSE, color =  rev(redgreen(75)) )
-  }
-
-  
   AIC3results<-list(allAIC3values=AIC3,
                     AIC3modelselected=AIC3model,
                     AIC3modelselected_labels=AIC3model_labels,
-                    AIC3Message=AIC3Message,
-                    AIC3Heatmap=AIC3heatmap())
-  graphics.off()
+                    AIC3Message=AIC3Message)
   class(AIC3results) <- "AIC3"
   return(AIC3results)
 }
@@ -312,7 +263,7 @@ cluster_mpln<-function(dataset,z,G,n_chains,n_iterations, initialization, normal
     logL[it_outer]<-calc_likelihood(z=z, PI=PI, dataset=dataset, mu_g=mu_all_outer[[it_outer]], G=G, Sig_g=sigma_all_outer[[it_outer]], theta_Stan=theta_Stan, normalizefactors=normalizefac)
     
     # convergence of outer loop
-    threshold_outer<-5
+    threshold_outer<-10
     if(it_outer>(threshold_outer)){
       
       if (all(heidel.diag(logL[-1], eps=0.1, pvalue=0.05)[,c(1,4)]==1) || it_outer>100){
