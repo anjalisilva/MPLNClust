@@ -1,0 +1,35 @@
+Package: MPLNClust
+Type: Package
+Title: Clustering via mixtures of multivariate Poisson-log normal model
+Version: 0.0.0.9000
+Authors@R: c( 
+    person(“Anjali”, “Silva”, email = “anjali@alumni.uoguelph.ca”, role = c(“aut”, “cre”),
+    person(“Sanjeena”, “Subedi”, email = “sdang@binghamton.edu”, role = “ctb”))
+Description: Carries out model-based clustering using mixtures of multivariate Poisson-log normal
+    model. Parameters estimated using Markov chain Monte Carlo expectation-maximization algorithm. 
+    Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE) are offered
+    for model selection.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.4.0), Rcpp (>= 0.12.17), methods
+Imports: 
+    capushe (>= 1.1.1),
+    cluster (>= 2.0.7.1),
+    clusterGeneration (>= 1.3.4),
+    coda (>= 0.19.1),
+    edgeR (>= 3.18.1),
+    gplots (>= 3.0.1),
+    mclust (>= 5.4),
+    mvtnorm (>= 1.0.7),
+    parallel (>= 3.4.0),
+    pheatmap (>= 1.0.10),
+    RColorBrewer (>= 1.1.2),
+    Rcpp (>= 0.12.17),
+    rstan (>= 2.17.3),
+    rstantools (>= 1.5.0)
+LinkingTo: StanHeaders (>= 2.17.2), rstan (>= 2.17.3), BH (>= 1.66.0-1), Rcpp (>= 0.12.17), RcppEigen (>= 0.3.3.4.0)
+SystemRequirements: GNU make
+NeedsCompilation: yes
+RoxygenNote: 6.0.1
+
