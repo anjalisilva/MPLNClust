@@ -73,27 +73,26 @@ totaltime               Total time.
 ```R
 # Generating data
 
-true_mu1 = c(6.5,6,6,6,6,6)  
-true_mu2 = c(2,2.5,2,2,2,2) 
+true_mu1 <- c(6.5,6,6,6,6,6)  
+true_mu2 <- c(2,2.5,2,2,2,2) 
 
-true_sigma1 = diag(6) * 2
-true_sigma2 = diag(6)
+true_sigma1 <- diag(6) * 2
+true_sigma2 <- diag(6)
+
+simulated_counts <- Datagenerator(i = 1, N = 50, d = 6, pi_g = c(0.79,0.21), means = rbind(true_mu1,true_mu2), sigmas = rbind(true_sigma1,true_sigma2))
 
 
-simulated_counts = Datagenerator(i=1, N=50, d=6, pi_g=c(0.79,0.21), means=rbind(true_mu1,true_mu2), sigmas=rbind(true_sigma1,true_sigma2))
+# Clustering data for G = 1:5
 
-
-# Clustering data for G=1:5
-
-testing_dataset = simulated_counts # Assign test dataset using the variable name 'testing_dataset'
-clus_results<-MPLNClustering(dataset=testing_dataset, Gmin=1, Gmax=5, n_chains=3, n_iterations=1000, membership=NA, init_method="kmeans", n_init_iterations=5, normalize="TMM")
+testing_dataset <- simulated_counts # Assign test dataset using the variable name 'testing_dataset'
+clus_results <- MPLNClustering(dataset = testing_dataset, Gmin = 1, Gmax = 5, n_chains = 3, n_iterations=1000, membership = NA, init_method = "kmeans", n_init_iterations = 5, normalize = "TMM")
 
 # To visualize clustered data
 
 library(pheatmap)
 library(gplots)
-annotation_row_AIC = data.frame(Cluster = factor(clus_results$AIC.all$AICmodelselected_labels))
-rownames(annotation_row_AIC) = rownames(clus_results$dataset)
+annotation_row_AIC <- data.frame(Cluster = factor(clus_results$AIC.all$AICmodelselected_labels))
+rownames(annotation_row_AIC) <- paste("Gene",c(1:50))
 pheatmap(as.matrix(clus_results$dataset), show_colnames = T, annotation_row = annotation_row_AIC, fontface="italic", legend = T, scale ="row",border_color = "black", cluster_row = FALSE, cluster_col = FALSE, color =  rev(redgreen(75)) ) 
 
 ```
