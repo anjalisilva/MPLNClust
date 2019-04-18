@@ -84,7 +84,7 @@ simulated_counts <- Datagenerator(i = 1, N = 50, d = 6, pi_g = c(0.79,0.21), mea
 
 # Clustering data for G = 1:5
 
-testing_dataset <- simulated_counts # Assign test dataset using the variable name 'testing_dataset'
+testing_dataset <- simulated_counts$dataset # Assign test dataset using the variable name 'testing_dataset'
 clus_results <- MPLNClustering(dataset = testing_dataset, Gmin = 1, Gmax = 5, n_chains = 3, n_iterations=1000, membership = NA, init_method = "kmeans", n_init_iterations = 5, normalize = "TMM")
 
 # To visualize clustered data

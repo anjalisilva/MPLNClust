@@ -5,9 +5,9 @@ Datagenerator<-function(i, N, d, pi_g, means, sigmas){
   set.seed(i)
   z<-t(rmultinom(N,size=1,pi_g))
   
-  if (!require(mclust)) install.packages("mvtnorm") 
+  if (!require(mvtnorm)) install.packages("mvtnorm") 
   
-  if (!require(mclust)) install.packages("clusterGeneration") 
+  if (!require(clusterGeneration)) install.packages("clusterGeneration") 
   
   source("https://bioconductor.org/biocLite.R")
   if (!require(mclust)) biocLite("edgeR") 
@@ -57,5 +57,6 @@ Datagenerator<-function(i, N, d, pi_g, means, sigmas){
   class(results) <- "MPLN_datagenerator"
   return(results)
 }  
+
 
 
