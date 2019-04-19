@@ -83,7 +83,7 @@ MPLNClustering<-function(dataset, membership=NA, Gmin, Gmax, n_chains=3, n_itera
   # Calculating normalization factors
   if(is.na(normalize) == FALSE) {
      norm_factors<-log(as.vector(calcNormFactors(as.matrix(dataset), method = "TMM")))
-    } else {norm_factors<-rep(0,d)}
+  } else {norm_factors<-rep(0,d)}
   
   
   MPLN_parallel = function(g){

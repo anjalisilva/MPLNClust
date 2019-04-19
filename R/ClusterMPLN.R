@@ -1,9 +1,8 @@
-
-# 
-cluster_mpln<-function(y,z,G,n_chain,numb_iterations, initialization, normalizefac, mod){
+# clustering function
+cluster_mpln<-function(dataset,z,G,n_chains,n_iterations, initialization, normalizefac, mod){
   
-  d<-ncol(y)
-  n<-nrow(y)
+  d<-ncol(dataset)
+  n<-nrow(dataset)
   
   norm_mu_outer<-norm_sigma_outer<-vector() # for convergence calculation
   median_mu_outer<-median_sigma_outer<-list()
@@ -14,8 +13,8 @@ cluster_mpln<-function(y,z,G,n_chain,numb_iterations, initialization, normalizef
   
   
   if (all(is.na(initialization))==TRUE || all(initialization =="init")){
-    mu_all_outer[[1]]<-mu_g <- matrix(log(mean(y)), ncol=d, nrow=G) # mean for both t and normal distribution
-    sigma_all_outer[[1]]<-Sig_g <- do.call("rbind", rep(list(cov(log(y+1))*d), G)) # sig for sigma of t distribtuion
+    mu_all_outer[[1]]<-mu_g <- matrix(log(mean(dataset)), ncol=d, nrow=G) # mean for both t and normal distribution
+    sigma_all_outer[[1]]<-Sig_g <- do.call("rbind", rep(list(cov(log(dataset+1))*d), G)) # sig for sigma of t distribtuion
   }else{
     mu_all_outer[[1]]<-mu_g <- initialization$finalmu
     sigma_all_outer[[1]]<-Sig_g <- initialization$finalsigma
@@ -23,65 +22,40 @@ cluster_mpln<-function(y,z,G,n_chain,numb_iterations, initialization, normalizef
   }
   
   while(!conv_outer){ 
-    for(g in 1:G){
-      obs[g]<-sum(z[,g]) # number of observations in each group
-      PI[g]<-obs[g]/n  # obtain probability of each group
-    }
+    cat("************** Running for G =",G,"and Iteration =",it_outer,"******************")
+    obs=apply(z, 2, sum) # number of observations in each group
+    PI=sapply(obs, function(x) x/n)  # obtain probability of each group
     
     theta_Stan<-E_theta2<-list()
-    rstan_results<-stanrun(model=mod, gmin=1,gmax=G,y=y,mu_all_outer=mu_all_outer, it_outer=it_outer, sigma_all_outer=sigma_all_outer, numb_iterations=numb_iterations, n_chain=n_chain, normalizefacs=normalizefac)
+    rstan_results<-stanrun(model=mod, gmin=1,gmax=G,dataset=dataset,mu_all_outer=mu_all_outer, it_outer=it_outer, sigma_all_outer=sigma_all_outer, n_iterations=n_iterations, n_chains=n_chains, normalizefacs=normalizefac)
     
-    fit = rstan_results$fitrstan
-    numb_iterations = rstan_results$numb_iterations
+    # turn results into a matrix
+    tt=lapply(as.list(c(1:G)), function(x) as.matrix(rstan_results$fitrstan[[x]]) ) 
     
-    for (g in 1:G){
-      tt<-as.matrix(fit[[g]])
-      theta_Stan[[g]]<-matrix(NA,nrow=n,ncol=d)
-      E_theta2[[g]]<-list()
-      
-      for (i in 1:n){
-        zz<-c(1:(d-1))*n+i
-        theta_mat<-tt[,c(i,zz)]
-        theta_Stan[[g]][i,]<-colMeans(theta_mat)
-        E_theta2[[g]][[i]]<-z[i,g]*t(tt[,c(i,zz)])%*%tt[,c(i,zz)]/((0.5*numb_iterations)*n_chain)
-      }
-      
-      mu_g[g,]<-colSums(z[,g]*theta_Stan[[g]])/sum(z[,g])
-      Sig_g[((g-1)*d+1):(g*d),]<-Reduce("+",E_theta2[[g]])/sum(z[,g])-mu_g[g,]%*%t(mu_g[g,])
+    for (g in 1:G){  
+      # expected value of theta
+      theta_Stan[[g]]=t(sapply(c(1:n), function(i) colMeans(tt[[g]][,c(i,(t(sapply(c(1:n), function(x) c(1:(d-1))*n+x)))[i,])]) )) 
+      # expected value of theta theta-transform
+      E_theta2[[g]]=lapply(as.list(c(1:n)), function(i) z[i,g]*t(tt[[g]][,c(i,(t(sapply(c(1:n), function(x) c(1:(d-1))*n+x)))[i,])])%*%tt[[g]][,c(i,(t(sapply(c(1:n), function(x) c(1:(d-1))*n+x)))[i,])]/((0.5*rstan_results$n_iterations)*n_chains))
     }
     
+    # updating value of mu
+    mu_all_outer[[it_outer]]= mu_g=t(sapply(c(1:G), function(g) colSums(z[,g]*theta_Stan[[g]])/sum(z[,g])))
     
-    mu_all_outer[[it_outer]]<-mu_g
-    sigma_all_outer[[it_outer]]<-Sig_g
+    # updating value of sigma
+    sigma_all_outer[[it_outer]]=Sig_g=do.call(rbind, lapply(as.list(c(1:G)), function(g) Reduce("+",E_theta2[[g]])/sum(z[,g])-mu_g[g,]%*%t(mu_g[g,])))
     
-    logL[it_outer]<-calc_likelihood(z=z, PI=PI, y=y, mu_g=mu_all_outer[[it_outer]], G=G, Sig_g=sigma_all_outer[[it_outer]], theta_Stan=theta_Stan, normalizefactors=normalizefac)
+    # updating log-likelihood
+    logL[it_outer]<-calc_likelihood(z=z, PI=PI, dataset=dataset, mu_g=mu_all_outer[[it_outer]], G=G, Sig_g=sigma_all_outer[[it_outer]], theta_Stan=theta_Stan, normalizefactors=normalizefac)
     
     # convergence of outer loop
-    norm_mu_outer[it_outer]<-norm((mu_all_outer[[it_outer]]-mu_all_outer[[it_outer-1]]),type="F")
-    norm_sigma_outer[it_outer]<-norm(sigma_all_outer[[it_outer]]-sigma_all_outer[[it_outer-1]],type="F")
-    median_mu_outer[[it_outer]]<-median(norm_mu_outer, na.rm = TRUE)
-    median_sigma_outer[[it_outer]]<-median(norm_sigma_outer, na.rm = TRUE)
-    #par(mfrow=c(1,2))
-    #plot(norm_mu_outer, main=paste0("Norm outer mean, G=", G), type="l", ylab="median(norm_mu_outer)", xlab="iterations")
-    #plot(norm_sigma_outer, main=paste0("Norm outer sigma, G=", G), type="l", ylab="median(norm_sigma_outer)", xlab="iterations")
-    
-    
-    threshold_outer<-2
-    if(it_outer>(threshold_outer+1)){
+    threshold_outer<-10
+    if(it_outer>(threshold_outer)){
       
-      cat("\nMedian difference of mean and sigma in outer loop respectively ", c(abs(median_mu_outer[[it_outer-threshold_outer]]-median_mu_outer[[it_outer]]))) 
-      if( ( (abs(median_mu_outer[[it_outer-threshold_outer]]-median_mu_outer[[it_outer]])<5) && (abs(median_sigma_outer[[it_outer-threshold_outer]]-median_sigma_outer[[it_outer]])<5) ) || it_outer>100){
-        cat("\nConvergence of mu and sigma at outer loop iteration ", it_outer) # take out absolute value
+      if (all(heidel.diag(logL[-1], eps=0.1, pvalue=0.05)[,c(1,4)]==1) || it_outer>100){
+        
         programclust<-vector()
         programclust<-map(z)
-        
-        # checking for spurious clusters and getting rid of them
-        #keep<-as.numeric(names(which(table(programclust)>5))) 
-        #if ( (length(keep) !=length(unique(programclust))) && (length(keep) !=0) ){
-        #  z<-as.matrix(z[,keep])
-        #  z<-z/rowSums(z)
-        #  programclust<-map(z)
-        #}
         
         # checking for empty clusters
         J <- 1:ncol(z)
@@ -95,8 +69,8 @@ cluster_mpln<-function(y,z,G,n_chain,numb_iterations, initialization, normalizef
       } 
     }
     
-    # if running for initialization, need to stop after 10 iterations
-    if(it_outer==10 && all(is.na(initialization) !=TRUE)){
+    # if running for initialization, need to stop after 1 iteration
+    if(it_outer==2 && all(is.na(initialization) !=TRUE)){
       if(all(initialization == "init")){
         programclust<-vector()
         programclust<-map(z)
@@ -104,26 +78,26 @@ cluster_mpln<-function(y,z,G,n_chain,numb_iterations, initialization, normalizef
       }
     }
     
-    if(conv_outer!=1){ # only update until convergence, not after
-      z<-zvalue_calculation(theta_Stan=theta_Stan,y=y,G=G,mu_g=mu_g,Sig_g=Sig_g,PI=PI, normalizefactors=normalizefac)
+    # only update until convergence, not after
+    if(conv_outer!=1){
+      z<-zvalue_calculation(theta_Stan=theta_Stan,dataset=dataset,G=G,mu_g=mu_g,Sig_g=Sig_g,PI=PI, normalizefactors=normalizefac)
       it_outer<-it_outer+1 # updating outer loop iteration
-      numb_iterations = numb_iterations+10
+      n_iterations = n_iterations+10
     }
     
   } # end of outer loop
   
   
   results <- list(finalmu=mu_all_outer[[it_outer]]+ matrix(rep(normalizefac,nrow(mu_all_outer[[it_outer]])),byrow=TRUE,ncol=ncol(mu_all_outer[[it_outer]])), 
-                  finalsigma=sigma_all_outer[[it_outer]],
-                  allmu = lapply(mu_all_outer, function(x) (x+matrix(rep(normalizefac,nrow(mu_all_outer[[it_outer]])),byrow=TRUE,ncol=ncol(mu_all_outer[[it_outer]])))),      
-                  allsigma = sigma_all_outer, 
-                  clusterlabels = programclust,
-                  iterations = it_outer, 
-                  proportion = PI, 
-                  loglikelihood = logL,
-                  probaPost = z,
-                  stanresults = fit)
+    finalsigma=sigma_all_outer[[it_outer]],
+    allmu = lapply(mu_all_outer, function(x) (x+matrix(rep(normalizefac,nrow(mu_all_outer[[it_outer]])),byrow=TRUE,ncol=ncol(mu_all_outer[[it_outer]])))),      
+    allsigma = sigma_all_outer, 
+    clusterlabels = programclust,
+    iterations = it_outer, 
+    proportion = PI, 
+    loglikelihood = logL,
+    probaPost = z)
   
   class(results) <- "MPLNcluster"
   return(results)
-} 
+}
