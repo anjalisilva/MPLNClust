@@ -1,17 +1,12 @@
 
 #### function ####
-Datagenerator<-function(i, N, d, pi_g, means, sigmas){
+Datagenerator<-function(i, N, d, pi_g, means, sigmas, ProduceImage){
   
   set.seed(i)
   z<-t(rmultinom(N,size=1,pi_g))
   
-  if (!require(mvtnorm)) install.packages("mvtnorm") 
-  
-  if (!require(clusterGeneration)) install.packages("clusterGeneration") 
-  
-  source("https://bioconductor.org/biocLite.R")
-  if (!require(mclust)) biocLite("edgeR") 
-  library("edgeR")
+  # loading needed packages
+  LoadCheckPkg(pckgs=c("mvtnorm","clusterGeneration","edgeR"))
   
   y<-theta<-n_g <- vector("list", length = length(pi_g)) 
   theta2<-matrix(NA,ncol=d,nrow=N) # for visualization only
@@ -39,10 +34,14 @@ Datagenerator<-function(i, N, d, pi_g, means, sigmas){
     }
   }
 
-  Pairs_plot=function(){
+  if (ProduceImage=="Yes"){
+    # Obtaining path to save images
+    pathNow<-getwd()
+    
+    png(paste0(pathNow,"/PairsPlot.png"))
     pairs(log(y2), col=map(z)+1, main="Pairs plot of log-transformed data")
+    dev.off() 
   }
-  
   
   results<-list(dataset=y2,
                 truemembership=map(z),
@@ -51,10 +50,9 @@ Datagenerator<-function(i, N, d, pi_g, means, sigmas){
                 dimensionality = d,
                 pi_g = pi_g,
                 means = means,
-                sigmas = sigmas,
-                Visual=Pairs_plot())
+                sigmas = sigmas)
   
-  class(results) <- "MPLN_datagenerator"
+  class(results) <- "MPLNDataGenerator"
   return(results)
 }  
 

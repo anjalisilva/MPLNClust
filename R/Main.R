@@ -22,7 +22,7 @@ true_mu2 <- c(2,2.5,2,2,2,2)
 true_sigma1 <- diag(6) * 2
 true_sigma2 <- diag(6)
 
-simulated_counts <- Datagenerator(i = 1, N = 50, d = 6, pi_g = c(0.79,0.21), means = rbind(true_mu1,true_mu2), sigmas = rbind(true_sigma1,true_sigma2))
+simulated_counts <- Datagenerator(i = 1, N = 50, d = 6, pi_g = c(0.79,0.21), means = rbind(true_mu1,true_mu2), sigmas = rbind(true_sigma1,true_sigma2), ProduceImage="Yes")
 
 
 

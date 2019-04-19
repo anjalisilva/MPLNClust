@@ -47,9 +47,9 @@ MPLNClustering<-function(dataset, membership=NA, Gmin, Gmax, n_chains=3, n_itera
   if (Gmax > n){
     stop("Gmax cannot be larger than n");}
   
-    # loading needed packages
-  LoadCheckPkg(pckgs=c("mvtnorm","mclust","coda","capushe","edgeR","clusterGeneration","pheatmap",
-                         "RColorBrewer","gplots","rstan","Rcpp","parallel"))
+  # loading needed packages
+  LoadCheckPkg(pckgs=c("mvtnorm","mclust","coda","capushe","edgeR","clusterGeneration",
+                       "pheatmap","RColorBrewer","gplots","rstan","Rcpp","parallel"))
   
   rstan_options(auto_write = TRUE)
   options(mc.cores = parallel::detectCores()) 
