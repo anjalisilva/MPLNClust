@@ -2,11 +2,13 @@
 #### function ####
 Datagenerator<-function(i, N, d, pi_g, means, sigmas, ProduceImage){
   
+  source("PackageCheck.R")
+  
   set.seed(i)
   z<-t(rmultinom(N,size=1,pi_g))
   
   # loading needed packages
-  LoadCheckPkg(pckgs=c("mvtnorm","clusterGeneration","edgeR"))
+  LoadCheckPkg(pckgs=c("mvtnorm","clusterGeneration","edgeR","mclust"))
   
   y<-theta<-n_g <- vector("list", length = length(pi_g)) 
   theta2<-matrix(NA,ncol=d,nrow=N) # for visualization only
