@@ -27,7 +27,7 @@ Gmax                Largest number of components/clusters to be tested. Should b
 n_chains            A positive integer specifying the number of Markov chains. Recommended value is >= 3.  
 n_iterations        A positive integer specifying the number of iterations for each chain (including warmup). The warmup is equal to 1/2 of n_iterations. Recommended value is >= number of observations (n).
 membership          A vector with length equal to the number of observations (n), indicating the true memberships of each observation. If not available, use NA. 
-init_method         Type of initialization strategy to be used. Methods include "kmeans", "random", "medoids", "clara", and "fanny". Default is "kmeans". 
+init_method         Type of initialization strategy to be used. Methods include "kmeans", "random", "medoids", "clara", and "fanny". Default is "kmeans". If n_init_iterations is set to 0, this will be ignored. 
 n_init_iterations   Number of runs to be used for the init_method, with a default value of 5. If no initialization, set to 0. 
 normalize           Estimator for normalization for the differences in library size. Default is "TMM" for the trimmed mean of M values normalization method (Robinson and Oshlack, 2010). Otherwise, use NA.
 ```
