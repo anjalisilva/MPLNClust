@@ -15,7 +15,7 @@ Carries out model-based clustering using mixtures of multivariate Poisson-log no
 ### Usage
 
 ```R
-MPLNClustering(dataset=testing_dataset, Gmin, Gmax, n_chains=3, n_iterations, membership=NA, init_method="kmeans", n_init_iterations=5, normalize="TMM")
+MPLNClustering(dataset, Gmin, Gmax, n_chains=3, n_iterations, membership=NA, init_method="kmeans", n_init_iterations=5, normalize="TMM")
 
 ```
 ### Arguments
