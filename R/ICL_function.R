@@ -1,5 +1,5 @@
-# ICL function
-ICL_function = function(bIc, gmax, gmin, run){
+# ICL calculation
+ICL_function <- function(bIc, gmax, gmin, run){
   ICL<-vector()
   for (g in 1:(gmax-gmin+1)){
     z<-run[[g]]$allresults$probaPost
@@ -18,9 +18,9 @@ ICL_function = function(bIc, gmax, gmin, run){
   
   
   ICLresults<-list(allICLvalues=ICL,
-    ICLmodelselected=ICLmodel,
-    ICLmodelselected_labels=ICLmodel_labels,
-    ICLMessage=ICLMessage)
+                   ICLmodelselected=ICLmodel,
+                   ICLmodelselected_labels=ICLmodel_labels,
+                   ICLMessage=ICLMessage)
   class(ICLresults) <- "ICL"
   return(ICLresults)
 }

@@ -1,4 +1,5 @@
-calculate_parameters<-function(g,y){
+# Parameter calculation
+calculate_parameters <- function(g,y){
   d<-ncol(y)
   mu_para<-d*g
   sigma_para<-(d*((d+1)/2))*g
@@ -6,4 +7,3 @@ calculate_parameters<-function(g,y){
   paratotal<-mu_para+sigma_para+pi_para # total parameters are
   return(paratotal)
 }
-

@@ -1,7 +1,7 @@
-
 # A function to check whether a package is available in the system
 LoadCheckPkg <- function(pckgs){
   
+  # Code developed based on code provided by Dr. Marcelo Ponce, April 2019
   fail = FALSE
   for (pckg in pckgs) {
     # check whether the package is NOT loaded

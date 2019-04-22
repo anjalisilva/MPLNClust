@@ -1,10 +1,9 @@
-
-#### function ####
-Datagenerator<-function(i, N, d, pi_g, means, sigmas, ProduceImage){
+# Generating data using mixtures of MPLN
+Datagenerator_mpln <- function(N, d, pi_g, means, sigmas, ProduceImage){
   
-  source("PackageCheck.R")
+  source("Package_check.R")
   
-  set.seed(i)
+  set.seed(1)
   z<-t(rmultinom(N,size=1,pi_g))
   
   # loading needed packages

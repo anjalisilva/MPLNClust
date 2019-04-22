@@ -1,4 +1,5 @@
-cluster_mpln<-function(y,z,G,n_chain,numb_iterations, initialization, normalizefac, mod){
+# Clustering function
+cluster_mpln <- function(y,z,G,n_chain,numb_iterations, initialization, normalizefac, mod){
   
   d<-ncol(y)
   n<-nrow(y)
@@ -27,7 +28,7 @@ cluster_mpln<-function(y,z,G,n_chain,numb_iterations, initialization, normalizef
     }
     
     theta_Stan<-E_theta2<-list()
-    rstan_results<-stanrun(model=mod, gmin=1, gmax=G, y=y, mu_all_outer=mu_all_outer, it_outer=it_outer, sigma_all_outer=sigma_all_outer, numb_iterations=numb_iterations, n_chain=n_chain, normalizefacs=normalizefac)
+    rstan_results<-stanrun(model=mod, gmin=1,gmax=G,y=y,mu_all_outer=mu_all_outer, it_outer=it_outer, sigma_all_outer=sigma_all_outer, numb_iterations=numb_iterations, n_chain=n_chain, normalizefacs=normalizefac)
     
     fit = rstan_results$fitrstan
     numb_iterations = rstan_results$numb_iterations
@@ -67,9 +68,9 @@ cluster_mpln<-function(y,z,G,n_chain,numb_iterations, initialization, normalizef
     threshold_outer<-2
     if(it_outer>(threshold_outer+1)){
       
-      cat("\nMedian difference of mean and sigma in outer loop respectively ", c(abs(median_mu_outer[[it_outer-threshold_outer]]-median_mu_outer[[it_outer]]))) 
+      # cat("\nMedian difference of mean and sigma in outer loop respectively ", c(abs(median_mu_outer[[it_outer-threshold_outer]]-median_mu_outer[[it_outer]]))) 
       if( ( (abs(median_mu_outer[[it_outer-threshold_outer]]-median_mu_outer[[it_outer]])<5) && (abs(median_sigma_outer[[it_outer-threshold_outer]]-median_sigma_outer[[it_outer]])<5) ) || it_outer>100){
-        cat("\nConvergence of mu and sigma at outer loop iteration ", it_outer) # take out absolute value
+        # cat("\nConvergence of mu and sigma at outer loop iteration ", it_outer) # take out absolute value
         programclust<-vector()
         programclust<-map(z)
         
@@ -112,16 +113,16 @@ cluster_mpln<-function(y,z,G,n_chain,numb_iterations, initialization, normalizef
   
   
   results <- list(finalmu=mu_all_outer[[it_outer]]+ matrix(rep(normalizefac,nrow(mu_all_outer[[it_outer]])),byrow=TRUE,ncol=ncol(mu_all_outer[[it_outer]])), 
-    finalsigma=sigma_all_outer[[it_outer]],
-    allmu = lapply(mu_all_outer, function(x) (x+matrix(rep(normalizefac,nrow(mu_all_outer[[it_outer]])),byrow=TRUE,ncol=ncol(mu_all_outer[[it_outer]])))),      
-    allsigma = sigma_all_outer, 
-    clusterlabels = programclust,
-    iterations = it_outer, 
-    proportion = PI, 
-    loglikelihood = logL,
-    probaPost = z,
-    stanresults = fit)
+                  finalsigma=sigma_all_outer[[it_outer]],
+                  allmu = lapply(mu_all_outer, function(x) (x+matrix(rep(normalizefac,nrow(mu_all_outer[[it_outer]])),byrow=TRUE,ncol=ncol(mu_all_outer[[it_outer]])))),      
+                  allsigma = sigma_all_outer, 
+                  clusterlabels = programclust,
+                  iterations = it_outer, 
+                  proportion = PI, 
+                  loglikelihood = logL,
+                  probaPost = z,
+                  stanresults = fit)
   
   class(results) <- "MPLNcluster"
   return(results)
-} 
+} # ending the function

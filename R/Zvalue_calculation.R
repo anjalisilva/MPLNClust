@@ -1,8 +1,10 @@
-
+# Zvalue calculation
 zvalue_calculation<-function(theta_Stan,y,G,mu_g,Sig_g,PI, normalizefactors){
+  
   d<-ncol(y)
   n<-nrow(y)
   forz<-matrix(NA,ncol=G,nrow=n)
+  
   for (g in 1:G){
     for (i in 1:n){
       x<-theta_Stan[[g]][i,]
@@ -29,7 +31,5 @@ zvalue_calculation<-function(theta_Stan,y,G,mu_g,Sig_g,PI, normalizefactors){
     zvalue[errorpossible,]<-1
   }else {zvalue<-forz/rowSums(forz)}
   
-  
   return(zvalue)
 }
-
