@@ -14,7 +14,9 @@ source("Main_mpln.R")
 source("MPLNdata_generator.R")
 source("Package_check.R")
 source("Stan_run.R")
+source("Visualize_mpln.R")
 source("Zvalue_calculation.R")
+
 
 # Values for data simulation
 true_mu1 <- c(6.5,6,6,6,6,6)  
@@ -24,7 +26,7 @@ true_sigma1 <- diag(6) * 2
 true_sigma2 <- diag(6)
 
 # Data simulated is saved as 'simulated_counts'
-simulated_counts <- Datagenerator_mpln(N = 50, d = 6, pi_g = c(0.79,0.21), means = rbind(true_mu1,true_mu2), sigmas = rbind(true_sigma1,true_sigma2), ProduceImage="Yes")
+simulated_counts <- Datagenerator_mpln(N = 100, d = 6, pi_g = c(0.79,0.21), means = rbind(true_mu1,true_mu2), sigmas = rbind(true_sigma1,true_sigma2), ProduceImage="Yes")
 
 # Checking/Loading needed packages
 LoadCheckPkg(pckgs=c("parallel","rstan","Rcpp","mclust","mvtnorm","edgeR","capushe","clusterGeneration","coda"))
@@ -57,13 +59,16 @@ clusterEvalQ(cl, library(coda))
 # Running clustering
 MPLNClust_results <- main_mpln(dataset=simulated_counts$dataset, 
                                membership=simulated_counts$truemembership, 
-                               Gmin=1, 
-                               Gmax=1, 
+                               Gmin=2, 
+                               Gmax=2, 
                                n_chains=3, 
-                               n_iterations=100, 
+                               n_iterations=300, 
                                init_method="kmeans", 
                                n_init_iterations=0, 
                                normalize=NA)
+
+# To visualize clustered data
+visualize_mpln(dataset=simulated_counts$dataset, ClusterMembershipVector=MPLNClust_results$BIC.all$BICmodelselected_labels)
 
 #Saving results with date as .RData file
 #save.image(paste0("MPLNClust_results,"_",format(Sys.time(), "%d%b%Y"),".RData"))
