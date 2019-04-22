@@ -71,7 +71,25 @@ totaltime               Total time.
 ## Examples
 
 ```R
-# Generating data
+
+# Reading needed code
+
+source("AIC_function.R")
+source("AIC3_function.R")
+source("BIC_function.R")
+source("Calc_likelihood.R")
+source("Calculate_parameters.R")
+source("Calling_clustering.R")
+source("Cluster_mpln.R")
+source("ICL_function.R")
+source("Initialization_run.R")
+source("Main_mpln.R")
+source("MPLNdata_generator.R")
+source("Package_check.R")
+source("Stan_run.R")
+source("Zvalue_calculation.R")
+
+# Generating simulated data
 
 true_mu1 <- c(6.5,6,6,6,6,6)  
 true_mu2 <- c(2,2.5,2,2,2,2) 
@@ -79,13 +97,45 @@ true_mu2 <- c(2,2.5,2,2,2,2)
 true_sigma1 <- diag(6) * 2
 true_sigma2 <- diag(6)
 
-simulated_counts <- Datagenerator(i = 1, N = 50, d = 6, pi_g = c(0.79,0.21), means = rbind(true_mu1,true_mu2), sigmas = rbind(true_sigma1,true_sigma2))
+simulated_counts <- Datagenerator_mpln(N = 200, d = 6, pi_g = c(0.79,0.21), means = rbind(true_mu1,true_mu2), sigmas = rbind(true_sigma1,true_sigma2), ProduceImage="Yes")
 
+# Checking/Loading needed packages
+LoadCheckPkg(pckgs=c("parallel","rstan","Rcpp","mclust","mvtnorm","edgeR","capushe","clusterGeneration","coda"))
 
-# Clustering data for G = 1:5
+# Making RStan model 
+mod = stan_model("MPLN.stan")
 
-testing_dataset <- simulated_counts$dataset # Assign test dataset using the variable name 'testing_dataset'
-clus_results <- MPLNClustering(dataset = testing_dataset, Gmin = 1, Gmax = 5, n_chains = 3, n_iterations=1000, membership = NA, init_method = "kmeans", n_init_iterations = 5, normalize = "TMM")
+# Calculate the number of cores
+no_cores = detectCores()-1
+
+# Initiate cluster
+cl = makeCluster(no_cores) 
+
+# Doing clusterExport
+clusterExport(cl,c("mod", "simulated_counts","zvalue_calculation", "calc_likelihood", "stanrun", "initializationrun", "BIC_function","ICL_function","AIC_function","AIC3_function", "calculate_parameters", "cluster_mpln", "calling_clustering"))
+
+# Doing clusterEvalQ
+# Other packages may needed to be downloaded using clusterEvalQ
+clusterEvalQ(cl, library(parallel))
+clusterEvalQ(cl, library(rstan))
+clusterEvalQ(cl, library(Rcpp))
+clusterEvalQ(cl, library(mclust))
+clusterEvalQ(cl, library(mvtnorm))
+clusterEvalQ(cl, library(edgeR))
+clusterEvalQ(cl, library(capushe))
+clusterEvalQ(cl, library(clusterGeneration))
+clusterEvalQ(cl, library(coda))
+
+# Running clustering for G = 1:5 
+MPLNClust_results <- main_mpln(dataset=simulated_counts$dataset, 
+                               membership=simulated_counts$truemembership, 
+                               Gmin=1, 
+                               Gmax=5, 
+                               n_chains=3, 
+                               n_iterations=1000, 
+                               init_method="kmeans", 
+                               n_init_iterations=5, 
+                               normalize="TMM")
 
 # To visualize clustered data
 
