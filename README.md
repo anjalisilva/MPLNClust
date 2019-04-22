@@ -10,12 +10,12 @@ Version 2.0 was released.
 
 ### Description
 
-Carries out model-based clustering using mixtures of multivariate Poisson-log normal (MPLN) model. Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) is used for parameter estimation. Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE) are offered for model selection. 
+Carries out model-based clustering using mixtures of multivariate Poisson-log normal (MPLN) model. Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) is used for parameter estimation. Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE) are offered for model selection. See example below for more details. 
 
 ### Usage
 
 ```R
-MPLNClustering(dataset, Gmin, Gmax, n_chains=3, n_iterations, membership=NA, init_method="kmeans", n_init_iterations=5, normalize="TMM")
+main_mpln(dataset, Gmin, Gmax, n_chains=3, n_iterations, membership=NA, init_method="kmeans", n_init_iterations=5, normalize="TMM")
 
 ```
 ### Arguments
@@ -43,6 +43,7 @@ A mixture of MPLN distributions is introduced for clustering count data from RNA
 The AIC, BIC, AIC3 and ICL are used for model selection. If more than 10 models are considered, slope heuristics (Djump and DDSE) can also be used. Starting values (init_method) and the number of iterations for each chain (n_iterations) play an important role to the successful operation of this algorithm.
 
 ![Clustering.png](img/Clustering.png)
+![Clustering.png](img/LinePlots.png)
 
 ## Value
 
