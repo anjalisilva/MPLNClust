@@ -72,7 +72,7 @@ totaltime               Total time.
 ## Examples
 
 ```R
-# Runnign via R R Console
+# Runnign via R Console
 
 # Reading needed code
 
@@ -147,6 +147,7 @@ visualize_mpln(dataset=simulated_counts$dataset, ClusterMembershipVector=MPLNClu
 ###################################
 
 # Runnign via terminal
+
 Rscript Running_code.R
 
 ```
