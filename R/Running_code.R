@@ -70,4 +70,4 @@ MPLNClust_results <- main_mpln(dataset=simulated_counts$dataset,
 visualize_mpln(dataset=simulated_counts$dataset, ClusterMembershipVector=MPLNClust_results$BIC.all$BICmodelselected_labels)
 
 #Saving results with date as .RData file
-save.image(paste0("MPLNClust_results,"_",format(Sys.time(), "%d%b%Y"),".RData"))
+save.image(paste0("MPLNClust_results_",format(Sys.time(), "%d%b%Y"),".RData"))
