@@ -26,7 +26,7 @@ true_sigma1 <- diag(6) * 2
 true_sigma2 <- diag(6)
 
 # Data simulated is saved as 'simulated_counts'
-simulated_counts <- Datagenerator_mpln(N = 100, d = 6, pi_g = c(0.79,0.21), means = rbind(true_mu1,true_mu2), sigmas = rbind(true_sigma1,true_sigma2), ProduceImage="Yes")
+simulated_counts <- Datagenerator_mpln(N = 50, d = 6, pi_g = c(0.79,0.21), means = rbind(true_mu1,true_mu2), sigmas = rbind(true_sigma1,true_sigma2), ProduceImage="Yes")
 
 # Checking/Loading needed packages
 LoadCheckPkg(pckgs=c("parallel","rstan","Rcpp","mclust","mvtnorm","edgeR","capushe","clusterGeneration","coda"))
@@ -41,11 +41,10 @@ no_cores = detectCores()-1
 cl = makeCluster(no_cores) 
 
 # Doing clusterExport
-clusterExport(cl,c("mod", "simulated_counts","zvalue_calculation", "calc_likelihood", "stanrun", "initializationrun", "BIC_function","ICL_function","AIC_function","AIC3_function", "calculate_parameters", "cluster_mpln", "calling_clustering"))
-
+clusterExport(cl,c("mod", "simulated_counts","AIC_function","AIC3_function","BIC_function","calc_likelihood","calculate_parameters","calling_clustering","cluster_mpln","ICL_function",
+  "initializationrun","main_mpln","LoadCheckPkg","stanrun","zvalue_calculation"))
 
 # Doing clusterEvalQ
-# Other packages may needed to be downloaded using clusterEvalQ
 clusterEvalQ(cl, library(parallel))
 clusterEvalQ(cl, library(rstan))
 clusterEvalQ(cl, library(Rcpp))
@@ -59,10 +58,10 @@ clusterEvalQ(cl, library(coda))
 # Running clustering
 MPLNClust_results <- main_mpln(dataset=simulated_counts$dataset, 
                                membership=simulated_counts$truemembership, 
-                               Gmin=2, 
-                               Gmax=2, 
+                               Gmin=1, 
+                               Gmax=1, 
                                n_chains=3, 
-                               n_iterations=300, 
+                               n_iterations=100, 
                                init_method="kmeans", 
                                n_init_iterations=0, 
                                normalize=NA)
