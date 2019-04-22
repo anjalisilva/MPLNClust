@@ -1,9 +1,9 @@
 
-main_mpln <- function(y, membership, Gmin, Gmax, n_chains, n_iterations=NA, init_method=NA, n_init_iterations=NA, normalize=NA){
+main_mpln <- function(dataset, membership, Gmin, Gmax, n_chains, n_iterations=NA, init_method=NA, n_init_iterations=NA, normalize=NA){
   
   ptm<-proc.time() 
   
-  if (typeof(y) != "double" & typeof(y) != "integer"){
+  if (typeof(dataset) != "double" & typeof(dataset) != "integer"){
     stop("Dataset type needs to be integer");}
   
   if (Gmax<Gmin){
@@ -21,8 +21,8 @@ main_mpln <- function(y, membership, Gmin, Gmax, n_chains, n_iterations=NA, init
   if((is.na(n_init_iterations) != TRUE && n_init_iterations == !0) && is.na(init_method) == TRUE){
     stop("Number of initialization iterations specified, but no initialization method selected");}
   
-  d<-ncol(y)
-  n<-nrow(y)
+  d<-ncol(dataset)
+  n<-nrow(dataset)
   
   if(all(is.na(membership)!=TRUE) && length(membership)!=n){
     stop("Length of membership character vector and sample size of dataset should match");}
@@ -30,11 +30,11 @@ main_mpln <- function(y, membership, Gmin, Gmax, n_chains, n_iterations=NA, init
   if(all(is.na(membership)!=TRUE) && all((diff(sort(unique(membership)))==1)!=TRUE) ){
     stop("Cluster memberships in the membership vector are missing a cluster, e.g. 1,3,4,5,6 is missing cluster 2");}
   
-  if(length(which(apply(y, 1, function(x) all(x==0))==TRUE))!=0){
-    cat("\nDataset row(s)", c(which(apply(y, 1, function(x) all(x==0))==TRUE)), "will be removed as this/these contain(s) all zeros")
-    if(all(is.na(membership)==FALSE)){membership<-membership[-c(which(apply(y, 1, function(x) all(x==0))==TRUE))]}
-    y<-y[-c(which(apply(y, 1, function(x) all(x==0))==TRUE)),]
-    n<-nrow(y)
+  if(length(which(apply(dataset, 1, function(x) all(x==0))==TRUE))!=0){
+    cat("\nDataset row(s)", c(which(apply(dataset, 1, function(x) all(x==0))==TRUE)), "will be removed as this/these contain(s) all zeros")
+    if(all(is.na(membership)==FALSE)){membership<-membership[-c(which(apply(dataset, 1, function(x) all(x==0))==TRUE))]}
+    dataset<-dataset[-c(which(apply(dataset, 1, function(x) all(x==0))==TRUE)),]
+    n<-nrow(dataset)
   }
   
   if(all(is.na(membership)==TRUE)){
@@ -44,7 +44,7 @@ main_mpln <- function(y, membership, Gmin, Gmax, n_chains, n_iterations=NA, init
     stop("Gmax cannot be larger than n");}
   
   if(is.na(normalize) == FALSE) {
-    norm_factors<-log(as.vector(calcNormFactors(as.matrix(y), method = "TMM")))
+    norm_factors<-log(as.vector(calcNormFactors(as.matrix(dataset), method = "TMM")))
   } else {norm_factors<-rep(0,d)}
   #cat("\nNormalize factors in main_mpln are: ",norm_factors)
   
@@ -52,7 +52,7 @@ main_mpln <- function(y, membership, Gmin, Gmax, n_chains, n_iterations=NA, init
     ## ** Never use set.seed(), use clusterSetRNGStream() instead,
     # to set the cluster seed if you want reproducible results
     #clusterSetRNGStream(cl=cl, iseed=g)
-    test = calling_clustering(y=y, Gmin=g, Gmax=g, n_chain=n_chains, numb_iterations=n_iterations, init_method=init_method, init_iterations=n_init_iterations, norm_factors=norm_factors, mod=mod)
+    test = calling_clustering(y=dataset, Gmin=g, Gmax=g, n_chain=n_chains, numb_iterations=n_iterations, init_method=init_method, init_iterations=n_init_iterations, norm_factors=norm_factors, mod=mod)
     return(test)
   }
   #cat("Done MPLN_parallel")
@@ -69,7 +69,7 @@ main_mpln <- function(y, membership, Gmin, Gmax, n_chains, n_iterations=NA, init
   for(g in 1:(Gmax-Gmin+1)) {
     ll[g]<-unlist(tail(parallel.Wei_2[[g]]$allresults$loglikelihood, n=1)) # save the final log-likelihood
     
-    k[g]<-calculate_parameters(g,y)
+    k[g]<-calculate_parameters(g,y=dataset)
     
     if (g==max(1:(Gmax-Gmin+1))){ # starting model selection
       bic<-BIC_function(ll=ll,k=k, n=n, run=parallel.Wei_2, gmin=Gmin, gmax=Gmax)
@@ -97,7 +97,7 @@ main_mpln <- function(y, membership, Gmin, Gmax, n_chains, n_iterations=NA, init
     Djumpmodel<- ResCapushe@Djump@model
     final<-proc.time()-ptm
     
-    RESULTS <- list(dataset= y,
+    RESULTS <- list(dataset= dataset,
                     dimensionality = d,
                     normalization_factors=norm_factors,
                     gmin = Gmin,
@@ -118,7 +118,7 @@ main_mpln <- function(y, membership, Gmin, Gmax, n_chains, n_iterations=NA, init
     
   } else {# end of Djump and DDSE
     final<-proc.time()-ptm
-    RESULTS <- list(dataset= y,
+    RESULTS <- list(dataset= dataset,
                     dimensionality = d,
                     normalization_factors=norm_factors,
                     gmin = Gmin,
