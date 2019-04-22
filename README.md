@@ -1,10 +1,10 @@
 # MPLNClust
 
-For clustering count data, specifically from RNA sequencing.
+For clustering count data. Targeted at clustering count data arising from RNA sequencing studies, but the vector of normalization factors can be relaxed and clustering method may be applied to other types of count data. 
 
 ### Announcements
 
-Version 1.0 was released. 
+Version 2.0 was released. 
 
 ## Getting started
 
