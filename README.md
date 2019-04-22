@@ -72,6 +72,7 @@ totaltime               Total time.
 ## Examples
 
 ```R
+# Runnign via R R Console
 
 # Reading needed code
 
@@ -142,6 +143,12 @@ MPLNClust_results <- main_mpln(dataset=simulated_counts$dataset,
 # To visualize clustered data
 
 visualize_mpln(dataset=simulated_counts$dataset, ClusterMembershipVector=MPLNClust_results$BIC.all$BICmodelselected_labels)
+
+###################################
+
+# Runnign via terminal
+Rscript Running_code.R
+
 ```
 
 ## Authors
