@@ -59,12 +59,12 @@ clusterEvalQ(cl, library(coda))
 MPLNClust_results <- main_mpln(dataset=simulated_counts$dataset, 
                                membership=simulated_counts$truemembership, 
                                Gmin=1, 
-                               Gmax=1, 
+                               Gmax=2, 
                                n_chains=3, 
-                               n_iterations=100, 
+                               n_iterations=600, 
                                init_method="kmeans", 
-                               n_init_iterations=0, 
-                               normalize=NA)
+                               n_init_iterations=5, 
+                               normalize="TMM")
 
 # To visualize clustered data
 visualize_mpln(dataset=simulated_counts$dataset, ClusterMembershipVector=MPLNClust_results$BIC.all$BICmodelselected_labels)

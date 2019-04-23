@@ -1,8 +1,6 @@
 # Initialization 
 initializationrun <- function(gmodel, y, init_method, init_iterations, n_chain, numb_iterations, initialization=NA, normalizefactors, mod){
   
-  source("PackageCheck.R")
-  
   z<-init_runs<-list()
   logL_init<-vector()
   n<-nrow(y)
