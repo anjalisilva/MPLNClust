@@ -72,7 +72,7 @@ totaltime               Total time.
 ## Examples
 
 ```R
-# Runnign via R Console
+# Running via R Console
 
 # Reading needed code
 
