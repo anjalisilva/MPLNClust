@@ -6,6 +6,8 @@ main_mpln <- function(dataset, membership, Gmin, Gmax, n_chains, n_iterations=NA
   if (typeof(dataset) != "double" & typeof(dataset) != "integer"){
     stop("Dataset type needs to be integer");}
   
+  dataset<-remove_zero_counts(dataset=dataset)$dataset
+  
   if (Gmax<Gmin){
     stop("Gmax cannot be less than Gmin");}
   

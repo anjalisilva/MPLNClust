@@ -13,6 +13,7 @@ source("Initialization_run.R")
 source("Main_mpln.R")
 source("MPLNdata_generator.R")
 source("Package_check.R")
+source("Remove_Zero_Counts.R")
 source("Stan_run.R")
 source("Visualize_mpln.R")
 source("Zvalue_calculation.R")
@@ -42,7 +43,7 @@ cl = makeCluster(no_cores)
 
 # Doing clusterExport
 clusterExport(cl,c("mod", "simulated_counts","AIC_function","AIC3_function","BIC_function","calc_likelihood","calculate_parameters","calling_clustering","cluster_mpln","ICL_function",
-  "initializationrun","main_mpln","LoadCheckPkg","stanrun","zvalue_calculation"))
+  "initializationrun","main_mpln","LoadCheckPkg", "remove_zero_counts", "stanrun","zvalue_calculation"))
 
 # Doing clusterEvalQ
 clusterEvalQ(cl, library(parallel))
@@ -59,9 +60,9 @@ clusterEvalQ(cl, library(coda))
 MPLNClust_results <- main_mpln(dataset=simulated_counts$dataset, 
                                membership=simulated_counts$truemembership, 
                                Gmin=1, 
-                               Gmax=2, 
+                               Gmax=1, 
                                n_chains=3, 
-                               n_iterations=600, 
+                               n_iterations=200, 
                                init_method="kmeans", 
                                n_init_iterations=5, 
                                normalize="TMM")
