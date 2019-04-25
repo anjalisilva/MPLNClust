@@ -72,9 +72,9 @@ totaltime               Total time.
 ## Examples
 
 ```R
-# Runnign via R Console
+# Running via R Console
 
-# Reading needed code
+# Reading functions
 
 source("AIC_function.R")
 source("AIC3_function.R")
