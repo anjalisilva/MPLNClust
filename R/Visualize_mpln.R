@@ -53,10 +53,10 @@ visualize_mpln<-function(dataset, ClusterMembershipVector){
   
   # Line Plots
   png(paste0(pathNow,"/Clustering_LinePlots.png"))
-  par(mfrow=c(2,max(ClusterMembershipVector)))
-  for(cluster in 1:max(ClusterMembershipVector)){
+  par(mfrow=c(2,length(unique(ClusterMembershipVector))))
+  for(cluster in unique(ClusterMembershipVector)){
       # Save how many observations below to each cluster size, given by 'cluster'
-      toplot_1=DataPlusLabs[which(DataPlusLabs[,ncol(dataset)+1]==cluster),c(1:ncol(dataset))]
+      toplot_1=as.matrix(DataPlusLabs[which(DataPlusLabs[,ncol(dataset)+1]==cluster),c(1:ncol(dataset))], ncol=ncol(dataset))
       # Save column mean in last row
       toplot1=rbind(log(toplot_1+1), colMeans(log(toplot_1+1)))
       # If discontinunity is needed between samples (e.g. for 6 samples)
