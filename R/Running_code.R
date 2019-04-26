@@ -1,16 +1,14 @@
 # **Should have all the function R files and MPLN.stan in the same working directory as this file
 
 # Reading needed code
-source("AIC_function.R")
-source("AIC3_function.R")
-source("BIC_function.R")
+
 source("Calc_likelihood.R")
 source("Calculate_parameters.R")
 source("Calling_clustering.R")
 source("Cluster_mpln.R")
-source("ICL_function.R")
 source("Initialization_run.R")
 source("Main_mpln.R")
+source("Model_selection.R")
 source("MPLNdata_generator.R")
 source("Package_check.R")
 source("Remove_Zero_Counts.R")
