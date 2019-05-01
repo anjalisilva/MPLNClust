@@ -37,8 +37,9 @@ This script will check whether the required packages are part of your R installa
 
 Because MPLNClust is available under version control (git), you can easily get updates and the latest additions to MPLNClust, by simply typing the following command in the MPLNClust directory:
 
+```bash
 git pull
-
+```
 
 ### Usage
 
