@@ -12,6 +12,34 @@ Version 2.0 was released.
 
 Carries out model-based clustering using mixtures of multivariate Poisson-log normal (MPLN) model. Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) is used for parameter estimation. Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE) are offered for model selection. See example below for more details. 
 
+### Requirements
+
+You will need R, git and a list of R packages in order to run MPLNClust, see below in the Installation section.
+
+### Installation
+
+To obtain and install a copy of MPLNClust in your computer, open a terminal
+(you will need git and a internet connection!) and type:
+
+```bash
+git clone https://github.com/anjalisilva/MPLNClust.git
+```
+
+For guarantying that you have all the required R-packages for successfully running MPLNClust, a setup script has been included so that you can run with the following command:
+
+```bash
+Rscript setup.R
+```
+
+This script will check whether the required packages are part of your R installation and if not install them in your local library.
+
+#### Updating MPLNClust
+
+Because MPLNClust is available under version control (git), you can easily get updates and the latest additions to MPLNClust, by simply typing the following command in the MPLNClust directory:
+
+git pull
+
+
 ### Usage
 
 ```R
