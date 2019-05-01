@@ -1,6 +1,17 @@
 # Visualize clustered results
-visualize_mpln<-function(dataset, ClusterMembershipVector){
+visualize_mpln<-function(dataset, ClusterMembershipVector, FMT='png'){
   
+  selectFormat <- function(filename,FMT='png') {
+  # internal function to allow selecting different figure formats
+	fileName <- paste0(filename,FMT)
+	cat(paste("Saving plot to ",filename,'\n'))
+	if (FMT == "pdf") {
+	    pdf(fileName)
+	else {
+	      png(fileName)
+	}
+  }
+
   # Checking/ Loading needed packages
   LoadCheckPkg(pckgs=c("pheatmap","gplots","RColorBrewer","MASS"))
   
@@ -24,7 +35,7 @@ visualize_mpln<-function(dataset, ClusterMembershipVector){
   col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
   
   # Heatmap 1
-  png(paste0(pathNow,"/Clustering_Heatmap1.png"))
+  selectFormat(paste0(pathNow,"/Clustering_Heatmap1"),FMT)
   heatmap.2(as.matrix(dataset[vec,]),dendrogram="column",trace="none",scale="row",
     Rowv=FALSE,  col = rev(redgreen(75)), RowSideColors=col_vector[colorsvector+1])
   par(xpd=TRUE)
@@ -47,7 +58,7 @@ visualize_mpln<-function(dataset, ClusterMembershipVector){
     rownames(annotation_row) = rownames(dataset[vec,])
   }
   
-  png(paste0(pathNow,"/Clustering_Heatmap2.png"))
+  selectFormat(paste0(pathNow,"/Clustering_Heatmap2"),FMT)
   pheatmap(as.matrix(dataset[vec,]), show_colnames = T, labels_col=colnames(dataset), annotation_row =annotation_row , fontface="italic", legend = T, scale ="row",border_color = "black", cluster_row = FALSE, cluster_col = FALSE, color =  rev(redgreen(1000)) )
   dev.off()
   
