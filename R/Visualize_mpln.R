@@ -1,7 +1,7 @@
 # Visualize clustered results
 visualize_mpln<-function(dataset, ClusterMembershipVector, FMT='png'){
   
-  selectFormat <- function(filename,FMT='png') {
+  selectPLTformat <- function(filename,FMT='png') {
   # internal function to allow selecting different figure formats
 	fileName <- paste0(filename,FMT)
 	cat(paste("Saving plot to ",filename,'\n'))
@@ -35,7 +35,7 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, FMT='png'){
   col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
   
   # Heatmap 1
-  selectFormat(paste0(pathNow,"/Clustering_Heatmap1"),FMT)
+  selectPLTformat(paste0(pathNow,"/Clustering_Heatmap1"),FMT)
   heatmap.2(as.matrix(dataset[vec,]),dendrogram="column",trace="none",scale="row",
     Rowv=FALSE,  col = rev(redgreen(75)), RowSideColors=col_vector[colorsvector+1])
   par(xpd=TRUE)
@@ -58,12 +58,12 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, FMT='png'){
     rownames(annotation_row) = rownames(dataset[vec,])
   }
   
-  selectFormat(paste0(pathNow,"/Clustering_Heatmap2"),FMT)
+  selectPLTformat(paste0(pathNow,"/Clustering_Heatmap2"),FMT)
   pheatmap(as.matrix(dataset[vec,]), show_colnames = T, labels_col=colnames(dataset), annotation_row =annotation_row , fontface="italic", legend = T, scale ="row",border_color = "black", cluster_row = FALSE, cluster_col = FALSE, color =  rev(redgreen(1000)) )
   dev.off()
   
   # Line Plots
-  png(paste0(pathNow,"/Clustering_LinePlots.png"))
+  selectPLTformat(paste0(pathNow,"/Clustering_LinePlots"),FMT)
   par(mfrow=c(2,length(unique(ClusterMembershipVector))))
   for(cluster in unique(ClusterMembershipVector)){
       # Save how many observations below to each cluster size, given by 'cluster'
