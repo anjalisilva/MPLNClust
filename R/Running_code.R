@@ -1,7 +1,7 @@
 # **Should have all the function R files and MPLN.stan in the same working directory as this file
 
 # Loading MPLNClust fns
-source("_loader.R")
+source("loader.R")
 
 
 #####################################  DATA GENERATION/LOADING  #####################################
