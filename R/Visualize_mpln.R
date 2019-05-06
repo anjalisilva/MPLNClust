@@ -1,5 +1,5 @@
 # Visualize clustered results
-visualize_mpln<-function(dataset, ClusterMembershipVector, name='', plots='all', Xpanels=NA, Ypanels=NA, FMT='png'){
+visualize_mpln<-function(dataset, ClusterMembershipVector, name='', plots='all', Xpanels=NA, Ypanels=NA, FMT='pdf'){
   
   selectPLTformat <- function(filename,FMT='png') {
   # internal function to allow selecting different figure formats
@@ -7,7 +7,7 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, name='', plots='all',
 	cat(paste("Saving plot to ",filename,'\n'))
 	if (FMT == "pdf") {
 	    pdf(fileName)
-	else {
+	} else {
 	      png(fileName)
 	}
   }
