@@ -76,7 +76,26 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, name='', plots='all',
   if (plots=='all' || plots=='lines') {
   # Line Plots
   selectPLTformat(paste0(pathNow,"/Clustering_LinePlots_",name),FMT)
-  par(mfrow=c(2,length(unique(ClusterMembershipVector))))
+
+  # set up grid of plots based on Xpanels and Ypanels arguments
+  # default is to organize in sqrt(N)xsqrt(N)
+  NbrClstrs <- length(unique(ClusterMembershipVector))
+  if (is.numeric(Xpanels) && is.numeric(Ypanels)) {
+	# bath Xpanels and Ypanels specified by user
+	 par(mfrow=c(Ypanels,Xpanels))
+	} else if (is.na(Xpanels) && is.numeric(Ypanels)) {
+		# Ypanel specfied but not Xpanel
+		par(mfrow=c(Ypanels,round(NbrClstrs/Ypanels)))
+	} else if (is.numeric(Xpanels) && is.na(Ypanels)) {
+		# Xpanel specified but not Ypanel
+		par(mfrow=c(round(NbrClstrs/Xpanels)),Xpanels)
+	} else if (is.na(Xpanels) && is.na(Ypanels)) {
+		# default case: neither Xpanels nor Ypanels specified --> tile in sqrt(N)xsqrt(N)
+		sqrtNbrClstrs <- round(sqrt(NbrClstrs))
+		par(mfrow=c(sqrtNbrClstrs,sqrtNbrClstrs))
+	}
+  #par(mfrow=c(2,0.5*length(unique(ClusterMembershipVector))))
+
   for(cluster in unique(ClusterMembershipVector)){
       # Save how many observations below to each cluster size, given by 'cluster'
       toplot_1=as.matrix(DataPlusLabs[which(DataPlusLabs[,ncol(dataset)+1]==cluster),c(1:ncol(dataset))], ncol=ncol(dataset))
