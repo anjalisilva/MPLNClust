@@ -103,24 +103,10 @@ totaltime               Total time.
 ```R
 # Running via R Console
 
-# Reading functions
+# This takes care of reading all the necessary functions and check that packages needed are present
+source("loader.R")
 
-source("AIC_function.R")
-source("AIC3_function.R")
-source("BIC_function.R")
-source("Calc_likelihood.R")
-source("Calculate_parameters.R")
-source("Calling_clustering.R")
-source("Cluster_mpln.R")
-source("ICL_function.R")
-source("Initialization_run.R")
-source("Main_mpln.R")
-source("MPLNdata_generator.R")
-source("Package_check.R")
-source("Stan_run.R")
-source("Visualize_mpln.R")
-source("Zvalue_calculation.R")
-
+#####################################  DATA GENERATION/LOADING  #####################################
 # Generating simulated data
 
 true_mu1 <- c(6.5,6,6,6,6,6)  
@@ -131,8 +117,7 @@ true_sigma2 <- diag(6)
 
 simulated_counts <- Datagenerator_mpln(N = 200, d = 6, pi_g = c(0.79,0.21), means = rbind(true_mu1,true_mu2), sigmas = rbind(true_sigma1,true_sigma2), ProduceImage="Yes")
 
-# Checking/loading needed packages
-LoadCheckPkg(pckgs=c("parallel","rstan","Rcpp","mclust","mvtnorm","edgeR","capushe","clusterGeneration","coda"))
+#####################################################################################################
 
 # Making RStan model 
 mod = stan_model("MPLN.stan")
@@ -158,7 +143,6 @@ clusterEvalQ(cl, library(clusterGeneration))
 clusterEvalQ(cl, library(coda))
 
 # Running clustering for G = 1:5 
-
 MPLNClust_results <- main_mpln(dataset=simulated_counts$dataset, 
                                membership=simulated_counts$truemembership, 
                                Gmin=1, 
@@ -170,7 +154,6 @@ MPLNClust_results <- main_mpln(dataset=simulated_counts$dataset,
                                normalize="TMM")
 
 # To visualize clustered data
-
 visualize_mpln(dataset=simulated_counts$dataset, ClusterMembershipVector=MPLNClust_results$BIC.all$BICmodelselected_labels)
 
 ###################################
