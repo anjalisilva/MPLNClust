@@ -1,15 +1,5 @@
 # Visualize clustered results
-<<<<<<< HEAD
-visualize_mpln<-function(dataset, ClusterMembershipVector, FMT='png'){
-  
-  selectFormat <- function(filename,FMT='png') {
-  # internal function to allow selecting different figure formats
-	fileName <- paste0(filename,FMT)
-	cat(paste("Saving plot to ",filenamei,'\n'))
-	if (FMT == "pdf") {
-	    pdf(fileName)
-	}else {
-=======
+
 visualize_mpln<-function(dataset, ClusterMembershipVector, name='', plots='all', Xpanels=NA, Ypanels=NA, FMT='pdf'){
   
   selectPLTformat <- function(filename,FMT='png') {
@@ -19,13 +9,9 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, name='', plots='all',
 	if (FMT == "pdf") {
 	    pdf(fileName)
 	} else {
->>>>>>> 315a9c4b9b01ff2da653b274536dbbcc9c015bb6
 	      png(fileName)
-	}
+	  }
   }
-
-  # Checking/ Loading needed packages
-  LoadCheckPkg(pckgs=c("pheatmap","gplots","RColorBrewer","MASS"))
 
   # checking optional arguments...
   if ( (!is.na(Xpanels) && !is.numeric(Xpanels)) || (is.numeric(Xpanels) && Xpanels<=0) ) {
@@ -56,11 +42,7 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, name='', plots='all',
 
   if (plots=='all' || plots=='heatmaps') {
   # Heatmap 1
-<<<<<<< HEAD
-  selectFormat(paste0(pathNow,"/Clustering_Heatmap1"),FMT)
-=======
   selectPLTformat(paste0(pathNow,"/Clustering_Heatmap1_",name),FMT)
->>>>>>> 315a9c4b9b01ff2da653b274536dbbcc9c015bb6
   heatmap.2(as.matrix(dataset[vec,]),dendrogram="column",trace="none",scale="row",
     Rowv=FALSE,  col = rev(redgreen(75)), RowSideColors=col_vector[colorsvector+1])
   par(xpd=TRUE)
@@ -83,11 +65,8 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, name='', plots='all',
     rownames(annotation_row) = rownames(dataset[vec,])
   }
   
-<<<<<<< HEAD
-  selectFormat(paste0(pathNow,"/Clustering_Heatmap2"),FMT)
-=======
+
   selectPLTformat(paste0(pathNow,"/Clustering_Heatmap2_",name),FMT)
->>>>>>> 315a9c4b9b01ff2da653b274536dbbcc9c015bb6
   pheatmap(as.matrix(dataset[vec,]), show_colnames = T, labels_col=colnames(dataset), annotation_row =annotation_row , fontface="italic", legend = T, scale ="row",border_color = "black", cluster_row = FALSE, cluster_col = FALSE, color =  rev(redgreen(1000)) )
   dev.off()
   }
@@ -95,7 +74,6 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, name='', plots='all',
 
   if (plots=='all' || plots=='lines') {
   # Line Plots
-  selectPLTformat(paste0(pathNow,"/Clustering_LinePlots_",name),FMT)
 
   # set up grid of plots based on Xpanels and Ypanels arguments
   # default is to organize in sqrt(N)xsqrt(N)
@@ -117,6 +95,8 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, name='', plots='all',
   #par(mfrow=c(2,0.5*length(unique(ClusterMembershipVector))))
 
   for(cluster in unique(ClusterMembershipVector)){
+    selectPLTformat(paste0(pathNow,"/Clustering_LinePlots_Cluster",cluster,"_",name),FMT)
+    
       # Save how many observations below to each cluster size, given by 'cluster'
       toplot_1=as.matrix(DataPlusLabs[which(DataPlusLabs[,ncol(dataset)+1]==cluster),c(1:ncol(dataset))], ncol=ncol(dataset))
       # Save column mean in last row
@@ -125,8 +105,9 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, name='', plots='all',
       # toplot1_space=cbind(toplot1[,c(1:3)],rep(NA,nrow(toplot_1)+1),toplot1[,c(4:6)])
       matplot(t(toplot1), type="l", pch=1, col=c(rep(1,nrow(toplot_1)),7), xlab="Samples", ylab="Expression (log counts)", cex=1, lty=c(rep(2,nrow(toplot_1)),1),lwd=c(rep(1,nrow(toplot_1)),3), xaxt="n", xlim=c(1,ncol(toplot1)), main=paste("Cluster ",cluster))
       axis(1,at = c(1:ncol(dataset)), labels=colnames(dataset))
+      dev.off()
     }
-  dev.off()
+
   }
 
 }

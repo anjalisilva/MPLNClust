@@ -13,11 +13,15 @@ RegularPckgs <- c("coda",
                  "capushe",
                  "cluster",
                  "clusterGeneration",
+                 "gplots",
+                 "MASS",
                  "mclust",
                  "mvtnorm",
                  "Rcpp",
+                 "RColorBrewer",
                  "rstan",
-                 "parallel")
+                 "parallel",
+                 "pheatmap")
 
 BioManagerPckgs<- c("edgeR")
 
