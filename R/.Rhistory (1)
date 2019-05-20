@@ -1,0 +1,70 @@
+setwd("/Volumes/GoogleDrive/My Drive/UGuelph/Analysis_Anjali'sLaptop/All algorithms (Monte Carlo EM)/mixtures_of_MPLN/Git/GitHub/R")
+?BiocManager
+install.packages("BiocManager")
+test<-install.packages("BiocManager")
+test
+test<-install.packages("cluster")
+test
+source("Calc_likelihood.R")
+source("Calculate_parameters.R")
+source("Calling_clustering.R")
+source("Cluster_mpln.R")
+source("Initialization_run.R")
+source("Main_mpln.R")
+source("Model_selection.R")
+source("MPLNdata_generator.R")
+source("Pckages.R")
+source("Remove_Zero_Counts.R")
+source("Stan_run.R")
+source("Visualize_mpln.R")
+source("Zvalue_calculation.R")
+source("Pckges.R")
+source("Pckges.R")
+file.exists(Stan_run.R)
+# **Should have all the function R files and MPLN.stan in the same working directory as this file
+# Reading needed code
+source("Calc_likelihood.R")
+source("Calculate_parameters.R")
+source("Calling_clustering.R")
+source("Cluster_mpln.R")
+source("Initialization_run.R")
+source("Main_mpln.R")
+source("Model_selection.R")
+source("MPLNdata_generator.R")
+source("Pckges.R")
+source("Remove_Zero_Counts.R")
+source("Stan_run.R")
+source("Visualize_mpln.R")
+source("Zvalue_calculation.R")
+# Values for data simulation
+true_mu1 <- c(6.5,6,6,6,6,6)
+true_mu2 <- c(2,2.5,2,2,2,2)
+file.exists(Stan_run.R)
+true_mu1
+file.exists(true_mu1)
+?file.exists
+true_mu1
+destfile="./Calc_likelihood.R"
+destfile="./Calc_likelihood.R"
+destfile
+file.exists(destfile)
+destfile="./Calc_likelihood.N"
+destfile
+file.exists(destfile)
+ALLargs <- function() {
+cmdArgs <- commandArgs(trailingOnly = FALSE)
+scrPATHkw <- "--file="
+match <- grep(scrPATHkw, cmdArgs)
+if (length(match) > 0) {
+# Rscript
+scriptLOC <- dirname(normalizePath(sub(scrPATHkw, "", cmdArgs[match])))
+} else {
+# 'source'd via R console
+scriptLOC <- normalizePath(sys.frames()[[1]]$ofile)
+}
+cmdArgs <- commandArgs(trailingOnly =TRUE)
+return(list(scriptLOC,cmdArgs))
+}
+allArgs <- ALLargs()
+print(allArgs)
+ALLargs(Running_code.R)
