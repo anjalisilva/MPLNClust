@@ -103,7 +103,12 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, name='', plots='all',
       toplot1=rbind(log(toplot_1+1), colMeans(log(toplot_1+1)))
       # If discontinunity is needed between samples (e.g. for 6 samples)
       # toplot1_space=cbind(toplot1[,c(1:3)],rep(NA,nrow(toplot_1)+1),toplot1[,c(4:6)])
-      matplot(t(toplot1), type="l", pch=1, col=c(rep(1,nrow(toplot_1)),7), xlab="Samples", ylab="Expression (log counts)", cex=1, lty=c(rep(2,nrow(toplot_1)),1),lwd=c(rep(1,nrow(toplot_1)),3), xaxt="n", xlim=c(1,ncol(toplot1)), main=paste("Cluster ",cluster))
+      
+      if (cluster==7){
+        # alter the colour from yellow, since yellow is used as average line colour
+        matplot(t(toplot1), type="l", pch=1, col=c(rep("maroon",nrow(toplot_1)),7), xlab="Samples", ylab="Expression (log counts)", cex=1, lty=c(rep(2,nrow(toplot_1)),1),lwd=c(rep(1,nrow(toplot_1)),3), xaxt="n", xlim=c(1,ncol(toplot1)), main=paste("Cluster ",cluster))
+      }else{
+      matplot(t(toplot1), type="l", pch=1, col=c(rep(cluster,nrow(toplot_1)),7), xlab="Samples", ylab="Expression (log counts)", cex=1, lty=c(rep(2,nrow(toplot_1)),1),lwd=c(rep(1,nrow(toplot_1)),3), xaxt="n", xlim=c(1,ncol(toplot1)), main=paste("Cluster ",cluster))}
       axis(1,at = c(1:ncol(dataset)), labels=colnames(dataset))
       dev.off()
     }

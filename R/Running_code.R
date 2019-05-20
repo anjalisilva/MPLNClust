@@ -41,15 +41,15 @@ clusterEvalQ(cl, library(coda))
 MPLNClust_results <- main_mpln(dataset=simulated_counts$dataset, 
                                membership=simulated_counts$truemembership, 
                                Gmin=1, 
-                               Gmax=1, 
+                               Gmax=5, 
                                n_chains=3, 
-                               n_iterations=200, 
+                               n_iterations=1000, 
                                init_method="kmeans", 
                                n_init_iterations=5, 
                                normalize="TMM")
 
 # To visualize clustered data
-visualize_mpln(dataset=simulated_counts$dataset, ClusterMembershipVector=MPLNClust_results$BIC.all$BICmodelselected_labels, name="Sim200data")
+visualize_mpln(dataset=simulated_counts$dataset, ClusterMembershipVector=MPLNClust_results$BIC.all$BICmodelselected_labels, name="SimData")
 
 #Saving results with date as .RData file
 save.image(paste0("MPLNClust_results_",format(Sys.time(), "%d%b%Y"),".RData"))
