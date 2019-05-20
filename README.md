@@ -63,7 +63,7 @@ normalize           Estimator for normalization for the differences in library s
 
 ## Details
 
-Output of MPLNClustering() is an S3 object of class MPLN. 
+Output of main_mpln() is an S3 object of class MPLN. 
 
 The multivariate Poisson-log normal (MPLN; Aitchison and Ho, 1989) distribution is a multivariate log normal mixture of independent Poisson distributions. The hidden layer of the MPLN distribution is a multivariate Gaussian distribution, which allows for the specification of a covariance structure. Further, the MPLN distribution can account for overdispersion in count data. 
 
