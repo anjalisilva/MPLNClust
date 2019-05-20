@@ -1,4 +1,5 @@
 # Visualize clustered results
+<<<<<<< HEAD
 visualize_mpln<-function(dataset, ClusterMembershipVector, FMT='png'){
   
   selectFormat <- function(filename,FMT='png') {
@@ -8,12 +9,31 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, FMT='png'){
 	if (FMT == "pdf") {
 	    pdf(fileName)
 	}else {
+=======
+visualize_mpln<-function(dataset, ClusterMembershipVector, name='', plots='all', Xpanels=NA, Ypanels=NA, FMT='pdf'){
+  
+  selectPLTformat <- function(filename,FMT='png') {
+  # internal function to allow selecting different figure formats
+	fileName <- paste0(filename,".",FMT)
+	cat(paste("Saving plot to ",filename,'\n'))
+	if (FMT == "pdf") {
+	    pdf(fileName)
+	} else {
+>>>>>>> 315a9c4b9b01ff2da653b274536dbbcc9c015bb6
 	      png(fileName)
 	}
   }
 
   # Checking/ Loading needed packages
   LoadCheckPkg(pckgs=c("pheatmap","gplots","RColorBrewer","MASS"))
+
+  # checking optional arguments...
+  if ( (!is.na(Xpanels) && !is.numeric(Xpanels)) || (is.numeric(Xpanels) && Xpanels<=0) ) {
+	stop("Xpanels argument should be a positive number!")
+  }
+  if ((!is.na(Ypanels) && !is.numeric(Ypanels)) || (is.numeric(Ypanels) && (Ypanels<=0))) {
+	stop("Ypanels argument should be a poisitive number!")
+  }
   
   # Obtaining path to save images
   pathNow<-getwd()
@@ -33,9 +53,14 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, FMT='png'){
   
   qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
   col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
-  
+
+  if (plots=='all' || plots=='heatmaps') {
   # Heatmap 1
+<<<<<<< HEAD
   selectFormat(paste0(pathNow,"/Clustering_Heatmap1"),FMT)
+=======
+  selectPLTformat(paste0(pathNow,"/Clustering_Heatmap1_",name),FMT)
+>>>>>>> 315a9c4b9b01ff2da653b274536dbbcc9c015bb6
   heatmap.2(as.matrix(dataset[vec,]),dendrogram="column",trace="none",scale="row",
     Rowv=FALSE,  col = rev(redgreen(75)), RowSideColors=col_vector[colorsvector+1])
   par(xpd=TRUE)
@@ -58,13 +83,39 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, FMT='png'){
     rownames(annotation_row) = rownames(dataset[vec,])
   }
   
+<<<<<<< HEAD
   selectFormat(paste0(pathNow,"/Clustering_Heatmap2"),FMT)
+=======
+  selectPLTformat(paste0(pathNow,"/Clustering_Heatmap2_",name),FMT)
+>>>>>>> 315a9c4b9b01ff2da653b274536dbbcc9c015bb6
   pheatmap(as.matrix(dataset[vec,]), show_colnames = T, labels_col=colnames(dataset), annotation_row =annotation_row , fontface="italic", legend = T, scale ="row",border_color = "black", cluster_row = FALSE, cluster_col = FALSE, color =  rev(redgreen(1000)) )
   dev.off()
-  
+  }
+
+
+  if (plots=='all' || plots=='lines') {
   # Line Plots
-  png(paste0(pathNow,"/Clustering_LinePlots.png"))
-  par(mfrow=c(2,length(unique(ClusterMembershipVector))))
+  selectPLTformat(paste0(pathNow,"/Clustering_LinePlots_",name),FMT)
+
+  # set up grid of plots based on Xpanels and Ypanels arguments
+  # default is to organize in sqrt(N)xsqrt(N)
+  NbrClstrs <- length(unique(ClusterMembershipVector))
+  if (is.numeric(Xpanels) && is.numeric(Ypanels)) {
+	# bath Xpanels and Ypanels specified by user
+	 par(mfrow=c(Ypanels,Xpanels))
+	} else if (is.na(Xpanels) && is.numeric(Ypanels)) {
+		# Ypanel specfied but not Xpanel
+		par(mfrow=c(Ypanels,round(NbrClstrs/Ypanels)))
+	} else if (is.numeric(Xpanels) && is.na(Ypanels)) {
+		# Xpanel specified but not Ypanel
+		par(mfrow=c(round(NbrClstrs/Xpanels)),Xpanels)
+	} else if (is.na(Xpanels) && is.na(Ypanels)) {
+		# default case: neither Xpanels nor Ypanels specified --> tile in sqrt(N)xsqrt(N)
+		sqrtNbrClstrs <- round(sqrt(NbrClstrs))
+		par(mfrow=c(sqrtNbrClstrs,sqrtNbrClstrs))
+	}
+  #par(mfrow=c(2,0.5*length(unique(ClusterMembershipVector))))
+
   for(cluster in unique(ClusterMembershipVector)){
       # Save how many observations below to each cluster size, given by 'cluster'
       toplot_1=as.matrix(DataPlusLabs[which(DataPlusLabs[,ncol(dataset)+1]==cluster),c(1:ncol(dataset))], ncol=ncol(dataset))
@@ -76,5 +127,6 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, FMT='png'){
       axis(1,at = c(1:ncol(dataset)), labels=colnames(dataset))
     }
   dev.off()
-  
+  }
+
 }
