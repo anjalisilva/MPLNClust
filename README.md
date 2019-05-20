@@ -129,7 +129,7 @@ no_cores = detectCores()-1
 cl = makeCluster(no_cores) 
 
 # Doing clusterExport
-clusterExport(cl,c("mod", "simulated_counts","AIC_function","AIC3_function","BIC_function","calc_likelihood","calculate_parameters","calling_clustering","cluster_mpln","ICL_function","initializationrun","main_mpln","LoadCheckPkg","stanrun","zvalue_calculation"))
+clusterExport(cl,c("calc_likelihood","calculate_parameters","calling_clustering","cluster_mpln","initializationrun","main_mpln","mod","AIC_function","AIC3_function","BIC_function","ICL_function","remove_zero_counts","stanrun","zvalue_calculation"))
 
 # Doing clusterEvalQ
 clusterEvalQ(cl, library(parallel))
