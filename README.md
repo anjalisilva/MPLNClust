@@ -71,7 +71,6 @@ A mixture of MPLN distributions is introduced for clustering count data from RNA
 
 The AIC, BIC, AIC3 and ICL are used for model selection. If more than 10 models are considered, slope heuristics (Djump and DDSE) can also be used. Starting values (init_method) and the number of iterations for each chain (n_iterations) play an important role to the successful operation of this algorithm.
 
-![Clustering.png](img/Clustering.png)
 ![Clustering.png](img/LinePlots.png)
 
 ## Value
