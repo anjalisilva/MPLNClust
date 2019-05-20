@@ -1,19 +1,6 @@
 # **Should have all the function R files and MPLN.stan in the same working directory as this file
 
-# Reading needed code
-
-source("Calc_likelihood.R")
-source("Calculate_parameters.R")
-source("Calling_clustering.R")
-source("Cluster_mpln.R")
-source("Initialization_run.R")
-source("Main_mpln.R")
-source("Model_selection.R")
-source("MPLNdata_generator.R")
-source("Remove_Zero_Counts.R")
-source("Stan_run.R")
-source("Visualize_mpln.R")
-source("Zvalue_calculation.R")
+source("Setup.R")
 
 
 # Values for data simulation
@@ -26,9 +13,6 @@ true_sigma2 <- diag(6)
 # Data simulated is saved as 'simulated_counts'
 simulated_counts <- Datagenerator_mpln(N = 50, d = 6, pi_g = c(0.79,0.21), means = rbind(true_mu1,true_mu2), sigmas = rbind(true_sigma1,true_sigma2), ProduceImage="Yes")
 
-# Checking/Loading needed packages
-LoadCheckPkg(pckgs=c("parallel","rstan","Rcpp","mclust","mvtnorm","edgeR","capushe","clusterGeneration","coda"))
-
 # Making RStan model 
 mod = stan_model("MPLN.stan")
 
@@ -39,8 +23,7 @@ no_cores = detectCores()-1
 cl = makeCluster(no_cores) 
 
 # Doing clusterExport
-clusterExport(cl,c("mod", "simulated_counts","AIC_function","AIC3_function","BIC_function","calc_likelihood","calculate_parameters","calling_clustering","cluster_mpln","ICL_function",
-  "initializationrun","main_mpln","LoadCheckPkg", "remove_zero_counts", "stanrun","zvalue_calculation"))
+clusterExport(cl,c("calc_likelihood","calculate_parameters","calling_clustering","cluster_mpln","initializationrun","main_mpln","mod","AIC_function","AIC3_function","BIC_function","ICL_function","remove_zero_counts","stanrun","zvalue_calculation"))
 
 # Doing clusterEvalQ
 clusterEvalQ(cl, library(parallel))

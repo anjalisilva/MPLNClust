@@ -7,7 +7,7 @@ visualize_mpln<-function(dataset, ClusterMembershipVector, FMT='png'){
 	cat(paste("Saving plot to ",filenamei,'\n'))
 	if (FMT == "pdf") {
 	    pdf(fileName)
-	else {
+	}else {
 	      png(fileName)
 	}
   }

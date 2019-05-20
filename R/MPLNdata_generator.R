@@ -1,13 +1,8 @@
 # Generating data using mixtures of MPLN
 Datagenerator_mpln <- function(N, d, pi_g, means, sigmas, ProduceImage){
   
-  source("Package_check.R")
-  
   set.seed(1)
   z<-t(rmultinom(N,size=1,pi_g))
-  
-  # loading needed packages
-  LoadCheckPkg(pckgs=c("mvtnorm","clusterGeneration","edgeR","mclust"))
   
   y<-theta<-n_g <- vector("list", length = length(pi_g)) 
   theta2<-matrix(NA,ncol=d,nrow=N) # for visualization only
