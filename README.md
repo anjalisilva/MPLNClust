@@ -154,7 +154,7 @@ MPLNClust_results <- main_mpln(dataset=simulated_counts$dataset,
                                normalize="TMM")
 
 # To visualize clustered data
-visualize_mpln(dataset=simulated_counts$dataset, ClusterMembershipVector=MPLNClust_results$BIC.all$BICmodelselected_labels)
+visualize_mpln(dataset=simulated_counts$dataset, ClusterMembershipVector=MPLNClust_results$BIC.all$BICmodelselected_labels, name="SimData")
 
 ###################################
 
