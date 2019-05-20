@@ -33,7 +33,7 @@ Rscript Setup.R
 
 This script will check whether the required packages are part of your R installation and if not install them in your local library.
 
-#### Updating MPLNClust
+### Updating MPLNClust
 
 Because MPLNClust is available under version control (git), you can easily get updates and the latest additions to MPLNClust, by simply typing the following command in the MPLNClust directory:
 
