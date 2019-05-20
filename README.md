@@ -28,7 +28,7 @@ git clone https://github.com/anjalisilva/MPLNClust.git
 For guarantying that you have all the required R-packages for successfully running MPLNClust, a setup script has been included so that you can run with the following command:
 
 ```bash
-Rscript setup.R
+Rscript Setup.R
 ```
 
 This script will check whether the required packages are part of your R installation and if not install them in your local library.
@@ -103,8 +103,8 @@ totaltime               Total time.
 ```R
 # Running via R Console
 
-# This takes care of reading all the necessary functions and check that packages needed are present
-source("loader.R")
+# Read all the necessary functions and check that packages needed are present
+source("Setup.R")
 
 #####################################  DATA GENERATION/LOADING  #####################################
 # Generating simulated data
