@@ -99,12 +99,11 @@ totaltime               Total time.
 ## Examples
 
 ```R
-# Running via R Console
+#####################################  Running via R Console #####################################
 
 # Read all the necessary functions and check that packages needed are present
 source("Setup.R")
 
-#####################################  DATA GENERATION/LOADING  #####################################
 # Generating simulated data
 
 true_mu1 <- c(6.5,6,6,6,6,6)  
@@ -115,7 +114,6 @@ true_sigma2 <- diag(6)
 
 simulated_counts <- Datagenerator_mpln(N = 200, d = 6, pi_g = c(0.79,0.21), means = rbind(true_mu1,true_mu2), sigmas = rbind(true_sigma1,true_sigma2), ProduceImage="Yes")
 
-#####################################################################################################
 
 # Making RStan model 
 mod = stan_model("MPLN.stan")
@@ -154,7 +152,7 @@ MPLNClust_results <- main_mpln(dataset=simulated_counts$dataset,
 # To visualize clustered data
 visualize_mpln(dataset=simulated_counts$dataset, ClusterMembershipVector=MPLNClust_results$BIC.all$BICmodelselected_labels, name="SimData")
 
-###################################
+#####################################  Running via Terminal #####################################
 
 # Runnign via terminal
 
