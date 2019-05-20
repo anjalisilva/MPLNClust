@@ -1,6 +1,5 @@
-# For CheckPackageOnly Function
-
-# # Function: check whether a package is available in the system, if not prints an error.
+# CheckPackageOnly: 
+# Function: check whether a package is available in the system, if not prints an error.
 
 # Input:
 # RegularPckgs: list of packages to be downloaded
@@ -8,7 +7,18 @@
 
 # Output: Prints if the package is loaded or not. 
 
+############################################################## #
+# CheckVersion
+# Function: Outputs the version of the package.
 
+# Input:
+# Pckges: list of packages to for which version to be checked
+
+# Output: Prints the version of the package
+############################################################## #
+
+
+# Packages
 RegularPckgs <- c("coda",
                  "capushe",
                  "cluster",
@@ -25,6 +35,7 @@ RegularPckgs <- c("coda",
 
 BioManagerPckgs<- c("edgeR")
 
+# Functions
 CheckPackageOnly <- function(RegularPckgs=NA, BioManagerPckgs=NA){
   fail = FALSE
   # Code developed by A.Silva based on code provided by Dr. Marcelo Ponce, April 2019
@@ -67,7 +78,6 @@ CheckPackageOnly <- function(RegularPckgs=NA, BioManagerPckgs=NA){
   if (fail) stop()
 }
 
-# Function to check the versions of a given set of packages
 CheckVersion <- function(pckges) {
   
   for (pck in pckges){
@@ -76,6 +86,7 @@ CheckVersion <- function(pckges) {
   
 }
 
+# Running functions
 CheckPackageOnly(RegularPckgs = RegularPckgs, BioManagerPckgs=BioManagerPckgs)
 
 CheckVersion(c(RegularPckgs,BioManagerPckgs))
