@@ -36,4 +36,5 @@ calling_clustering <- function(y, Gmin, Gmax, n_chain, numb_iterations=NA, init_
   
   class(RESULTS) <- "MPLN"
   return(RESULTS)
+  # Developed by Anjali Silva
 }

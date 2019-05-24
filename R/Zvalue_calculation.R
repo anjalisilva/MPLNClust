@@ -32,4 +32,5 @@ zvalue_calculation<-function(theta_Stan,y,G,mu_g,Sig_g,PI, normalizefactors){
   }else {zvalue<-forz/rowSums(forz)}
   
   return(zvalue)
+  # Developed by Anjali Silva
 }

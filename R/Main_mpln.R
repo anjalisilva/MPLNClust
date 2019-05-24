@@ -142,4 +142,5 @@ main_mpln <- function(dataset, membership, Gmin, Gmax, n_chains, n_iterations=NA
   
   class(RESULTS) <- "MPLN"
   return(RESULTS)
+  # Developed by Anjali Silva
 }

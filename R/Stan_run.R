@@ -37,6 +37,6 @@ stanrun<-function(model, gmin, gmax, y, mu_all_outer, it_outer, sigma_all_outer,
   results <- list(fitrstan = fitrstan,
                   numb_iterations = numb_iterations)
   class(results) <- "RStan"
-  
   return(results)
+  # Developed by Anjali Silva
 }

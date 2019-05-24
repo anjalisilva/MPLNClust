@@ -39,4 +39,5 @@ initializationrun <- function(gmodel, y, init_method, init_iterations, n_chain, 
   
   initialization <- init_runs[[which(logL_init==max(logL_init, na.rm = TRUE))[1]]]
   return(initialization)
+  # Developed by Anjali Silva
 }  

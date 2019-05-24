@@ -125,4 +125,5 @@ cluster_mpln <- function(y,z,G,n_chain,numb_iterations, initialization, normaliz
   
   class(results) <- "MPLNcluster"
   return(results)
-} # ending the function
+  # Developed by Anjali Silva
+} 

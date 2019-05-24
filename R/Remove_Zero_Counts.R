@@ -18,5 +18,6 @@ remove_zero_counts<-function(dataset,output=FALSE){
   RESULTS <- list(dataset= dataset)
   class(RESULTS) <- "MPLN_ZerosRemoved"
   return(RESULTS)
-                  
+  # Developed by Anjali Silva
+  
 }

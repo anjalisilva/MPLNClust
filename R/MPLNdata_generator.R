@@ -50,6 +50,7 @@ Datagenerator_mpln <- function(N, d, pi_g, means, sigmas, ProduceImage){
   
   class(results) <- "MPLNDataGenerator"
   return(results)
+  # Developed by Anjali Silva
 }  
 
 

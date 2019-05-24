@@ -13,4 +13,5 @@ calc_likelihood <- function(z, PI, y, mu_g, G, Sig_g, theta_Stan, normalizefacto
   }
   loglike<-sum(rowSums(like))
   return(loglike)
+  # Developed by Anjali Silva
 }
