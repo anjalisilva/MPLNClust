@@ -1,4 +1,3 @@
-#main_mpln <- function(dataset, membership, gmin = 1, gmax = 2, nChains = 3 nChx
 
 mpln <- function(dataset, membership, gmin = 1, gmax = 2, 
                  nChains = 3, nIterations = NA, 
