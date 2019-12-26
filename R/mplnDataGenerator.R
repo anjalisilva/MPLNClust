@@ -24,8 +24,8 @@ mplnDataGenerator <- function(nObservations,
   }
   
   y <- matrix(NA, ncol = dimensionality, nrow = nObservations)
-  for (i in 1:nObservations) {
-    for (j in 1:dimensionality) {
+  for (i in seq_along(1:nObservations)) {
+    for (j in seq_along(1:dimensionality)) {
       y[i, j] <- stats::rpois(1, exp(theta2[i, j])) 
     }
   }
@@ -35,7 +35,7 @@ mplnDataGenerator <- function(nObservations,
   #generating counts with norm factors
   y2 <- matrix(NA, ncol = dimensionality, nrow = nObservations)
   for (i in seq_along(1:nObservations)) {
-    for (j in 1:dimensionality) {
+    for (j in seq_along(1:dimensionality)) {
       y2[i, j] <- stats::rpois(n = 1, lambda = exp(theta2[i, j] + norms[j])) 
     }
   }

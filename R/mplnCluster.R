@@ -1,11 +1,11 @@
 # Clustering function
 #main_mpln <- function(dataset, membership, gmin = 1, gmax = 2, nChains = 3 nChx
 
-mplnCluster <- function(dataset, z, G, n_chain, numb_iterations, 
+mplnCluster <- function(dataset, z, G, nChains, nIterations, 
                         initialization, normalizefac, mod) {
   
-  d <- ncol(dataset)
-  n <- nrow(dataset)
+  dimensionality <- ncol(dataset)
+  nObservations <- nrow(dataset)
   
   # for convergence calculation
   norm_mu_outer <- norm_sigma_outer <- vector() 
@@ -20,10 +20,10 @@ mplnCluster <- function(dataset, z, G, n_chain, numb_iterations,
   if (all(is.na(initialization)) == TRUE || all(initialization == "init")) {
     # mean for both t and normal distribution
     mu_all_outer[[1]] <- mu_g <- matrix(log(mean(dataset)), 
-                                        ncol = d, nrow = G) 
+                                        ncol = dimensionality, nrow = G) 
     # sig for sigma of t distribtuion
     sigma_all_outer[[1]] <- Sig_g <- do.call("rbind", 
-      rep(list(cov(log(dataset + 1)) * d), G)) 
+      rep(list(cov(log(dataset + 1)) * dimensionality), G)) 
   } else {
     mu_all_outer[[1]] <- mu_g <- initialization$finalmu
     sigma_all_outer[[1]] <- Sig_g <- initialization$finalsigma
@@ -31,9 +31,9 @@ mplnCluster <- function(dataset, z, G, n_chain, numb_iterations,
   }
   
   while(! conv_outer) { 
-    for(g in 1:G) {
+    for(g in seq_along(1:G)) {
       obs[g] <- sum(z[, g]) # number of observations in each group
-      PI[g] <- obs[g] / n  # obtain probability of each group
+      PI[g] <- obs[g] / nObservations  # obtain probability of each group
     }
     
     theta_Stan <- E_theta2 <- list()
@@ -44,29 +44,30 @@ mplnCluster <- function(dataset, z, G, n_chain, numb_iterations,
                              mu_all_outer = mu_all_outer, 
                              it_outer = it_outer, 
                              sigma_all_outer = sigma_all_outer, 
-                             numb_iterations = numb_iterations, 
-                             n_chain = n_chain, 
+                             numb_iterations = nIterations, 
+                             n_chain = nChains, 
                              normalizefacs = normalizefac)
     
     fit <- rstan_results$fitrstan
-    numb_iterations <- rstan_results$numb_iterations
+    nIterations <- rstan_results$numb_iterations
     
-    for (g in 1:G) {
+    for (g in seq_along(1:G)) {
       tt <- as.matrix(fit[[g]])
-      theta_Stan[[g]] <- matrix(NA, nrow=n, ncol=d)
+      theta_Stan[[g]] <- matrix(NA, nrow = nObservations,
+                                ncol = dimensionality)
       E_theta2[[g]] <- list()
       
-      for (i in 1:n) {
-        zz <- c(1:(d - 1)) * n + i
+      for (i in seq_along(1:nObservations)) {
+        zz <- c(1:(dimensionality - 1)) * nObservations + i
         theta_mat <- tt[, c(i, zz)]
         theta_Stan[[g]][i, ] <- colMeans(theta_mat)
         E_theta2[[g]][[i]] <- z[i, g] * t(tt[, c(i,zz)]) %*% tt[, c(i,zz)]/
-          ((0.5*numb_iterations) * n_chain)
+                              ((0.5 * nIterations) * nChains)
       }
       
       mu_g[g, ] <- colSums(z[, g] * theta_Stan[[g]]) / sum(z[, g])
-      Sig_g[((g - 1) * d + 1):(g * d), ] <- Reduce("+", E_theta2[[g]]) / 
-                                       sum(z[, g]) - mu_g[g, ] %*% t(mu_g[g, ])
+      Sig_g[((g - 1) * dimensionality + 1):(g * dimensionality), ] <- 
+        Reduce("+", E_theta2[[g]]) / sum(z[, g]) - mu_g[g, ] %*% t(mu_g[g, ])
     }
     
     mu_all_outer[[it_outer]] <- mu_g
@@ -150,7 +151,7 @@ mplnCluster <- function(dataset, z, G, n_chain, numb_iterations,
                       PI = PI, 
                       normalizefactors = normalizefac)
       it_outer <- it_outer + 1 # updating outer loop iteration
-      numb_iterations <- numb_iterations + 10
+      nIterations <- nIterations + 10
     }
   } # end of outer loop
   

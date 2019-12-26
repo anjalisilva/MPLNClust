@@ -5,14 +5,15 @@ stanRun <- function(model, gmin, gmax, dataset,
                     n_chain = n_chain, normalizefacs) {
   
   fitrstan <- list()
-  d <- ncol(dataset)
+  dimensionality <- ncol(dataset)
 
-  for (g in gmin:gmax) {
+  for (g in seq_along(gmin:gmax)) {
     data1 = list(d = ncol(dataset),
     N = nrow(dataset),
     y = dataset,
-    mu = mu_all_outer[[it_outer-1]][g,],
-    Sigma = sigma_all_outer[[it_outer-1]][((g-1)*d+1):(g*d),], 
+    mu = mu_all_outer[[it_outer-1]][g, ],
+    Sigma = sigma_all_outer[[it_outer-1]][((g - 1) * 
+            dimensionality + 1):(g*dimensionality), ], 
     normfactors = as.vector(normalizefacs))
     stanproceed <- 0
     try = 1
