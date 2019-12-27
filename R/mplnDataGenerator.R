@@ -1,14 +1,70 @@
-# Generating data using mixtures of MPLN
+#' Generating Data Using Mixtures of MPLN
+#'
+#' This function simulates data from a mixture of MPLN model.
+#'
+#' @param nObservations A positive integer indicating the number of observations for
+#'    the dataset.
+#' @param dimensionality A positive integer indicating the dimensionality for the dataset.
+#' @param mixingProportions A numeric vector that length equal to the number of total
+#'    components, indicating the proportion of each component.
+#' @param mu A matrix of size (dimensionality x number of components), indicating the
+#'    mean for each component. See example.
+#' @param sigma A matrix of size ((dimensionality * number of components) x dimensionality),
+#'    indicating the covariance matrix for each component. See example.
+#' @param produceImage A character string indicating whether or not to produce an image.
+#'    Options "Yes" or "No".
+#'
+#' @return Returns an S3 object of class mplnDataGenerator with results.
+#' \itemize{
+#'   \item dataset - Simulated dataset.
+#'   \item truenormfactors - A numeric vector indicating the true normalization
+#'      factors used for adjusting the library sizes.
+#'   \item observations - Number of observations in the simulated dataset.
+#'   \item dimensionality - Dimensionality of the simulated dataset.
+#'   \item mixingProportions - A numeric vector indicating the mixing proportion
+#'      of each component.
+#'   \item mu - True mean used for the simulated dataset.
+#'   \item sigma - True sigma used for the simulated dataset.
+#'}
+#'
+#' @examples
+#' # Generating simulated data
+#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+#'
+#' trueSigma1 <- diag(6) * 2
+#' trueSigma2 <- diag(6)
+#'
+#' sampleData <- mplnDataGenerator(nObservations = 100,
+#'                                 dimensionality = 6,
+#'                                 mixingProportions = c(0.79, 0.21),
+#'                                 mu = rbind(trueMu1, trueMu2),
+#'                                 sigma = rbind(trueSigma1, trueSigma2),
+#'                                 produceImage = "No")
+#'
+#'
+#' @references
+#' Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.
+#' \emph{Biometrika} 76.
+#'
+#' Silva, A. et al. (2019). A multivariate Poisson-log normal mixture model
+#' for clustering transcriptome sequencing data. \emph{BMC Bioinformatics} 20.
+#' \href{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0}{Link}
+#'
+#' @export
+#' @import stats
+#' @import mvtnorm
+#' @import edgeR
 mplnDataGenerator <- function(nObservations,
                               dimensionality,
                               mixingProportions,
                               mu, sigma,
-                              produceImage) {
+                              produceImage = "No") {
   # Generate
   z <- t(stats::rmultinom(nObservations, size = 1, mixingProportions))
 
   y <- theta <- n_g <- vector("list", length = length(mixingProportions))
-  # for visualization only
+  # For visualization only
   theta2 <- matrix(NA, ncol = dimensionality, nrow = nObservations)
 
   for (i in seq_along(1:length(mixingProportions))) {
@@ -32,7 +88,7 @@ mplnDataGenerator <- function(nObservations,
 
   norms <- log(edgeR::calcNormFactors(y))
 
-  #generating counts with norm factors
+  # Generating counts with norm factors
   y2 <- matrix(NA, ncol = dimensionality, nrow = nObservations)
   for (i in seq_along(1:nObservations)) {
     for (j in seq_along(1:dimensionality)) {
@@ -49,14 +105,14 @@ mplnDataGenerator <- function(nObservations,
     dev.off()
   }
 
-  results<-list(dataset = y2,
-                truemembership = map(z),
-                truenormfactors = norms,
-                observations = nObservations,
-                dimensionality = dimensionality,
-                mixingProportions = mixingProportions,
-                mu = mu,
-                sigma = sigma)
+  results <- list(dataset = y2,
+                  truemembership = map(z),
+                  truenormfactors = norms,
+                  observations = nObservations,
+                  dimensionality = dimensionality,
+                  mixingProportions = mixingProportions,
+                  mu = mu,
+                  sigma = sigma)
 
   class(results) <- "mplnDataGenerator"
   return(results)
