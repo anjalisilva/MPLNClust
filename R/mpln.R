@@ -95,11 +95,11 @@
 #'
 #' Bozdogan, H. (1994). Mixture-model cluster analysis using model selection criteria
 #' and a new informational measure of complexity. In \emph{Proceedings of the First US/Japan
-#'  Conference on the Frontiers of Statistical Modeling: An Informational Approach:
-#'  Volume 2 Multivariate Statistical Modeling}, pp. 69–113. Dordrecht: Springer Netherlands.
+#' Conference on the Frontiers of Statistical Modeling: An Informational Approach:
+#' Volume 2 Multivariate Statistical Modeling}, pp. 69–113. Dordrecht: Springer Netherlands.
 #'
-#'  Schwarz, G. (1978). Estimating the dimension of a model. \emph{The Annals of Statistics}
-#'  6.
+#' Schwarz, G. (1978). Estimating the dimension of a model. \emph{The Annals of Statistics}
+#' 6.
 #'
 #' Silva, A. et al. (2019). A multivariate Poisson-log normal mixture model
 #' for clustering transcriptome sequencing data. \emph{BMC Bioinformatics} 20.
