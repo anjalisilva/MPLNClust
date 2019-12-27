@@ -82,7 +82,8 @@
 #' #                     nInitIterations = 2,
 #' #                     normalize = "Yes")
 #'
-#' @author Anjali Silva, \email{anjali.silva@uhnresearch.ca}
+#' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
+#'          \email{sdang@math.binghamton.edu}. }
 #'
 #' @references
 #' Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.
@@ -399,5 +400,5 @@ mpln <- function(dataset, membership = NA, gmin = 1, gmax = 2,
 
   class(RESULTS) <- "MPLN"
   return(RESULTS)
-  # Developed by Anjali Silva
+  # [END]
 }
