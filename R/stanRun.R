@@ -1,9 +1,9 @@
-# Stan sampling 
-stanRun <- function(model, gmin, gmax, dataset, 
-                    mu_all_outer, it_outer, 
-                    sigma_all_outer, numb_iterations, 
+# Stan sampling
+stanRun <- function(model, gmin, gmax, dataset,
+                    mu_all_outer, it_outer,
+                    sigma_all_outer, numb_iterations,
                     n_chain = n_chain, normalizefacs) {
-  
+
   fitrstan <- list()
   dimensionality <- ncol(dataset)
 
@@ -12,24 +12,24 @@ stanRun <- function(model, gmin, gmax, dataset,
     N = nrow(dataset),
     y = dataset,
     mu = mu_all_outer[[it_outer-1]][g, ],
-    Sigma = sigma_all_outer[[it_outer-1]][((g - 1) * 
-            dimensionality + 1):(g*dimensionality), ], 
+    Sigma = sigma_all_outer[[it_outer-1]][((g - 1) *
+            dimensionality + 1):(g*dimensionality), ],
     normfactors = as.vector(normalizefacs))
     stanproceed <- 0
     try = 1
-    
+
     while (! stanproceed) {
-      
-      # cat("\nRstan generating sample at outer iteration", 
+
+      # cat("\nRstan generating sample at outer iteration",
       # it_outer, "for g: ",g , "try: ", try)
       # cat("\nNumber of iterations is", numb_iterations, "\n")
-      fitrstan[[g]] <- sampling(object = model,
-                                data = data1,
-                                iter = numb_iterations, 
-                                chains = n_chain, 
-                                verbose = FALSE, 
-                                refresh = -1)
-      
+      fitrstan[[g]] <- rstan::sampling(object = model,
+                                       data = data1,
+                                       iter = numb_iterations,
+                                       chains = n_chain,
+                                       verbose = FALSE,
+                                       refresh = -1)
+
       if (all(summary(fitrstan[[g]])$summary[, "Rhat"] < 1.1) == TRUE &&
           all(summary(fitrstan[[g]])$summary[, "n_eff"] > 100) == TRUE) {
           stanproceed <- 1
@@ -42,7 +42,7 @@ stanRun <- function(model, gmin, gmax, dataset,
       }
     }
   }
-  
+
   results <- list(fitrstan = fitrstan,
                   numb_iterations = numb_iterations)
   class(results) <- "RStan"
