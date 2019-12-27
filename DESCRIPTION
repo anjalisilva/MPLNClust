@@ -1,3 +1,32 @@
-Package: MPLNClust
+Package: TestingPackage
 Type: Package
-
+Title: Mixtures of Multivariate Poisson-Log Normal Model for Clustering Count Data
+Version: 0.1.0
+Authors@R: person("A", "Silva", email = "anjali.silva@uhnresearch.ca", role = c("aut", "cre"))
+Maintainer: A Silva <anjali.silva@uhnresearch.ca>
+Description: Performs clustering using mixtures of multivariate Poisson-log normal distribution
+             and model selection using AIC, AIC3, BIC and ICL.
+Encoding: UTF-8
+LazyData: true
+Depends: R (>= 3.1.0)
+biocViews:
+Imports: 
+    coda,
+    capushe,
+    cluster,
+    clusterGeneration,
+    edgeR,
+    gplots,
+    MASS,
+    mclust,
+    mvtnorm,
+    Rcpp (>= 1.0.2),
+    RColorBrewer,
+    rstan,
+    parallel,
+    pheatmap
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.0.0
+Suggests: 
+    testthat
+License: MIT + file LICENSE

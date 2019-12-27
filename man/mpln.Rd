@@ -2,11 +2,11 @@
 % Please edit documentation in R/mpln.R
 \name{mpln}
 \alias{mpln}
-\title{Clustering Via Mixtures of Multivariate Poisson-Log Normal Distributions}
+\title{Model-Based Clustering Using MPLN}
 \usage{
 mpln(
   dataset,
-  membership,
+  membership = NA,
   gmin = 1,
   gmax = 2,
   nChains = 3,
@@ -21,27 +21,115 @@ mpln(
 rows correspond to observations and columns correspond to variables.}
 
 \item{membership}{A numeric vector of length nrow(dataset) containing the
-cluster membership of each observation.}
+cluster membership of each observation. If not available, leave as NA.}
 
-\item{gmin}{A positive integer indicating the minimum number of components
+\item{gmin}{A positive integer specifying the minimum number of components
 to be considered in the clustering run.}
 
-\item{gmax}{A positive integer, >gmin, indicating the maximum number of
+\item{gmax}{A positive integer, >gmin, specifying the maximum number of
 components to be considered in the clustering run.}
 
 \item{nChains}{A positive integer specifying the number of Markov chains.
-The default is 3, the recommended minimum number.}
+Default is 3, the recommended minimum number.}
 
-\item{nIterations}{A negative value of class "numeric" indicating}
+\item{nIterations}{A positive integer specifying the number of iterations
+for each chain (including warmup). The value should be greater than 40.
+The upper limit will depend on size of dataset.}
 
 \item{initMethod}{An algorithm for initialization. Current options are
-"kmeans", "random", "medoids", "clara", or "fanny".}
+"kmeans", "random", "medoids", "clara", or "fanny". Default is "kmeans".}
 
-\item{nInitIterations}{A negative value of class "numeric" indicating}
+\item{nInitIterations}{A positive integer specifying the number of
+initialization runs to be considered.}
 
-\item{normalize}{A negative value of class "numeric" indicating}
+\item{normalize}{A string with options "Yes" or "No" specifying
+if normalization should be performed. Currently, normalization factors
+are calculated using TMM method of edgeR package. Default is "Yes".}
+}
+\value{
+Returns an S3 object of class MPLN with results.
+\itemize{
+\item dataset - The input dataset on which clustering is performed.
+\item dimensionality - Dimensionality of the input dataset.
+\item normalization_factors - A vector of normalization factors used
+for input dataset.
+\item gmin - Minimum number of components considered in the clustering
+run
+\item gmax - Maximum number of components considered in the clustering
+run
+\item initalization_method - Method used for initialization.
+\item all_results - A list with all results.
+\item loglikelihood - A vector with value of final log-likelihoods for
+each cluster size.
+\item numb_of_parameters - A vector with number of parameters for each
+cluster size.
+\item true_labels - The vector of true labels, if provided by user.
+\item ICL_all - A list with all ICL model selection results.
+\item BIC_all - A list with all BIC model selection results.
+\item AIC_all - A list with all AIC model selection results.
+\item AIC3_all - A list with all AIC3 model selection results.
+\item slope_heuristics - If more than 10 models are considered, slope heuristic
+results.
+\item Djumpmodel_selected - If more than 10 models are considered, slope heuristic
+results.
+\item DDSEmodel_selected - If more than 10 models are considered, slope heuristic
+results.
+\item total_time - Total time used for clustering and model selection.
+}
 }
 \description{
 Performs clustering using mixtures of multivariate Poisson-log
-normal distribution and model selection using AIC, AIC3, BIC and ICL.
+normal (MPLN) distribution and model selection using AIC, AIC3,
+BIC and ICL.
+}
+\examples{
+# Generating simulated data
+trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+
+trueSigma1 <- diag(6) * 2
+trueSigma2 <- diag(6)
+
+sampleData <- mplnDataGenerator(nObservations = 100,
+                                dimensionality = 6,
+                                mixingProportions = c(0.79, 0.21),
+                                mu = rbind(trueMu1, trueMu2),
+                                sigma = rbind(trueSigma1, trueSigma2),
+                                produceImage = "No")
+
+# Running clustering
+mplnResults <- mpln(dataset = sampleData$dataset,
+                    membership = sampleData$truemembership,
+                    gmin = 1,
+                    gmax = 2,
+                    nChains = 3,
+                    nIterations = 1000,
+                    initMethod = "kmeans",
+                    nInitIterations = 2,
+                    normalize = "Yes")
+
+}
+\references{
+Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.
+\emph{Biometrika} 76.
+
+Akaike, H. (1973). Information theory and an extension of the maximum likelihood
+principle. In \emph{Second International Symposium on Information Theory}, New York, NY,
+USA, pp. 267–281. Springer Verlag.
+
+Biernacki, C., G. Celeux, and G. Govaert (2000). Assessing a mixture model for
+clustering with the integrated classification likelihood. \emph{IEEE Transactions
+on Pattern Analysis and Machine Intelligence} 22.
+
+Bozdogan, H. (1994). Mixture-model cluster analysis using model selection criteria
+and a new informational measure of complexity. In \emph{Proceedings of the First US/Japan
+Conference on the Frontiers of Statistical Modeling: An Informational Approach:
+Volume 2 Multivariate Statistical Modeling}, pp. 69–113. Dordrecht: Springer Netherlands.
+
+Schwarz, G. (1978). Estimating the dimension of a model. \emph{The Annals of Statistics}
+6.
+
+Silva, A. et al. (2019). A multivariate Poisson-log normal mixture model
+for clustering transcriptome sequencing data. \emph{BMC Bioinformatics} 20.
+\href{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0}{Link}
 }
