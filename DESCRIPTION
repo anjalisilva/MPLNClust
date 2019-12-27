@@ -1,4 +1,4 @@
-Package: TestingPackage
+Package: MPLNClust
 Type: Package
 Title: Mixtures of Multivariate Poisson-Log Normal Model for Clustering Count Data
 Version: 0.1.0
@@ -28,5 +28,8 @@ Imports:
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.0.0
 Suggests: 
-    testthat
+    testthat,
+    knitr,
+    rmarkdown
 License: MIT + file LICENSE
+VignetteBuilder: knitr
