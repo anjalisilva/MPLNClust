@@ -35,9 +35,9 @@ The AIC, BIC, AIC3 and ICL are used for model selection. If more than 10 models 
 
 ![Plots.png](inst/extdata/Plot_ASilva.png)
 
-## References
+## Reference
 
-[Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data. *BMC Bioinformatics*](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0)
+* [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data. *BMC Bioinformatics*](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0)
 
 ## Maintainer
 * Anjali Silva (anjali.silva@uhnresearch.ca)
