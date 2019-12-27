@@ -44,7 +44,7 @@ normalization factors used for adjusting the library sizes.
 \item mixingProportions - A numeric vector indicating the mixing
 proportion of each component.
 \item mu - True mean used for the simulated dataset.
-\item sigma - True sigma used for the simulated dataset.
+\item sigma - True covariances used for the simulated dataset.
 }
 }
 \description{
@@ -65,7 +65,6 @@ sampleData <- mplnDataGenerator(nObservations = 100,
                                 sigma = rbind(trueSigma1, trueSigma2),
                                 produceImage = "No")
 
-
 }
 \references{
 Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.
@@ -74,4 +73,7 @@ Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribut
 Silva, A. et al. (2019). A multivariate Poisson-log normal mixture model
 for clustering transcriptome sequencing data. \emph{BMC Bioinformatics} 20.
 \href{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0}{Link}
+}
+\author{
+Anjali Silva, \email{anjali.silva@uhnresearch.ca}
 }
