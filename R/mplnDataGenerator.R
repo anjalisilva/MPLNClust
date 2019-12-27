@@ -26,7 +26,7 @@
 #'   \item mixingProportions - A numeric vector indicating the mixing
 #'      proportion of each component.
 #'   \item mu - True mean used for the simulated dataset.
-#'   \item sigma - True sigma used for the simulated dataset.
+#'   \item sigma - True covariances used for the simulated dataset.
 #'}
 #'
 #' @examples
@@ -44,6 +44,7 @@
 #'                                 sigma = rbind(trueSigma1, trueSigma2),
 #'                                 produceImage = "No")
 #'
+#' @author Anjali Silva, \email{anjali.silva@uhnresearch.ca}
 #'
 #' @references
 #' Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.
