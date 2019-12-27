@@ -17,12 +17,18 @@ library("MPLNClust")
 
 ## Overview
 
+MPLNClust contains 3 functions for the purpose of generating simlulation data via mixtures of MPLN: *mplnDataGenerator()*, carrying out clustering of count data using mixtures of MPLN: *mpln()*, and for visualizing clustered data: *mplnVisualize()*. 
+
 ``` r
-browseVignettes("MPLNClust")
 lsf.str("package:MPLNClust")
 ```
 
-MPLNClust contains 3 functions for the purpose of generating simlulation data via mixtures of MPLN: *mplnDataGenerator()*, carrying out clustering of count data using mixtures of MPLN: *mpln()*, and for visualizing clustered data: *mplnVisualize()*. 
+For tutorials, refer to the vignette.
+
+``` r
+browseVignettes("MPLNClust")
+```
+
 
 
 ## Details
@@ -40,6 +46,7 @@ The AIC, BIC, AIC3 and ICL are used for model selection. If more than 10 models 
 * [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data. *BMC Bioinformatics.*](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0)
 
 ## Maintainer
+
 * Anjali Silva (anjali.silva@uhnresearch.ca)
 
 ## Acknowledgments
