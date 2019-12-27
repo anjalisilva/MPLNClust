@@ -47,7 +47,7 @@ The AIC, BIC, AIC3 and ICL are used for model selection. If more than 10 models 
 
 ## Maintainer
 
-* Anjali Silva (anjali.silva@uhnresearch.ca)
+* Anjali Silva (anjali.silva@uhnresearch.ca). `MPLNClust` welcome bug reports, enhancement requests, and other contributions. Please email anjali.silva@uhnresearch.ca with subject line 'MPLNClust: ...'. 
 
 ## Acknowledgments
 
