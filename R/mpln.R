@@ -82,6 +82,8 @@
 #' #                     nInitIterations = 2,
 #' #                     normalize = "Yes")
 #'
+#' @author Anjali Silva, \email{anjali.silva@uhnresearch.ca}
+#'
 #' @references
 #' Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.
 #' \emph{Biometrika} 76.
@@ -204,6 +206,8 @@ mpln <- function(dataset, membership = NA, gmin = 1, gmax = 2,
   }
 
   # Construct a Stan model
+  # Stan model was developed with help of Sanjeena Dang
+  # <sdang@math.binghamton.edu>
   stancode <- 'data{int<lower=1> d; // Dimension of theta
                     int<lower=0> N; //Sample size
                     int y[N,d]; //Array of Y
