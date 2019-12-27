@@ -107,15 +107,16 @@
 #'
 #' @export
 #' @import coda
-#' @import capushe
+#' @importFrom capushe capushe
 #' @import cluster
 #' @import clusterGeneration
-#' @import edgeR
+#' @importFrom edgeR calcNormFactors
 #' @import MASS
 #' @import mclust
 #' @import mvtnorm
 #' @import Rcpp
-#' @import rstan
+#' @importFrom rstan sampling
+#' @importFrom rstan stan_model
 #' @import parallel
 #' @import stats
 #'
@@ -345,7 +346,7 @@ mpln <- function(dataset, membership = NA, gmin = 1, gmax = 2,
     k <- k # number of parameters
     mat <- cbind(Kchoice, k/nObservations, k/nObservations,
                  - logLike.val)
-    ResCapushe <- capushe(mat, nObservations)
+    ResCapushe <- capushe::capushe(mat, nObservations)
     DDSEmodel <- ResCapushe@DDSE@model
     Djumpmodel <- ResCapushe@Djump@model
     final <- proc.time() - ptm
