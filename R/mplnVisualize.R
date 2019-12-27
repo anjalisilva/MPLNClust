@@ -57,6 +57,8 @@
 #' @importFrom gplots heatmap.2
 #' @import pheatmap
 #' @import grDevices
+#' @import RColorBrewer
+#' @importFrom gplots redgreen
 mplnVisualize <- function(dataset, clusterMembershipVector = NA,
                           fileName = 'FileName', plots = 'all',
                           format = 'pdf') {
@@ -100,8 +102,8 @@ mplnVisualize <- function(dataset, clusterMembershipVector = NA,
   vec <- unlist(ordervector)
   colorsvector <- unlist(anothervector)
 
-  qual_col_pals <- brewer.pal.info[brewer.pal.info$category == 'qual',]
-  col_vector <- unlist(mapply(brewer.pal,
+  qual_col_pals <- RColorBrewer::brewer.pal.info[brewer.pal.info$category == 'qual',]
+  col_vector <- unlist(mapply(RColorBrewer::brewer.pal,
                        qual_col_pals$maxcolors,
                        rownames(qual_col_pals)))
 
@@ -118,7 +120,7 @@ mplnVisualize <- function(dataset, clusterMembershipVector = NA,
                       dendrogram = "column",
                       trace = "none",
                       scale = "row",
-                      Rowv = FALSE, col = rev(redgreen(75)),
+                      Rowv = FALSE, col = rev(gplots::redgreen(75)),
                       RowSideColor = col_vector[colorsvector + 1],
                       labRow = FALSE,
                       main = paste("Clustering results, G =",
@@ -153,7 +155,7 @@ mplnVisualize <- function(dataset, clusterMembershipVector = NA,
            fontface = "italic", legend = T, scale ="row",
            border_color = "black", cluster_row = FALSE,
            cluster_col = FALSE,
-           color =  rev(redgreen(1000)) )
+           color =  rev(gplots::redgreen(1000)) )
   grDevices::dev.off()
   }
 
