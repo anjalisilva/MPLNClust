@@ -54,7 +54,7 @@ initializationRun <- function(gmodel, dataset, init_method,
                                             normalizefac = normalizefactors,
                                             mod = mod)
     logL_init[iterations] <-
-      unlist(tail((init_runs[[iterations]]$loglikelihood), n = 1))
+      unlist(utils::tail((init_runs[[iterations]]$loglikelihood), n = 1))
   }
 
   initialization <- init_runs[[which(logL_init ==

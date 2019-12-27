@@ -57,29 +57,30 @@
 #'
 #' @examples
 #' # Generating simulated data
-#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
-#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+#' # Not run
+#' # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
-#' trueSigma1 <- diag(6) * 2
-#' trueSigma2 <- diag(6)
+#' # trueSigma1 <- diag(6) * 2
+#' # trueSigma2 <- diag(6)
 #'
-#' sampleData <- mplnDataGenerator(nObservations = 100,
-#'                                 dimensionality = 6,
-#'                                 mixingProportions = c(0.79, 0.21),
-#'                                 mu = rbind(trueMu1, trueMu2),
-#'                                 sigma = rbind(trueSigma1, trueSigma2),
-#'                                 produceImage = "No")
+#' # sampleData <- mplnDataGenerator(nObservations = 100,
+#' #                                 dimensionality = 6,
+#' #                                 mixingProportions = c(0.79, 0.21),
+#' #                                 mu = rbind(trueMu1, trueMu2),
+#' #                                 sigma = rbind(trueSigma1, trueSigma2),
+#' #                                 produceImage = "No")
 #'
 #' # Running clustering
-#' mplnResults <- mpln(dataset = sampleData$dataset,
-#'                     membership = sampleData$truemembership,
-#'                     gmin = 1,
-#'                     gmax = 2,
-#'                     nChains = 3,
-#'                     nIterations = 1000,
-#'                     initMethod = "kmeans",
-#'                     nInitIterations = 2,
-#'                     normalize = "Yes")
+#' # mplnResults <- mpln(dataset = sampleData$dataset,
+#' #                     membership = sampleData$truemembership,
+#' #                     gmin = 1,
+#' #                     gmax = 2,
+#' #                     nChains = 3,
+#' #                     nIterations = 1000,
+#' #                     initMethod = "kmeans",
+#' #                     nInitIterations = 2,
+#' #                     normalize = "Yes")
 #'
 #' @references
 #' Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.
@@ -119,6 +120,8 @@
 #' @importFrom rstan stan_model
 #' @import parallel
 #' @import stats
+#' @importFrom utils tail
+#' @importFrom utils write.csv
 #'
 mpln <- function(dataset, membership = NA, gmin = 1, gmax = 2,
                  nChains = 3, nIterations = NA,
@@ -329,7 +332,7 @@ mpln <- function(dataset, membership = NA, gmin = 1, gmax = 2,
   # for Djump and DDSE
   if((gmax - gmin + 1) > 10 ) {
     # adapted based on HTSCluster package 2.0.8 (25 Oct 2016)
-    PMM <- allruns
+    PMM <- parallelRun
     runs <- gmin:gmax
     gmax <- gmax
     logLike.final <- suppressWarnings(do.call("cbind",
