@@ -6,11 +6,11 @@
 \usage{
 mpln(
   dataset,
-  membership = NA,
+  membership = "none",
   gmin = 1,
   gmax = 2,
   nChains = 3,
-  nIterations = NA,
+  nIterations = 1000,
   initMethod = "kmeans",
   nInitIterations = 0,
   normalize = "Yes"
@@ -21,7 +21,8 @@ mpln(
 rows correspond to observations and columns correspond to variables.}
 
 \item{membership}{A numeric vector of length nrow(dataset) containing the
-cluster membership of each observation. If not available, leave as NA.}
+cluster membership of each observation. If not available,
+leave as "none".}
 
 \item{gmin}{A positive integer specifying the minimum number of components
 to be considered in the clustering run.}
