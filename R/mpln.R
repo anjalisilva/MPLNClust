@@ -7,7 +7,8 @@
 #' @param dataset A dataset of class matrix and type integer such that
 #'    rows correspond to observations and columns correspond to variables.
 #' @param membership A numeric vector of length nrow(dataset) containing the
-#'    cluster membership of each observation. If not available, leave as NA.
+#'    cluster membership of each observation. If not available,
+#'    leave as "none".
 #' @param gmin A positive integer specifying the minimum number of components
 #'    to be considered in the clustering run.
 #' @param gmax A positive integer, >gmin, specifying the maximum number of
@@ -126,8 +127,8 @@
 #' @importFrom utils tail
 #' @importFrom utils write.csv
 #'
-mpln <- function(dataset, membership = NA, gmin = 1, gmax = 2,
-                 nChains = 3, nIterations = NA,
+mpln <- function(dataset, membership = "none", gmin = 1, gmax = 2,
+                 nChains = 3, nIterations = 1000,
                  initMethod = "kmeans", nInitIterations = 0,
                  normalize = "Yes") {
 
@@ -163,15 +164,15 @@ mpln <- function(dataset, membership = NA, gmin = 1, gmax = 2,
   dimensionality <- ncol(dataset)
   nObservations <- nrow(dataset)
 
-  if(all(is.na(membership) != TRUE) && length(membership) != nObservations) {
+  if(class(membership) != "character" && length(membership) != nObservations) {
     stop("Length of membership character vector and
       sample size of dataset should match")
   }
 
-  if(all(is.na(membership) != TRUE) &&
+  if(class(membership) != "character" &&
       all((diff(sort(unique(membership))) == 1) != TRUE) ) {
     stop("Cluster memberships in the membership vector
-      are missing a cluster, e.g. 1,3,4,5,6 is missing cluster 2")
+      are missing a cluster, e.g. 1, 3, 4, 5, 6 is missing cluster 2")
   }
 
   if(length(which(apply(dataset, 1, function(x) all(x == 0)) == TRUE)) != 0) {
@@ -179,16 +180,17 @@ mpln <- function(dataset, membership = NA, gmin = 1, gmax = 2,
       c(which(apply(dataset, 1, function(x) all(x == 0)) == TRUE)),
       "will be removed as this/these contain(s) all zeros")
 
-    if(all(is.na(membership) == FALSE)) {
+    if(class(membership) != "character") {
       membership <- membership[- c(which(apply(dataset, 1, function(x)
         all(x == 0)) == TRUE))]
     }
+
     dataset <- dataset[- c(which(apply(dataset, 1, function(x)
       all(x == 0)) == TRUE)), ]
     nObservations <- nrow(dataset)
   }
 
-  if(all(is.na(membership) == TRUE)) {
+  if(class(membership) == "character") {
     membership <- "Not provided"
   }
 
