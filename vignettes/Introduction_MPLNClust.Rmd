@@ -1,21 +1,146 @@
 ---
-title: "Introduction_MPLNClust"
-output: rmarkdown::html_vignette
+# This document was created based on the format used in mclust.rmd 
+# Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5:
+#   clustering, classification and density estimation using Gaussian finite
+#   mixture models The R Journal 8/1, pp. 205-233
+# https://cran.r-project.org/web/packages/mclust/vignettes/mclust.html
+--- 
+
+---
+title: "A quick tour of MPLNClust"
+author: "Anjali Silva"
+date: "`r format(Sys.time(), '%d %b %Y')`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: false
 vignette: >
-  %\VignetteIndexEntry{Introduction_MPLNClust}
+  %\VignetteIndexEntry{A quick tour of MPLNClust}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(fig.align = "center", 
+               out.width = "90%",
+               fig.width = 6, fig.height = 5.5,
+               dev.args=list(pointsize=10),
+               par = TRUE, # needed for setting hook 
+               collapse = TRUE, # collapse input & ouput code in chunks
+               warning = FALSE)
+
+knit_hooks$set(par = function(before, options, envir)
+  { if(before && options$fig.show != "none") 
+       par(family = "sans", mar=c(4.1,4.1,1.1,1.1), mgp=c(3,1,0), tcl=-0.5)
+})
+set.seed(1) # for exact reproducibility
+```
+       
+# Introduction
+
+**MPLNClust** is an R package for model-based clustering based on finite multivariate Poisson-log normal mixture modelling. It provides functions for parameter estimation via the Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) algorithm. Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE, if applicable) are offered for model selection. Also included is a function for simulating data from this model. An additional functionality is available for displaying and visualizing clustering results. **MPLNClust** makes use of the **parallel** R package to run each component (G) in parallel, as each G is independent from another. 
+
+This document gives a quick tour of **MPLNClust** (version 0.1.0) functionalities. It was written in R Markdown, using the [knitr](https://cran.r-project.org/package=knitr) package for production. 
+See `help(package = "MPLNClust")` for further details and references provided by `citation("MPLNClust")`. To download **MPLNClust**, use the following commands:
+
+``` r
+require("devtools")
+install_github("anjalisilva/MPLNClust", build_vignettes = TRUE)
+library("MPLNClust")
 ```
 
-```{r setup}
-library(MPLNClust)
+# Data Simulation
+
+The function *mplnDataGenerator* permits to simulate data from a mixture of MPLN distrubutions. See *?mplnDataGenerator* for more information, an example, and references. To simulate a dataset from a mixture of MPLN with 100 observations and a dimensionality of 6, with two components of mixing proportions 0.79 and 0.21, respectively, let us use *mplnDataGenerator()*. This also requires the mean and covariance matrix for each component respectively. 
+
+``` r
+nObservations <- 100 # Biological samples e.g., genes
+dimensionality <- 6 # Dimensionality e.g., conditions * replicates = total samples 
+pig <- c(0.79, 0.21) # Mixing proportions for two components
+
+# Generate means
+trueMu1 <- c(6.5, 6, 6, 5, 5, 5)  
+trueMu2 <- c(2, 2.5, 2, 2, 2, 2) 
+tureMus <- rbind(trueMu1, trueMu2)
+
+# Generate covariances
+library(clusterGeneration)
+set.seed(1)
+trueSigma1 <- clusterGeneration::genPositiveDefMat("unifcorrmat", 
+                                  dim = dimensionality, 
+                                  rangeVar = c(1, 1.5))$Sigma
+trueSigma2 <- clusterGeneration::genPositiveDefMat("unifcorrmat", 
+                                  dim = dimensionality, 
+                                  rangeVar = c(0.7, 0.7))$Sigma
+trueSigma <- rbind(trueSigma1, trueSigma2)
+
+# Generate data 
+sampleData <- mplnDataGenerator(nObservations = nObservations,
+                                dimensionality = dimensionality,
+                                mixingProportions = pig,
+                                mu = tureMus,
+                                sigma = trueSigma,
+                                produceImage = "Yes")
+
+```
+The user has the option to produce the plot of log-transformed count data. <img src="PairsPlot.png" alt="Venn_15Oct2019" width="450"/>
+
+The generated dataset can be checked:
+``` r
+dim(sampleData$dataset) # 100 x 6 dataset
+class(sampleData$dataset) # matrix
+typeof(sampleData$dataset) # integer
+summary(sampleData$dataset)
 ```
 
-Vignette under construction. 
+# Clustering
+
+Once the count data is available, clustering can be performed using the *mpln* function. See *?mpln* for more information, an example, and references.
+
+``` r
+mplnResults <- mpln(dataset = sampleData$dataset,
+                    membership = sampleData$truemembership,
+                    gmin = 2,
+                    gmax = 2,
+                    nChains = 3,
+                    nIterations = 500,
+                    initMethod = "kmeans",
+                    nInitIterations = 0,
+                    normalize = "Yes")
+```
+
+The model selected by BIC for this dataset can be viewed as follows.
+
+``` r
+mplnResults$BIC_all$
+
+# cross tabulation with true lables
+table(, sampleData$truemembership)
+```
+
+# Results Visualization
+
+Clustering results can be viewed as heatmaps and line plots.
+
+``` r
+ # Visualizing results for model selected by BIC
+ MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
+                              clusterMembershipVector =
+                  MPLNClustResults$,
+                               fileName = 'BICModel', plots = 'all',
+                               format = 'png')
+```
+
+``` r
+ # Visualizing line plots for model with 2 components
+ MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
+                              clusterMembershipVector =
+                  MPLNClustResults$all_results[[2]]$all_results$clusterlabels,
+                               fileName = 'TwoClusterModel', plots = 'line',
+                               format = 'png')
+```
+
+```{r}
+sessionInfo()
+```
