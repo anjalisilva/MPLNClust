@@ -99,7 +99,7 @@ BIC and ICL.
 #                                 sigma = rbind(trueSigma1, trueSigma2),
 #                                 produceImage = "No")
 
-# Running clustering
+# Clustering
 # mplnResults <- mpln(dataset = sampleData$dataset,
 #                     membership = sampleData$truemembership,
 #                     gmin = 1,
