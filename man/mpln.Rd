@@ -101,7 +101,7 @@ BIC and ICL.
 
 # Clustering
 # mplnResults <- mpln(dataset = sampleData$dataset,
-#                     membership = sampleData$truemembership,
+#                     membership = sampleData$trueMembership,
 #                     gmin = 1,
 #                     gmax = 2,
 #                     nChains = 3,

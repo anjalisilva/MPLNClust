@@ -74,7 +74,7 @@
 #'
 #' # Clustering
 #' # mplnResults <- mpln(dataset = sampleData$dataset,
-#' #                     membership = sampleData$truemembership,
+#' #                     membership = sampleData$trueMembership,
 #' #                     gmin = 1,
 #' #                     gmax = 2,
 #' #                     nChains = 3,
@@ -297,7 +297,7 @@ mpln <- function(dataset, membership = "none", gmin = 1, gmax = 2,
                                      fun = mplnParallel,
                                      g = gmin:gmax)
   cat("\nDone parallel code.")
-  #parallel::stopCluster(cl)
+  parallel::stopCluster(cl)
 
   BIC <- ICL <- AIC <- AIC3 <- Djump <- DDSE <- k <- ll <- vector()
 
