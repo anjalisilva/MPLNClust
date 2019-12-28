@@ -37,6 +37,10 @@ directory.}
 Returns an S3 object of class mplnDataGenerator with results.
 \itemize{
 \item dataset - Simulated dataset.
+\item truemembership -A numeric vector indicating the membership of
+each observation.
+\item probaPost - A matrix indicating the posterior probability that
+each observation belong to the component/cluster.
 \item truenormfactors - A numeric vector indicating the true
 normalization factors used for adjusting the library sizes.
 \item observations - Number of observations in the simulated dataset.
