@@ -143,7 +143,9 @@ Clustering results can be viewed as heatmaps and line plots.
 <img src="LinePlot_Cluster1_BICModel.png" alt="LinePlot_Cluster1_BICModel" width="200"/>
 <img src="LinePlot_Cluster2_BICModel.png" alt="LinePlot_Cluster2_BICModel" width="200"/>
 
-The first two images (above, left) show heatmaps of the results with observations (e.g., genes) along rows and samples along the column. The last two images (above, right) show line plots of the two clusters. Values for each sample are connected by dashed lines to illustrate the trends of gene expression. The yellow line shows the mean gene expression level. 
+The first two images (above, left) show heatmaps of the results with observations (e.g., genes) along rows and samples along the columns. The last two images (above, right) show line plots of the two clusters. Values for each sample are connected by dashed lines to illustrate the trends of gene expression. The yellow line shows the mean gene expression level for each cluster. 
+
+Rather than visualizing model selected by information criteria, labels for a specific component/cluster size can also be visualized. In the below example, the results for G = 2 model is visualized. 
 
 ``` r
  # Visualizing line plots for model with 2 components
