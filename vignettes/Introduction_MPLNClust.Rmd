@@ -138,10 +138,10 @@ Clustering results can be viewed as heatmaps and line plots.
                                format = 'png')
 ```
 
-<img src="heatmap1_BICModel.png" alt="heatmap1_BICModel" width="250"/>
-<img src="heatmap2_BICModel.png" alt="heatmap2_BICModel" width="190"/>
-<img src="LinePlot_Cluster1_BICModel.png" alt="LinePlot_Cluster1_BICModel" width="200"/>
-<img src="LinePlot_Cluster2_BICModel.png" alt="LinePlot_Cluster2_BICModel" width="200"/>
+<img src="inst/extdata/heatmap1_BICModel.png" alt="heatmap1_BICModel" width="250"/>
+<img src="inst/extdata/heatmap2_BICModel.png" alt="heatmap2_BICModel" width="190"/>
+<img src="inst/extdata/LinePlot_Cluster1_BICModel.png" alt="LinePlot_Cluster1_BICModel" width="200"/>
+<img src="inst/extdata/LinePlot_Cluster2_BICModel.png" alt="LinePlot_Cluster2_BICModel" width="200"/>
 
 The first two images (left) show heatmaps of the results with observations (e.g., genes) along rows and samples along the column. The last two images (right) show line plots of the two clusters. Values for each sample are connected by dashed lines to illustrate the trends of gene expression. The yellow line shows the mean gene expression level. 
 
