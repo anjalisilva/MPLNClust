@@ -116,9 +116,9 @@ mplnDataGenerator <- function(nObservations,
   }
 
   results <- list(dataset = y2,
-                  truemembership = map(z),
+                  trueMembership = map(z),
                   probaPost = z,
-                  truenormfactors = norms,
+                  trueNormFactors = norms,
                   observations = nObservations,
                   dimensionality = dimensionality,
                   mixingProportions = mixingProportions,

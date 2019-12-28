@@ -14,7 +14,7 @@ simulated_counts <- mplnDataGenerator(nObservations = 50,
                                       produceImage = "No")
 
 MPLNClustResults <- mpln(dataset = simulated_counts$dataset,
-                         membership = simulated_counts$truemembership,
+                         membership = simulated_counts$trueMembership,
                          gmin = 1,
                          gmax = 1,
                          nChains = 3,
