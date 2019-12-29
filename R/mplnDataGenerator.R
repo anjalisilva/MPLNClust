@@ -60,7 +60,7 @@
 #'
 #' @export
 #' @import stats
-#' @import mvtnorm
+#' @importFrom mvtnorm rmvnorm
 #' @importFrom edgeR calcNormFactors
 #' @importFrom grDevices dev.off
 #' @importFrom grDevices png

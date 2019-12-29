@@ -117,8 +117,9 @@
 #' @import clusterGeneration
 #' @importFrom edgeR calcNormFactors
 #' @import MASS
-#' @import mclust
-#' @import mvtnorm
+#' @importFrom mclust unmap
+#' @importFrom mclust map
+#' @importFrom mvtnorm rmvnorm
 #' @import Rcpp
 #' @importFrom rstan sampling
 #' @importFrom rstan stan_model
