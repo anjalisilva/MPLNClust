@@ -17,19 +17,19 @@ test_that("clustering", {
                                         sigma = rbind(trueSigma1, trueSigma2),
                                         produceImage = "No")
 
-  MPLNClustResults <- mpln(dataset = simulated_counts$dataset,
-                           membership = simulated_counts$trueMembership,
-                           gmin = 1,
-                           gmax = 2,
-                           nChains = 3,
-                           nIterations = 600,
-                           initMethod = "kmeans",
-                           nInitIterations = 0,
-                           normalize = "Yes")
+  #MPLNClustResults <- mpln(dataset = simulated_counts$dataset,
+  #                         membership = simulated_counts$trueMembership,
+  #                         gmin = 1,
+  #                         gmax = 2,
+  #                         nChains = 3,
+  #                         nIterations = 600,
+  #                         initMethod = "kmeans",
+  #                         nInitIterations = 0,
+  #                         normalize = "Yes")
 
-  expect_that(length(MPLNClustResults), equals(16))
-  expect_that(MPLNClustResults, is_a("MPLN"))
-  expect_that(trunc(MPLNClustResults$ICL_all$ICLmodelselected), equals(2))
-  expect_that(trunc(MPLNClustResults$AIC_all$AICmodelselected), equals(2))
-  expect_that(trunc(MPLNClustResults$BIC_all$BICmodelselected), equals(2))
+  #expect_that(length(MPLNClustResults), equals(16))
+  #expect_that(MPLNClustResults, is_a("MPLN"))
+  #expect_that(trunc(MPLNClustResults$ICL_all$ICLmodelselected), equals(2))
+  #expect_that(trunc(MPLNClustResults$AIC_all$AICmodelselected), equals(2))
+  #expect_that(trunc(MPLNClustResults$BIC_all$BICmodelselected), equals(2))
 })
