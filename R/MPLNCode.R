@@ -548,7 +548,7 @@ callingClustering <- function(data, gmin, gmax, nChains,
       # cat("\nNo initialization done for G =", clustersize)
       # cat("\nRunning clustering for G =", clustersize)
       allruns <- mplnCluster(dataset = data,
-        z = unmap(kmeans(log(data + 1/3),
+        z = mclust::unmap(stats::kmeans(log(data + 1/3),
           clustersize)$cluster),
         G = clustersize,
         nChains = nChains,
