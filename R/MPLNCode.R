@@ -7,7 +7,9 @@
 #' G is run on a different processor. This can be performed because
 #' each component/cluster size is independent from another. All
 #' components/clusters in the range to be tested have been parallelized
-#' to run on a seperate core using the *parallel* R package.
+#' to run on a seperate core using the *parallel* R package. The number of
+#' cores used for clustering is calculated using
+#' *parallel::detectCores() - 1*.
 #'
 #' @param dataset A dataset of class matrix and type integer such that
 #'    rows correspond to observations and columns correspond to variables.
@@ -78,7 +80,7 @@
 #' #                                 produceImage = "No")
 #'
 #' # Clustering
-#' # mplnResults <- mpln(dataset = sampleData$dataset,
+#' # mplnResults <- mplnParallel(dataset = sampleData$dataset,
 #' #                     membership = sampleData$trueMembership,
 #' #                     gmin = 1,
 #' #                     gmax = 2,
@@ -132,8 +134,9 @@
 #' @import stats
 #' @importFrom utils tail
 #' @importFrom utils write.csv
+#' @importFrom backports isTRUE
 #'
-mpln <- function(dataset, membership = "none", gmin = 1, gmax = 2,
+mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
   nChains = 3, nIterations = 1000,
   initMethod = "kmeans", nInitIterations = 0,
   normalize = "Yes") {
