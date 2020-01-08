@@ -389,7 +389,7 @@ mplnNonParallel <- function(dataset, membership = "none",
       total_time = final)
   }
 
-  class(RESULTS) <- "MPLN"
+  class(RESULTS) <- "mplnNonParallel"
   return(RESULTS)
   # [END]
 }
