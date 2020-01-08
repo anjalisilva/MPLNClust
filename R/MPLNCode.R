@@ -213,7 +213,7 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
   } else if(normalize == "No") {
     normFactors <- rep(0, dimensionality)
   } else{
-    stop("normFactors should be 'Yes' or 'No' ")
+    stop("normalize should be 'Yes' or 'No' ")
   }
 
   # Construct a Stan model
