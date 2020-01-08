@@ -2,6 +2,7 @@
 
 export(mpln)
 export(mplnDataGenerator)
+export(mplnNonParallel)
 export(mplnVisualize)
 import(MASS)
 import(RColorBrewer)

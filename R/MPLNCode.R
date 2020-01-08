@@ -1,8 +1,10 @@
-#' Model-Based Clustering Using MPLN
+#' Model-Based Clustering Using MPLN (Parallelized)
 #'
 #' Performs clustering using mixtures of multivariate Poisson-log
 #' normal (MPLN) distribution and model selection using AIC, AIC3,
-#' BIC and ICL.
+#' BIC and ICL. Since each component/cluster size (G) is independent
+#' from another, all Gs in the range to be tested have been parallelized
+#' to run on a seperate core using the *parallel* R package.
 #'
 #' @param dataset A dataset of class matrix and type integer such that
 #'    rows correspond to observations and columns correspond to variables.

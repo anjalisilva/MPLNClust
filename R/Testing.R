@@ -1,5 +1,248 @@
+#' Model-Based Clustering Using MPLN via Non-Parallel Performance
+#'
+#' Performs clustering using mixtures of multivariate Poisson-log
+#' normal (MPLN) distribution and model selection using AIC, AIC3,
+#' BIC and ICL. No internal parallelization is performed.
+#'
+#' @param dataset A dataset of class matrix and type integer such that
+#'    rows correspond to observations and columns correspond to variables.
+#' @param membership A numeric vector of length nrow(dataset) containing the
+#'    cluster membership of each observation. If not available,
+#'    leave as "none".
+#' @param gmin A positive integer specifying the minimum number of components
+#'    to be considered in the clustering run.
+#' @param gmax A positive integer, >gmin, specifying the maximum number of
+#'    components to be considered in the clustering run.
+#' @param nChains A positive integer specifying the number of Markov chains.
+#'    Default is 3, the recommended minimum number.
+#' @param nIterations A positive integer specifying the number of iterations
+#'    for each chain (including warmup). The value should be greater than 40.
+#'    The upper limit will depend on size of dataset.
+#' @param initMethod An algorithm for initialization. Current options are
+#'    "kmeans", "random", "medoids", "clara", or "fanny". Default is "kmeans"
+#' @param nInitIterations A positive integer specifying the number of
+#'     initialization runs to be considered.
+#' @param normalize A string with options "Yes" or "No" specifying
+#'     if normalization should be performed. Currently, normalization factors
+#'     are calculated using TMM method of edgeR package. Default is "Yes".
+#'
+#' @return Returns an S3 object of class MPLN with results.
+#' \itemize{
+#'   \item dataset - The input dataset on which clustering is performed.
+#'   \item dimensionality - Dimensionality of the input dataset.
+#'   \item normalization_factors - A vector of normalization factors used
+#'      for input dataset.
+#'   \item gmin - Minimum number of components considered in the clustering
+#'      run
+#'   \item gmax - Maximum number of components considered in the clustering
+#'      run
+#'   \item initalization_method - Method used for initialization.
+#'   \item all_results - A list with all results.
+#'   \item loglikelihood - A vector with value of final log-likelihoods for
+#'      each cluster size.
+#'   \item numb_of_parameters - A vector with number of parameters for each
+#'      cluster size.
+#'   \item true_labels - The vector of true labels, if provided by user.
+#'   \item ICL_all - A list with all ICL model selection results.
+#'   \item BIC_all - A list with all BIC model selection results.
+#'   \item AIC_all - A list with all AIC model selection results.
+#'   \item AIC3_all - A list with all AIC3 model selection results.
+#'   \item slope_heuristics - If more than 10 models are considered, slope heuristic
+#'      results.
+#'   \item Djumpmodel_selected - If more than 10 models are considered, slope heuristic
+#'      results.
+#'   \item DDSEmodel_selected - If more than 10 models are considered, slope heuristic
+#'      results.
+#'   \item total_time - Total time used for clustering and model selection.
+#' }
+#'
+#' @examples
+#' # Generating simulated data
+#' # Not run
+#' # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+#'
+#' # trueSigma1 <- diag(6) * 2
+#' # trueSigma2 <- diag(6)
+#'
+#' # sampleData <- mplnDataGenerator(nObservations = 100,
+#' #                                 dimensionality = 6,
+#' #                                 mixingProportions = c(0.79, 0.21),
+#' #                                 mu = rbind(trueMu1, trueMu2),
+#' #                                 sigma = rbind(trueSigma1, trueSigma2),
+#' #                                 produceImage = "No")
+#'
+#' # Clustering
+#' # mplnResults <- mplnNonParallel(dataset = sampleData$dataset,
+#' #                      membership = sampleData$trueMembership,
+#' #                      gmin = 1,
+#' #                      gmax = 2,
+#' #                      nChains = 3,
+#' #                      nIterations = 1000,
+#' #                      initMethod = "kmeans",
+#' #                      nInitIterations = 2,
+#' #                      normalize = "Yes")
+#'
+#' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
+#'          \email{sdang@math.binghamton.edu}. }
+#'
+#' @references
+#' Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.
+#' \emph{Biometrika} 76.
+#'
+#' Akaike, H. (1973). Information theory and an extension of the maximum likelihood
+#' principle. In \emph{Second International Symposium on Information Theory}, New York, NY,
+#' USA, pp. 267–281. Springer Verlag.
+#'
+#' Biernacki, C., G. Celeux, and G. Govaert (2000). Assessing a mixture model for
+#' clustering with the integrated classification likelihood. \emph{IEEE Transactions
+#' on Pattern Analysis and Machine Intelligence} 22.
+#'
+#' Bozdogan, H. (1994). Mixture-model cluster analysis using model selection criteria
+#' and a new informational measure of complexity. In \emph{Proceedings of the First US/Japan
+#' Conference on the Frontiers of Statistical Modeling: An Informational Approach:
+#' Volume 2 Multivariate Statistical Modeling}, pp. 69–113. Dordrecht: Springer Netherlands.
+#'
+#' Schwarz, G. (1978). Estimating the dimension of a model. \emph{The Annals of Statistics}
+#' 6.
+#'
+#' Silva, A. et al. (2019). A multivariate Poisson-log normal mixture model
+#' for clustering transcriptome sequencing data. \emph{BMC Bioinformatics} 20.
+#' \href{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0}{Link}
+#'
+#' @export
+#' @import coda
+#' @importFrom capushe capushe
+#' @importFrom edgeR calcNormFactors
+#' @import MASS
+#' @importFrom mclust unmap
+#' @importFrom mclust map
+#' @importFrom mvtnorm rmvnorm
+#' @import Rcpp
+#' @importFrom rstan sampling
+#' @importFrom rstan stan_model
+#' @import parallel
+#' @import stats
+#' @importFrom utils tail
+#' @importFrom utils write.csv
+#'
+mplnNonParallel <- function(dataset, membership = "none",
+  gmin = 1, gmax = 2,
+  nChains = 3, nIterations = 1000,
+  initMethod = "kmeans", nInitIterations = 0,
+  normalize = "Yes") {
 
-mplnNotParallelInternal <- function(dataset, membership = "none",
+  allruns <- mplnNotParallelInternal(dataset = dataset,
+                membership = membership, gmin = 1, gmax = 2,
+                nChains = 3, nIterations = 1000,
+                initMethod = "kmeans", nInitIterations = 0,
+                normalize = "Yes")
+
+  BIC <- ICL <- AIC <- AIC3 <- Djump <- DDSE <- k <- ll <- vector()
+
+  for(g in seq_along(1:(gmax - gmin + 1))) {
+    # save the final log-likelihood
+    ll[g] <- unlist(utils::tail(allruns[[g]]$loglikelihood, n = 1))
+
+    k[g] <- calcParameters(numberG = g, dimensionality = dimensionality)
+
+    if (g == max(1:(gmax - gmin + 1))) { # starting model selection
+      bic <- BICFunction(ll = ll,
+        k = k,
+        n = nObservations,
+        run = allruns,
+        gmin = gmin,
+        gmax = gmax)
+
+      icl <- ICLFunction(bIc = bic,
+        gmin = gmin,
+        gmax = gmax,
+        run = parallelRun)
+
+      aic <- AICFunction(ll = ll,
+        k = k,
+        run = parallelRun,
+        gmin = gmin,
+        gmax = gmax )
+
+      aic3 <- AIC3Function(ll = ll,
+        k = k,
+        run = parallelRun,
+        gmin = gmin,
+        gmax = gmax)
+    }
+  }
+
+  # for Djump and DDSE
+  if((gmax - gmin + 1) > 10 ) {
+    # adapted based on HTSCluster package 2.0.8 (25 Oct 2016)
+    PMM <- parallelRun
+    runs <- gmin:gmax
+    gmax <- gmax
+    logLike.final <- suppressWarnings(do.call("cbind",
+      lapply(PMM, function(x) x$loglikelihood)))
+    # gives log-likelihood for each cluster at each run
+    logLike.val <- apply(logLike.final, 1, max)
+
+
+    message("Note: diagnostic plots for results corresponding
+      to model selection via slope heuristics (Djump and DDSE)
+      should be examined to ensure that sufficiently complex
+      models have been considered.")
+    Kchoice <- gmin:gmax
+    k <- k # number of parameters
+    mat <- cbind(Kchoice, k/nObservations, k/nObservations,
+      - logLike.val)
+    ResCapushe <- capushe::capushe(mat, nObservations)
+    DDSEmodel <- ResCapushe@DDSE@model
+    Djumpmodel <- ResCapushe@Djump@model
+    final <- proc.time() - ptm
+
+    RESULTS <- list(dataset = dataset,
+      dimensionality = dimensionality,
+      normalization_factors = normFactors,
+      gmin = gmin,
+      gmax = gmax,
+      initalization_method = initMethod,
+      all_results = parallelRun,
+      loglikelihood = ll,
+      numb_of_parameters = k,
+      true_labels = membership,
+      ICL_all = icl,
+      BIC_all = bic,
+      AIC_all = aic,
+      AIC3_all = aic3,
+      slope_heuristics = ResCapushe,
+      Djumpmodel_selected = ResCapushe@Djump@model,
+      DDSEmodel_selected = ResCapushe@DDSE@model,
+      total_time = final)
+
+  } else {# end of Djump and DDSE
+    final <- proc.time() - ptm
+    RESULTS <- list(dataset = dataset,
+      dimensionality = dimensionality,
+      normalization_factors=normFactors,
+      gmin = gmin,
+      gmax = gmax,
+      initalization_method = initMethod,
+      all_results = parallelRun,
+      loglikelihood = ll,
+      numb_of_parameters = k,
+      true_labels = membership,
+      ICL_all = icl,
+      BIC_all = bic,
+      AIC_all = aic,
+      AIC3_all = aic3,
+      slope_heuristics = "Not used",
+      total_time = final)
+  }
+
+  class(RESULTS) <- "MPLN"
+  return(RESULTS)
+  # [END]
+}
+
+mplnNonParallelInternal <- function(dataset, membership = "none",
   gmin = 1, gmax = 2,
   nChains = 3, nIterations = 1000,
   initMethod = "kmeans", nInitIterations = 0,
@@ -158,122 +401,10 @@ mplnNotParallelInternal <- function(dataset, membership = "none",
   }
 
   RESULTS <- list(gmin = gmin,
-    gmax = gmax,
-    initalization_method = initMethod,
-    all_results = allruns)
+                  gmax = gmax,
+                  initalization_method = initMethod,
+                  all_results = allruns)
 
-  class(RESULTS) <- "mplnNotParallelInternal"
+  class(RESULTS) <- "mplnNonParallelInternal"
   return(RESULTS)
-}
-
-mplnNotParallel <- function(){
-
-  mplnNotParallelInternal(dataset = dataset, membership = membership,
-    gmin = 1, gmax = 1, nChains = 3, nIterations = 1000,
-    initMethod = "kmeans", nInitIterations = 1,
-    normalize = "Yes")
-
-  BIC <- ICL <- AIC <- AIC3 <- Djump <- DDSE <- k <- ll <- vector()
-
-  for(g in seq_along(1:(gmax - gmin + 1))) {
-    # save the final log-likelihood
-    ll[g] <- unlist(utils::tail(allruns[[g]]$loglikelihood, n = 1))
-
-    k[g] <- calcParameters(numberG = g, dimensionality = dimensionality)
-
-    if (g == max(1:(gmax - gmin + 1))) { # starting model selection
-      bic <- BICFunction(ll = ll,
-        k = k,
-        n = nObservations,
-        run = allruns,
-        gmin = gmin,
-        gmax = gmax)
-
-      icl <- ICLFunction(bIc = bic,
-        gmin = gmin,
-        gmax = gmax,
-        run = parallelRun)
-
-      aic <- AICFunction(ll = ll,
-        k = k,
-        run = parallelRun,
-        gmin = gmin,
-        gmax = gmax )
-
-      aic3 <- AIC3Function(ll = ll,
-        k = k,
-        run = parallelRun,
-        gmin = gmin,
-        gmax = gmax)
-    }
-  }
-
-  # for Djump and DDSE
-  if((gmax - gmin + 1) > 10 ) {
-    # adapted based on HTSCluster package 2.0.8 (25 Oct 2016)
-    PMM <- parallelRun
-    runs <- gmin:gmax
-    gmax <- gmax
-    logLike.final <- suppressWarnings(do.call("cbind",
-      lapply(PMM, function(x) x$loglikelihood)))
-    # gives log-likelihood for each cluster at each run
-    logLike.val <- apply(logLike.final, 1, max)
-
-
-    message("Note: diagnostic plots for results corresponding
-      to model selection via slope heuristics (Djump and DDSE)
-      should be examined to ensure that sufficiently complex
-      models have been considered.")
-    Kchoice <- gmin:gmax
-    k <- k # number of parameters
-    mat <- cbind(Kchoice, k/nObservations, k/nObservations,
-      - logLike.val)
-    ResCapushe <- capushe::capushe(mat, nObservations)
-    DDSEmodel <- ResCapushe@DDSE@model
-    Djumpmodel <- ResCapushe@Djump@model
-    final <- proc.time() - ptm
-
-    RESULTS <- list(dataset = dataset,
-      dimensionality = dimensionality,
-      normalization_factors = normFactors,
-      gmin = gmin,
-      gmax = gmax,
-      initalization_method = initMethod,
-      all_results = parallelRun,
-      loglikelihood = ll,
-      numb_of_parameters = k,
-      true_labels = membership,
-      ICL_all = icl,
-      BIC_all = bic,
-      AIC_all = aic,
-      AIC3_all = aic3,
-      slope_heuristics = ResCapushe,
-      Djumpmodel_selected = ResCapushe@Djump@model,
-      DDSEmodel_selected = ResCapushe@DDSE@model,
-      total_time = final)
-
-  } else {# end of Djump and DDSE
-    final <- proc.time() - ptm
-    RESULTS <- list(dataset = dataset,
-      dimensionality = dimensionality,
-      normalization_factors=normFactors,
-      gmin = gmin,
-      gmax = gmax,
-      initalization_method = initMethod,
-      all_results = parallelRun,
-      loglikelihood = ll,
-      numb_of_parameters = k,
-      true_labels = membership,
-      ICL_all = icl,
-      BIC_all = bic,
-      AIC_all = aic,
-      AIC3_all = aic3,
-      slope_heuristics = "Not used",
-      total_time = final)
-  }
-
-  class(RESULTS) <- "MPLN"
-  return(RESULTS)
-  # [END]
-
 }
