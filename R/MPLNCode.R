@@ -1,9 +1,12 @@
-#' Model-Based Clustering Using MPLN (Parallelized)
+#' Model-Based Clustering Using MPLN via Parallel Performance
 #'
 #' Performs clustering using mixtures of multivariate Poisson-log
 #' normal (MPLN) distribution and model selection using AIC, AIC3,
-#' BIC and ICL. Since each component/cluster size (G) is independent
-#' from another, all Gs in the range to be tested have been parallelized
+#' BIC and ICL. Coarse grain parallelization is employed, such that
+#' when a range of components/clusters (g = 1,...,G) are considered, each
+#' G is run on a different processor. This can be performed because
+#' each component/cluster size is independent from another. All
+#' components/clusters in the range to be tested have been parallelized
 #' to run on a seperate core using the *parallel* R package.
 #'
 #' @param dataset A dataset of class matrix and type integer such that
@@ -297,8 +300,8 @@ mpln <- function(dataset, membership = "none", gmin = 1, gmax = 2,
   parallelRun = list()
   cat("\nRunning parallel code now.")
   parallelRun = parallel::clusterMap(cl = cl,
-    fun = mplnParallel,
-    g = gmin:gmax)
+                                     fun = mplnParallel,
+                                     g = gmin:gmax)
   cat("\nDone parallel code.")
   parallel::stopCluster(cl)
 
@@ -642,10 +645,16 @@ initializationRun <- function(gmodel, dataset, init_method,
 
 
 # AIC calculation
-AICFunction <- function(ll, k, run, gmin, gmax) {
-  AIC <- - 2*ll + 2*k
+AICFunction <- function(ll, k, run, gmin, gmax, parallel = TRUE) {
+  AIC <- - 2 * ll + 2 * k
   AICmodel <- seq(gmin, gmax, 1)[grep(min(AIC,na.rm = TRUE), AIC)]
-  AICmodel_labels <- run[[grep(min(AIC,na.rm = TRUE), AIC)]]$all_results$clusterlabels
+  if(backports::isTRUE(parallel) == "FALSE"){
+    # if non parallel run
+    AICmodel_labels <- run[[grep(min(AIC,na.rm = TRUE), AIC)]]$clusterlabels
+  }else{
+    # if parallel run
+    AICmodel_labels <- run[[grep(min(AIC,na.rm = TRUE), AIC)]]$all_results$clusterlabels
+  }
   AICMessage <- NA
 
   if (max(AICmodel_labels) != AICmodel) {
@@ -663,10 +672,16 @@ AICFunction <- function(ll, k, run, gmin, gmax) {
 
 
 # AIC3 calculation
-AIC3Function <- function(ll, k, run, gmin, gmax) {
-  AIC3 <- - 2*ll + 3*k
+AIC3Function <- function(ll, k, run, gmin, gmax, parallel = TRUE) {
+  AIC3 <- - 2 * ll + 3 * k
   AIC3model <- seq(gmin, gmax, 1)[grep(min(AIC3,na.rm = TRUE), AIC3)]
-  AIC3model_labels <- run[[grep(min(AIC3,na.rm = TRUE), AIC3)]]$all_results$clusterlabels
+  if(backports::isTRUE(parallel) == "FALSE"){
+    # if non parallel run
+    AIC3model_labels <- run[[grep(min(AIC3,na.rm = TRUE), AIC3)]]$clusterlabels
+  } else{
+    # if parallel run
+    AIC3model_labels <- run[[grep(min(AIC3,na.rm = TRUE), AIC3)]]$all_results$clusterlabels
+  }
   AIC3Message <- NA
 
   if (max(AIC3model_labels) != AIC3model) {
@@ -683,11 +698,18 @@ AIC3Function <- function(ll, k, run, gmin, gmax) {
 
 
 # BIC calculation
-BICFunction <- function(ll, k, n, run, gmin, gmax) {
-  BIC <- - 2*ll + (k* log(n))
+BICFunction <- function(ll, k, n, run, gmin, gmax, parallel = TRUE) {
+  BIC <- - 2 * ll + (k * log(n))
   BICmodel <- seq(gmin, gmax, 1)[grep(min(BIC, na.rm = TRUE), BIC)]
-  BICmodel_labels <- run[[grep(min(BIC, na.rm = TRUE),
-    BIC)]]$all_results$clusterlabels
+  if(backports::isTRUE(parallel) == "FALSE") {
+    # if non parallel run
+    BICmodel_labels <- run[[grep(min(BIC, na.rm = TRUE),
+      BIC)]]$clusterlabels
+  } else {
+    # if parallel run
+    BICmodel_labels <- run[[grep(min(BIC, na.rm = TRUE),
+      BIC)]]$all_results$clusterlabels
+  }
   BICMessage <- NA
 
   if (max(BICmodel_labels) != BICmodel) {
@@ -704,17 +726,33 @@ BICFunction <- function(ll, k, n, run, gmin, gmax) {
 }
 
 # ICL calculation
-ICLFunction <- function(bIc, gmax, gmin, run) {
+ICLFunction <- function(bIc, gmax, gmin, run, parallel = TRUE) {
   ICL <- vector()
   for (g in 1:(gmax - gmin + 1)) {
-    z <- run[[g]]$all_results$probaPost
-    mapz <- mclust::unmap(run[[g]]$all_results$clusterlabels)
+    if(backports::isTRUE(parallel) == "FALSE") {
+      # if non parallel run
+      z <- run[[g]]$probaPost
+      mapz <- mclust::unmap(run[[g]]$clusterlabels)
+    } else {
+      # if parallel run
+      z <- run[[g]]$all_results$probaPost
+      mapz <- mclust::unmap(run[[g]]$all_results$clusterlabels)
+    }
     forICL <- function(g){sum(log(z[which(mapz[, g] == 1), g]))}
     ICL[g] <- bIc$allBICvalues[g] + sum(sapply(1:ncol(mapz), forICL))
   }
   ICLmodel <- seq(gmin, gmax, 1)[grep(min(ICL, na.rm = TRUE), ICL)]
-  ICLmodel_labels <- run[[grep(min(ICL, na.rm = TRUE),
-    ICL)]]$all_results$clusterlabels
+
+  if(backports::isTRUE(parallel) == "FALSE") {
+    # if non parallel run
+    ICLmodel_labels <- run[[grep(min(ICL, na.rm = TRUE),
+      ICL)]]$clusterlabels
+  } else {
+    # if parallel run
+    ICLmodel_labels <- run[[grep(min(ICL, na.rm = TRUE),
+      ICL)]]$all_results$clusterlabels
+  }
+
   ICLMessage <- NA
 
   if (max(ICLmodel_labels) != ICLmodel) {
