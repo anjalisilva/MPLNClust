@@ -81,8 +81,11 @@ results.
 \description{
 Performs clustering using mixtures of multivariate Poisson-log
 normal (MPLN) distribution and model selection using AIC, AIC3,
-BIC and ICL. Since each component/cluster size (G) is independent
-from another, all Gs in the range to be tested have been parallelized
+BIC and ICL. Coarse grain parallelization is employed, such that
+when a range of components/clusters (g = 1,...,G) are considered, each
+G is run on a different processor. This can be performed because
+each component/cluster size is independent from another. All
+components/clusters in the range to be tested have been parallelized
 to run on a seperate core using the \emph{parallel} R package.
 }
 \examples{
