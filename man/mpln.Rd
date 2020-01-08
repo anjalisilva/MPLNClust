@@ -2,7 +2,7 @@
 % Please edit documentation in R/MPLNCode.R
 \name{mpln}
 \alias{mpln}
-\title{Model-Based Clustering Using MPLN (Parallelized)}
+\title{Model-Based Clustering Using MPLN via Parallel Performance}
 \usage{
 mpln(
   dataset,
