@@ -1,4 +1,6 @@
-mplnNotParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
+
+mplnNotParallelInternal <- function(dataset, membership = "none",
+  gmin = 1, gmax = 2,
   nChains = 3, nIterations = 1000,
   initMethod = "kmeans", nInitIterations = 0,
   normalize = "Yes") {
@@ -106,6 +108,7 @@ mplnNotParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
   }'
 
   mod <- rstan::stan_model(model_code = stancode, verbose = FALSE)
+  allruns <- list()
 
   # Constructing non parallel code
   for (gmodel in seq_along(1:(gmax - gmin + 1))) {
@@ -129,7 +132,7 @@ mplnNotParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
         mod = mod)
       # cat("\nInitialization done for G =", clustersize)
       # cat("\nRunning clustering for G =", clustersize)
-      allruns <- mplnCluster(dataset = dataset,
+      allruns[[gmodel]] <- mplnCluster(dataset = dataset,
         z = NA,
         G = clustersize,
         nChains = nChains,
@@ -141,7 +144,7 @@ mplnNotParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
     } else if(nInitIterations == 0) {
       # cat("\nNo initialization done for G =", clustersize)
       # cat("\nRunning clustering for G =", clustersize)
-      allruns <- mplnCluster(dataset = dataset,
+      allruns[[gmodel]] <- mplnCluster(dataset = dataset,
         z = mclust::unmap(stats::kmeans(log(dataset + 1/3),
           clustersize)$cluster),
         G = clustersize,
@@ -154,21 +157,35 @@ mplnNotParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
     }
   }
 
+  RESULTS <- list(gmin = gmin,
+    gmax = gmax,
+    initalization_method = initMethod,
+    all_results = allruns)
+
+  class(RESULTS) <- "mplnNotParallelInternal"
+  return(RESULTS)
+}
+
+mplnNotParallel <- function(){
+
+  mplnNotParallelInternal(dataset = dataset, membership = membership,
+    gmin = 1, gmax = 1, nChains = 3, nIterations = 1000,
+    initMethod = "kmeans", nInitIterations = 1,
+    normalize = "Yes")
+
   BIC <- ICL <- AIC <- AIC3 <- Djump <- DDSE <- k <- ll <- vector()
 
   for(g in seq_along(1:(gmax - gmin + 1))) {
     # save the final log-likelihood
-    ll[g] <- unlist(tail(parallelRun[[g]]$all_results$loglikelihood,
-      n = 1))
+    ll[g] <- unlist(utils::tail(allruns[[g]]$loglikelihood, n = 1))
 
-    k[g] <- calcParameters(numberG = g,
-      dimensionality = dimensionality)
+    k[g] <- calcParameters(numberG = g, dimensionality = dimensionality)
 
     if (g == max(1:(gmax - gmin + 1))) { # starting model selection
       bic <- BICFunction(ll = ll,
         k = k,
         n = nObservations,
-        run = parallelRun,
+        run = allruns,
         gmin = gmin,
         gmax = gmax)
 
@@ -258,4 +275,5 @@ mplnNotParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
   class(RESULTS) <- "MPLN"
   return(RESULTS)
   # [END]
+
 }

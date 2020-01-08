@@ -590,7 +590,7 @@ initializationRun <- function(gmodel, dataset, init_method,
     # user, then each run will give a different result.
     set.seed(iterations)
     if (init_method == "kmeans" | is.na(init_method)) {
-      z[[iterations]] <- unmap(stats::kmeans(log(dataset + 1/3),
+      z[[iterations]] <- mclust::unmap(stats::kmeans(log(dataset + 1/3),
         gmodel)$cluster)
     } else if (init_method == "random") {
       if(gmodel == 1) { # generating z if g=1
@@ -610,13 +610,13 @@ initializationRun <- function(gmodel, dataset, init_method,
         }
       }
     }else if (init_method == "medoids") {
-      z[[iterations]] <- unmap(cluster::pam(log(dataset + 1/3),
+      z[[iterations]] <- mclust::unmap(cluster::pam(log(dataset + 1/3),
         k = gmodel)$cluster)
     }else if (init_method == "clara") {
-      z[[iterations]] <- unmap(cluster::clara(log(dataset + 1/3),
+      z[[iterations]] <- mclust::unmap(cluster::clara(log(dataset + 1/3),
         k = gmodel)$cluster)
     }else if (init_method == "fanny") {
-      z[[iterations]] <- unmap(cluster::fanny(log(dataset + 1/3),
+      z[[iterations]] <- mclust::unmap(cluster::fanny(log(dataset + 1/3),
         k = gmodel)$cluster)
     }
 
@@ -966,10 +966,10 @@ stanRun <- function(model, gmin, gmax, dataset,
         verbose = FALSE,
         refresh = -1)
 
-      if (all(summary(fitrstan[[g]])$summary[, "Rhat"] < 1.1) == TRUE &&
-          all(summary(fitrstan[[g]])$summary[, "n_eff"] > 100) == TRUE) {
+      if (all(rstan::summary(fitrstan[[g]])$summary[, "Rhat"] < 1.1) == TRUE &&
+          all(rstan::summary(fitrstan[[g]])$summary[, "n_eff"] > 100) == TRUE) {
         stanproceed <- 1
-      } else if(all(summary(fitrstan[[g]])$summary[,"Rhat"] < 1.1) != TRUE ||           all(summary(fitrstan[[g]])$summary[, "n_eff"] > 100) != TRUE) {
+      } else if(all(rstan::summary(fitrstan[[g]])$summary[,"Rhat"] < 1.1) != TRUE ||           all(rstan::summary(fitrstan[[g]])$summary[, "n_eff"] > 100) != TRUE) {
         if(try == 10) { # stop after 10 attempts
           stanproceed = 1
         }
