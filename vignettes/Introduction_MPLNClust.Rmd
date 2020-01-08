@@ -39,7 +39,7 @@ set.seed(1) # for exact reproducibility
        
 ## Introduction
 
-**MPLNClust** is an R package for model-based clustering based on finite multivariate Poisson-log normal mixture modelling. It provides functions for parameter estimation via the Markov chain Monte Carlo expectation-maximization (MCMC-EM) algorithm. Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE, if applicable) are offered for model selection. Also included is a function for simulating data from this model. An additional functionality is available for displaying and visualizing clustering results. **MPLNClust** makes use of the **parallel** R package to run each component (G) in parallel, as each G is independent from another. 
+**MPLNClust** is an R package for model-based clustering based on finite multivariate Poisson-log normal mixture modelling. It provides functions for parameter estimation via the Markov chain Monte Carlo expectation-maximization (MCMC-EM) algorithm. Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE, if applicable) are offered for model selection. Also included is a function for simulating data from this model. An additional functionality is available for displaying and visualizing clustering results. Function *mplnParallel* within **MPLNClust** makes use of the **parallel** R package to run each component/cluster (G) in parallel, as each G is independent from another. 
 
 This document gives a quick tour of **MPLNClust** (version 0.1.0) functionalities. It was written in R Markdown, using the [knitr](https://cran.r-project.org/package=knitr) package for production. 
 See `help(package = "MPLNClust")` for further details and references provided by `citation("MPLNClust")`. To download **MPLNClust**, use the following commands:
@@ -88,20 +88,26 @@ sampleData <- mplnDataGenerator(nObservations = nObservations,
                                 produceImage = "Yes")
 
 ```
-The user has the option to produce the plot of log-transformed count data. <img src="PairsPlot.png" alt="Venn_15Oct2019" width="450"/>
+The user has the option to produce the plot of log-transformed count data. <img src="PairsPlot_LogCounts.png" alt="Venn_15Oct2019" width="450"/>
 
 The generated dataset can be checked:
 ``` r
 dim(sampleData$dataset) # 100 x 6 dataset
 class(sampleData$dataset) # matrix
 typeof(sampleData$dataset) # integer
-summary(sampleData$dataset)
+summary(sampleData$dataset) # summary of data
+pairs(sampleData$dataset, col = sampleData$trueMembership + 1,
+      main = "Pairs plot of counts") # visualize counts
 ```
-
+<img src="PairsPlot_Counts.png" alt="PairsPlot_Counts" width="450"/>
 
 ## Clustering
 
-Once the count data is available, clustering can be performed using the *mpln* function. See *?mpln* for more information, an example, and references. Here, clustering will be performed using the above generated dataset. 
+Once the count data is available, clustering can be performed using the *mplnParallel* or *mplnNonParallel* function. See *?mplnParallel* or *?mplnNonParallel* for more information, an example, and references. Here, clustering will be performed using the above generated dataset. 
+
+### Parallel Clustering
+
+Coarse grain parallelization is employed in *mplnParallel*, such that when a range of components/clusters (g = 1,...,G) are considered, each component/cluster size is run on a different processor. This can be performed because each component/cluster size is independent from another. All components/clusters in the range to be tested have been parallelized to run on a seperate core using the *parallel* R package. The number of cores used for clustering is internally determined using *parallel::detectCores() - 1*.
 
 ``` r
 mplnResults <- mpln(dataset = sampleData$dataset,
@@ -111,7 +117,7 @@ mplnResults <- mpln(dataset = sampleData$dataset,
                     nChains = 3,
                     nIterations = 500,
                     initMethod = "kmeans",
-                    nInitIterations = 0,
+                    nInitIterations = 2,
                     normalize = "Yes")
 ```
 
@@ -124,6 +130,21 @@ mplnResults$BIC_all$BICmodelselected
 table(mplnResults$BIC_all$BICmodelselected_labels, sampleData$truemembership)
 ```
 
+### Non Parallel Clustering
+
+No internal parallelization is performed for *mplnNonParallel*. This permits the user to arrange own parallelization if necessary. This code will typically take longer than the *mplnParallel*, for same analysis. 
+
+``` r
+mplnResultsNonParallel <- mplnNonParallel(dataset = sampleData$dataset,
+                                membership = sampleData$truemembership,
+                                gmin = 1,
+                                gmax = 2,
+                                nChains = 3,
+                                nIterations = 500,
+                                initMethod = "kmeans",
+                                nInitIterations = 2,
+                                normalize = "Yes")
+```
 
 ## Results Visualization
 
