@@ -278,7 +278,7 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
       "callingClustering",
       "mplnCluster",
       "initializationRun",
-      "mpln",
+      "mplnParallel",
       "mod",
       "AICFunction",
       "AIC3Function",
@@ -974,7 +974,7 @@ callingClustering <- function(data, gmin, gmax, nChains,
     all_results = allruns,
     total_time = final_inner)
 
-  class(RESULTS) <- "MPLN"
+  class(RESULTS) <- "mplnCallingClustering"
   return(RESULTS)
   # Developed by Anjali Silva
 }
