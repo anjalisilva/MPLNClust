@@ -134,7 +134,6 @@
 #' @import stats
 #' @importFrom utils tail
 #' @importFrom utils write.csv
-#' @importFrom backports isTRUE
 #'
 mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
   nChains = 3, nIterations = 1000,
@@ -542,7 +541,6 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
 #' @import stats
 #' @importFrom utils tail
 #' @importFrom utils write.csv
-#' @importFrom backports isTRUE
 #'
 mplnNonParallel <- function(dataset, membership = "none",
   gmin = 1, gmax = 2,
@@ -746,7 +744,7 @@ mplnNonParallel <- function(dataset, membership = "none",
   # for Djump and DDSE
   if((gmax - gmin + 1) > 10 ) {
     # adapted based on HTSCluster package 2.0.8 (25 Oct 2016)
-    PMM <- parallelRun
+    PMM <- nonParallelRun
     runs <- gmin:gmax
     gmax <- gmax
     logLike.final <- suppressWarnings(do.call("cbind",
@@ -774,7 +772,7 @@ mplnNonParallel <- function(dataset, membership = "none",
       gmin = gmin,
       gmax = gmax,
       initalization_method = initMethod,
-      all_results = parallelRun,
+      all_results = nonParallelRun,
       loglikelihood = ll,
       numb_of_parameters = k,
       true_labels = membership,
@@ -791,7 +789,7 @@ mplnNonParallel <- function(dataset, membership = "none",
     final <- proc.time() - ptm
     RESULTS <- list(dataset = dataset,
       dimensionality = dimensionality,
-      normalization_factors=normFactors,
+      normalization_factors = normFactors,
       gmin = gmin,
       gmax = gmax,
       initalization_method = initMethod,
@@ -1049,7 +1047,7 @@ initializationRun <- function(gmodel, dataset, init_method,
 AICFunction <- function(ll, k, run, gmin, gmax, parallel = TRUE) {
   AIC <- - 2 * ll + 2 * k
   AICmodel <- seq(gmin, gmax, 1)[grep(min(AIC,na.rm = TRUE), AIC)]
-  if(backports::isTRUE(parallel) == "FALSE"){
+  if(isTRUE(parallel) == "FALSE"){
     # if non parallel run
     AICmodel_labels <- run[[grep(min(AIC,na.rm = TRUE), AIC)]]$clusterlabels
   }else{
@@ -1076,7 +1074,7 @@ AICFunction <- function(ll, k, run, gmin, gmax, parallel = TRUE) {
 AIC3Function <- function(ll, k, run, gmin, gmax, parallel = TRUE) {
   AIC3 <- - 2 * ll + 3 * k
   AIC3model <- seq(gmin, gmax, 1)[grep(min(AIC3,na.rm = TRUE), AIC3)]
-  if(backports::isTRUE(parallel) == "FALSE"){
+  if(isTRUE(parallel) == "FALSE"){
     # if non parallel run
     AIC3model_labels <- run[[grep(min(AIC3,na.rm = TRUE), AIC3)]]$clusterlabels
   } else{
@@ -1102,7 +1100,7 @@ AIC3Function <- function(ll, k, run, gmin, gmax, parallel = TRUE) {
 BICFunction <- function(ll, k, n, run, gmin, gmax, parallel = TRUE) {
   BIC <- - 2 * ll + (k * log(n))
   BICmodel <- seq(gmin, gmax, 1)[grep(min(BIC, na.rm = TRUE), BIC)]
-  if(backports::isTRUE(parallel) == "FALSE") {
+  if(isTRUE(parallel) == "FALSE") {
     # if non parallel run
     BICmodel_labels <- run[[grep(min(BIC, na.rm = TRUE),
       BIC)]]$clusterlabels
@@ -1130,7 +1128,7 @@ BICFunction <- function(ll, k, n, run, gmin, gmax, parallel = TRUE) {
 ICLFunction <- function(bIc, gmax, gmin, run, parallel = TRUE) {
   ICL <- vector()
   for (g in 1:(gmax - gmin + 1)) {
-    if(backports::isTRUE(parallel) == "FALSE") {
+    if(isTRUE(parallel) == "FALSE") {
       # if non parallel run
       z <- run[[g]]$probaPost
       mapz <- mclust::unmap(run[[g]]$clusterlabels)
@@ -1144,7 +1142,7 @@ ICLFunction <- function(bIc, gmax, gmin, run, parallel = TRUE) {
   }
   ICLmodel <- seq(gmin, gmax, 1)[grep(min(ICL, na.rm = TRUE), ICL)]
 
-  if(backports::isTRUE(parallel) == "FALSE") {
+  if(isTRUE(parallel) == "FALSE") {
     # if non parallel run
     ICLmodel_labels <- run[[grep(min(ICL, na.rm = TRUE),
       ICL)]]$clusterlabels
