@@ -110,7 +110,7 @@ Once the count data is available, clustering can be performed using the *mplnPar
 Coarse grain parallelization is employed in *mplnParallel*, such that when a range of components/clusters (g = 1,...,G) are considered, each component/cluster size is run on a different processor. This can be performed because each component/cluster size is independent from another. All components/clusters in the range to be tested have been parallelized to run on a seperate core using the *parallel* R package. The number of cores used for clustering is internally determined using *parallel::detectCores() - 1*.
 
 ``` r
-mplnResults <- mpln(dataset = sampleData$dataset,
+mplnResults <- mplnParallel(dataset = sampleData$dataset,
                     membership = sampleData$truemembership,
                     gmin = 1,
                     gmax = 2,
