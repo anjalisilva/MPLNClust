@@ -111,7 +111,7 @@ Coarse grain parallelization is employed in *mplnParallel*, such that when a ran
 
 ``` r
 mplnResults <- mplnParallel(dataset = sampleData$dataset,
-                    membership = sampleData$truemembership,
+                    membership = sampleData$trueMembership,
                     gmin = 1,
                     gmax = 2,
                     nChains = 3,
@@ -136,7 +136,7 @@ No internal parallelization is performed for *mplnNonParallel*. This permits the
 
 ``` r
 mplnResultsNonParallel <- mplnNonParallel(dataset = sampleData$dataset,
-                                membership = sampleData$truemembership,
+                                membership = sampleData$trueMembership,
                                 gmin = 1,
                                 gmax = 2,
                                 nChains = 3,
