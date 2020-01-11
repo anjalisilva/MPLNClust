@@ -245,7 +245,7 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
   mod <- rstan::stan_model(model_code = stancode, verbose = FALSE)
 
   # Constructing parallel code
-  mplnParallel <- function(g) {
+  mplnParallelCode <- function(g) {
     ## ** Never use set.seed(), use clusterSetRNGStream() instead,
     # to set the cluster seed if you want reproducible results
     # clusterSetRNGStream(cl = cl, iseed = g)
@@ -277,7 +277,7 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
       "callingClustering",
       "mplnCluster",
       "initializationRun",
-      "mplnParallel",
+      "mplnParallelCode",
       "mod",
       "AICFunction",
       "AIC3Function",
@@ -302,7 +302,7 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
   parallelRun = list()
   cat("\nRunning parallel code now.")
   parallelRun = parallel::clusterMap(cl = cl,
-                                     fun = mplnParallel,
+                                     fun = mplnParallelCode,
                                      g = gmin:gmax)
   cat("\nDone parallel code.")
   parallel::stopCluster(cl)
