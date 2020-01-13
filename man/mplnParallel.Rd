@@ -34,14 +34,14 @@ components to be considered in the clustering run.}
 Default is 3, the recommended minimum number.}
 
 \item{nIterations}{A positive integer specifying the number of iterations
-for each chain (including warmup). The value should be greater than 40.
-The upper limit will depend on size of dataset.}
+for each MCMC chain (including warmup). The value should be greater than
+40. The upper limit will depend on size of dataset.}
 
 \item{initMethod}{An algorithm for initialization. Current options are
 "kmeans", "random", "medoids", "clara", or "fanny". Default is "kmeans".}
 
-\item{nInitIterations}{A positive integer specifying the number of
-initialization runs to be considered.}
+\item{nInitIterations}{A positive integer or zero, specifying the number
+of initialization runs to be considered. Default is 0.}
 
 \item{normalize}{A string with options "Yes" or "No" specifying
 if normalization should be performed. Currently, normalization factors

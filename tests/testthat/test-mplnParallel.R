@@ -1,8 +1,9 @@
-test_that("clustering", {
-  library(MPLNClust)
+context("Checking for parallel clustering performance")
+library(MPLNClust)
+
+test_that("Checking clustering results", {
 
   # Generating simulated data
-
   trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
   trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 
