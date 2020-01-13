@@ -18,7 +18,7 @@ test_that("Checking clustering results", {
                                         sigma = rbind(trueSigma1, trueSigma2),
                                         produceImage = "No")
 
-   mplnResults <- mplnParallel(dataset = simulated_counts$dataset,
+   mplnResults <- MPLNClust::mplnParallel(dataset = simulated_counts$dataset,
                                 membership = simulated_counts$trueMembership,
                                 gmin = 1,
                                 gmax = 2,
@@ -42,6 +42,7 @@ test_that("Checking clustering results", {
   expect_that(trunc(mplnResults$BIC_all$BICmodelselected), equals(2))
 })
 
+
 context("Checking for invalid user input")
 test_that("Data clustering error upon invalid user input", {
 
@@ -54,11 +55,11 @@ test_that("Data clustering error upon invalid user input", {
 
   set.seed(1234)
   simulated_counts <- mplnDataGenerator(nObservations = 500,
-                                        dimensionality = 6,
-                                        mixingProportions = c(0.79, 0.21),
-                                        mu = rbind(trueMu1, trueMu2),
-                                        sigma = rbind(trueSigma1, trueSigma2),
-                                        produceImage = "No")
+    dimensionality = 6,
+    mixingProportions = c(0.79, 0.21),
+    mu = rbind(trueMu1, trueMu2),
+    sigma = rbind(trueSigma1, trueSigma2),
+    produceImage = "No")
 
   # dataset provided as character
   expect_error(mplnParallel(dataset = "dataset",
