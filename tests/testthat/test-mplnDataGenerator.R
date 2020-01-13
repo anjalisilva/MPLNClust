@@ -26,15 +26,40 @@ test_that("Data generation is as expected", {
 
 
 context("Checking for invalid user input")
-test_that("Data generation error upon invalid user input", {
+test_that("Data generate error upon invalid user input", {
 
-  set.seed(1234)
-  simulated_counts <- mplnDataGenerator(nObservations = "50",
+  # nObservations provided as character
+  expect_error(mplnDataGenerator(nObservations = "50",
+                                        dimensionality = 6,
+                                        mixingProportions = c(0.79, 0.21),
+                                        mu = rbind(trueMu1, trueMu2),
+                                        sigma = rbind(trueSigma1, trueSigma2),
+                                        produceImage = "No"))
+
+
+  # Generating simulated data - mu has incorrect dimension
+  trueMu1 <- c(6.5, 6, 6, 6, 6)
+  trueMu2 <- c(2, 2.5, 2, 2, 2)
+
+  expect_error(mplnDataGenerator(nObservations = 50,
     dimensionality = 6,
     mixingProportions = c(0.79, 0.21),
     mu = rbind(trueMu1, trueMu2),
     sigma = rbind(trueSigma1, trueSigma2),
-    produceImage = "No")
+    produceImage = "No"))
 
-  expect_error(importBED(pathToInvalidFile1))
-}
+
+  # Generating simulated data - mu has incorrect dimension
+  trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+  trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+  trueSigma1 <- diag(5) * 2
+  trueSigma2 <- diag(5)
+
+  expect_error(mplnDataGenerator(nObservations = 50,
+    dimensionality = 6,
+    mixingProportions = c(0.79, 0.21),
+    mu = rbind(trueMu1, trueMu2),
+    sigma = rbind(trueSigma1, trueSigma2),
+    produceImage = "No"))
+
+})
