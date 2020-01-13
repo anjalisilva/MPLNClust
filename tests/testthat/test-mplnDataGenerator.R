@@ -71,4 +71,14 @@ test_that("Data generate error upon invalid user input", {
     sigma = rbind(trueSigma1, trueSigma2),
     produceImage = "No"))
 
+
+  # Incorrect ImageName format
+  expect_error(mplnDataGenerator(nObservations = 50,
+    dimensionality = 6,
+    mixingProportions = c(0.79, 0.21),
+    mu = rbind(trueMu1, trueMu2),
+    sigma = rbind(trueSigma1, trueSigma2),
+    produceImage = "Yes",
+    ImageName = 1234))
+
 })
