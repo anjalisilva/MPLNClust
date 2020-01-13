@@ -18,22 +18,27 @@ mplnDataGenerator(
 \item{nObservations}{A positive integer indicating the number of observations for
 the dataset.}
 
-\item{dimensionality}{A positive integer indicating the dimensionality for the dataset.}
+\item{dimensionality}{A positive integer indicating the dimensionality for the
+dataset.}
 
 \item{mixingProportions}{A numeric vector that length equal to the number of total
 components, indicating the proportion of each component. Vector content should
 sum to 1.}
 
-\item{mu}{A matrix of size (dimensionality x number of components), indicating the
-mean for each component. See example.}
+\item{mu}{A matrix of size (dimensionality x number of components), indicating
+the mean for each component. See example.}
 
-\item{sigma}{A matrix of size ((dimensionality * number of components) x dimensionality),
-indicating the covariance matrix for each component. See example.}
+\item{sigma}{A matrix of size ((dimensionality * number of components) x
+dimensionality), indicating the covariance matrix for each component.
+See example.}
 
 \item{produceImage}{A character string indicating whether or not to
 produce an image. Options "Yes" or "No". Image will be produced as
 'Pairs plot of log-transformed data.png" in the current working
 directory.}
+
+\item{ImageName}{A character string indicating name for image, if
+produceImage is set to "Yes". Default is "TwoComponents".}
 }
 \value{
 Returns an S3 object of class mplnDataGenerator with results.
@@ -69,7 +74,8 @@ sampleData <- mplnDataGenerator(nObservations = 100,
                                 mixingProportions = c(0.79, 0.21),
                                 mu = rbind(trueMu1, trueMu2),
                                 sigma = rbind(trueSigma1, trueSigma2),
-                                produceImage = "No")
+                                produceImage = "Yes",
+                                ImageName = "TwoComponents")
 
 }
 \references{

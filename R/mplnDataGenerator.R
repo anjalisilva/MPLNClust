@@ -4,18 +4,22 @@
 #'
 #' @param nObservations A positive integer indicating the number of observations for
 #'    the dataset.
-#' @param dimensionality A positive integer indicating the dimensionality for the dataset.
+#' @param dimensionality A positive integer indicating the dimensionality for the
+#'    dataset.
 #' @param mixingProportions A numeric vector that length equal to the number of total
 #'    components, indicating the proportion of each component. Vector content should
 #'    sum to 1.
-#' @param mu A matrix of size (dimensionality x number of components), indicating the
-#'    mean for each component. See example.
-#' @param sigma A matrix of size ((dimensionality * number of components) x dimensionality),
-#'    indicating the covariance matrix for each component. See example.
+#' @param mu A matrix of size (dimensionality x number of components), indicating
+#'    the mean for each component. See example.
+#' @param sigma A matrix of size ((dimensionality * number of components) x
+#'    dimensionality), indicating the covariance matrix for each component.
+#'    See example.
 #' @param produceImage A character string indicating whether or not to
 #'    produce an image. Options "Yes" or "No". Image will be produced as
 #'    'Pairs plot of log-transformed data.png" in the current working
 #'    directory.
+#' @param ImageName A character string indicating name for image, if
+#'    produceImage is set to "Yes". Default is "TwoComponents".
 #'
 #' @return Returns an S3 object of class mplnDataGenerator with results.
 #' \itemize{
@@ -47,7 +51,8 @@
 #'                                 mixingProportions = c(0.79, 0.21),
 #'                                 mu = rbind(trueMu1, trueMu2),
 #'                                 sigma = rbind(trueSigma1, trueSigma2),
-#'                                 produceImage = "No")
+#'                                 produceImage = "Yes",
+#'                                 ImageName = "TwoComponents")
 #'
 #' @author Anjali Silva, \email{anjali.silva@uhnresearch.ca}
 #'
@@ -107,7 +112,12 @@ mplnDataGenerator <- function(nObservations,
   }
 
   if(ncol(sigma) != dimensionality) {
-    stop("sigma should be a matrix, which has number of columns equalling dimensionality.")
+    stop("sigma should be a matrix, which has number of columns equalling
+      dimensionality.")
+  }
+
+  if (class(ImageName) != "character") {
+    stop("ImageName should of class character.")
   }
 
   if(nrow(sigma) != dimensionality * length(mixingProportions)) {
@@ -173,7 +183,6 @@ mplnDataGenerator <- function(nObservations,
 
   class(results) <- "mplnDataGenerator"
   return(results)
-  # Developed by Anjali Silva
 }
 
 
