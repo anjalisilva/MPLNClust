@@ -116,13 +116,13 @@ mplnDataGenerator <- function(nObservations,
       dimensionality.")
   }
 
-  if (class(ImageName) != "character") {
-    stop("ImageName should of class character.")
-  }
-
   if(nrow(sigma) != dimensionality * length(mixingProportions)) {
     stop("sigma should be a matrix, which has number of rows equalling
       (dimensionality * number of components).")
+  }
+
+  if (produceImage == "Yes" && class(ImageName) != "character") {
+    stop("ImageName should be a character string of class character.")
   }
 
   # Begin calculations - generate z
