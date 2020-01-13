@@ -21,7 +21,8 @@ the dataset.}
 \item{dimensionality}{A positive integer indicating the dimensionality for the dataset.}
 
 \item{mixingProportions}{A numeric vector that length equal to the number of total
-components, indicating the proportion of each component.}
+components, indicating the proportion of each component. Vector content should
+sum to 1.}
 
 \item{mu}{A matrix of size (dimensionality x number of components), indicating the
 mean for each component. See example.}

@@ -6,7 +6,8 @@
 #'    the dataset.
 #' @param dimensionality A positive integer indicating the dimensionality for the dataset.
 #' @param mixingProportions A numeric vector that length equal to the number of total
-#'    components, indicating the proportion of each component.
+#'    components, indicating the proportion of each component. Vector content should
+#'    sum to 1.
 #' @param mu A matrix of size (dimensionality x number of components), indicating the
 #'    mean for each component. See example.
 #' @param sigma A matrix of size ((dimensionality * number of components) x dimensionality),
@@ -83,6 +84,10 @@ mplnDataGenerator <- function(nObservations,
 
   if(class(mixingProportions) != "numeric") {
     stop("mixingProportions argument should be a vector of class numeric.")
+  }
+
+  if (sum(mixingProportions) != 1) {
+    stop("mixingProportions argument should be a vector that sum to 1.")
   }
 
   if(class(mu) != "matrix") {
