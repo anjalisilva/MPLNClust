@@ -49,7 +49,7 @@ test_that("Data generate error upon invalid user input", {
     produceImage = "No"))
 
 
-  # Generating simulated data - mu has incorrect dimension
+  # Generating simulated data - sigma has incorrect dimension
   trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
   trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
   trueSigma1 <- diag(5) * 2
@@ -58,6 +58,15 @@ test_that("Data generate error upon invalid user input", {
   expect_error(mplnDataGenerator(nObservations = 50,
     dimensionality = 6,
     mixingProportions = c(0.79, 0.21),
+    mu = rbind(trueMu1, trueMu2),
+    sigma = rbind(trueSigma1, trueSigma2),
+    produceImage = "No"))
+
+
+  # mixingProportions does not sum to 1
+  expect_error(mplnDataGenerator(nObservations = 50,
+    dimensionality = 6,
+    mixingProportions = c(0.79, 0.2),
     mu = rbind(trueMu1, trueMu2),
     sigma = rbind(trueSigma1, trueSigma2),
     produceImage = "No"))
