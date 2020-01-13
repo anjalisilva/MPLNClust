@@ -10,7 +10,8 @@ mplnDataGenerator(
   mixingProportions,
   mu,
   sigma,
-  produceImage = "No"
+  produceImage = "No",
+  ImageName = "sampleName"
 )
 }
 \arguments{

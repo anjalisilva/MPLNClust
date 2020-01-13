@@ -69,11 +69,52 @@ mplnDataGenerator <- function(nObservations,
                               dimensionality,
                               mixingProportions,
                               mu, sigma,
-                              produceImage = "No") {
-  # Generate
+                              produceImage = "No",
+                              ImageName = "sampleName") {
+
+  # Checking user input
+  if(class(nObservations) != "numeric") {
+    stop("nObservations argument should be of class numeric.")
+  }
+
+  if(class(dimensionality) != "numeric") {
+    stop("dimensionality argument should be of class numeric.")
+  }
+
+  if(class(mixingProportions) != "numeric") {
+    stop("mixingProportions argument should be a vector of class numeric.")
+  }
+
+  if(class(mu) != "matrix") {
+    stop("mu argument should be of class matrix.")
+  }
+
+  if(ncol(mu) != dimensionality) {
+    stop("mu should be a matrix, which has number of columns equalling dimensionality.")
+  }
+
+  if(nrow(mu) != length(mixingProportions)) {
+    stop("mu should be a matrix, which has number of rows equalling number of components.")
+  }
+
+  if(class(sigma) != "matrix") {
+    stop("sigma argument should be of class matrix.")
+  }
+
+  if(ncol(sigma) != dimensionality) {
+    stop("sigma should be a matrix, which has number of columns equalling dimensionality.")
+  }
+
+  if(nrow(sigma) != dimensionality * length(mixingProportions)) {
+    stop("sigma should be a matrix, which has number of rows equalling
+      (dimensionality * number of components).")
+  }
+
+  # Begin calculations - generate z
   z <- t(stats::rmultinom(nObservations, size = 1, mixingProportions))
 
   y <- theta <- n_g <- vector("list", length = length(mixingProportions))
+
   # For visualization only
   theta2 <- matrix(NA, ncol = dimensionality, nrow = nObservations)
 
@@ -109,7 +150,7 @@ mplnDataGenerator <- function(nObservations,
   if (produceImage == "Yes") {
     # Obtaining path to save images
     pathNow <- getwd()
-    grDevices::png(paste0(pathNow, "/PairsPlot.png"))
+    grDevices::png(paste0(pathNow, "/PairsPlot_", ImageName,".png"))
     graphics::pairs(log(y2), col = map(z) + 1,
           main = "Pairs plot of log-transformed data")
     grDevices::dev.off()
