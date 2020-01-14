@@ -13,7 +13,8 @@ mplnParallel(
   nIterations = 1000,
   initMethod = "kmeans",
   nInitIterations = 0,
-  normalize = "Yes"
+  normalize = "Yes",
+  numNodes = NA
 )
 }
 \arguments{
@@ -46,6 +47,11 @@ of initialization runs to be considered. Default is 0.}
 \item{normalize}{A string with options "Yes" or "No" specifying
 if normalization should be performed. Currently, normalization factors
 are calculated using TMM method of edgeR package. Default is "Yes".}
+
+\item{numNodes}{A positive integer indicating the number of nodes to be
+used from the local machine to run the clustering algorithm. Else
+leave as NA, so default will be detected as
+parallel::makeCluster(parallel::detectCores() - 1).}
 }
 \value{
 Returns an S3 object of class MPLN with results.
@@ -87,7 +93,7 @@ G is run on a different processor. This can be performed because
 each component/cluster size is independent from another. All
 components/clusters in the range to be tested have been parallelized
 to run on a seperate core using the \emph{parallel} R package. The number of
-cores used for clustering is calculated using
+nodes to be used for clustering can be specified or calculated using
 \emph{parallel::detectCores() - 1}.
 }
 \examples{

@@ -8,7 +8,7 @@
 #' each component/cluster size is independent from another. All
 #' components/clusters in the range to be tested have been parallelized
 #' to run on a seperate core using the *parallel* R package. The number of
-#' cores used for clustering is calculated using
+#' nodes to be used for clustering can be specified or calculated using
 #' *parallel::detectCores() - 1*.
 #'
 #' @param dataset A dataset of class matrix and type integer such that
@@ -32,6 +32,10 @@
 #' @param normalize A string with options "Yes" or "No" specifying
 #'     if normalization should be performed. Currently, normalization factors
 #'     are calculated using TMM method of edgeR package. Default is "Yes".
+#' @param numNodes A positive integer indicating the number of nodes to be
+#'     used from the local machine to run the clustering algorithm. Else
+#'     leave as NA, so default will be detected as
+#'     parallel::makeCluster(parallel::detectCores() - 1).
 #'
 #' @return Returns an S3 object of class MPLN with results.
 #' \itemize{
@@ -138,7 +142,7 @@
 mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
   nChains = 3, nIterations = 1000,
   initMethod = "kmeans", nInitIterations = 0,
-  normalize = "Yes") {
+  normalize = "Yes", numNodes = NA) {
 
   ptm <- proc.time()
 
@@ -229,6 +233,18 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
        if normalization should be performed.")
   }
 
+  # Check numNodes and calculate the number of cores and initiate cluster
+  if(is.na(numNodes) == TRUE) {
+    cl <- parallel::makeCluster(parallel::detectCores() - 1)
+  } else if (class(numNodes) == "numeric") {
+    cl <- parallel::makeCluster(numNodes)
+  } else {
+    stop("numNodes should be a positive integer indicating the number of
+        nodes to be used from the local machine. Else leave as NA, so the
+        numNodes will be determined by
+        parallel::makeCluster(parallel::detectCores() - 1).")
+  }
+
   # Remove rows with all zeros, if present
   if(length(which(apply(dataset, 1, function(x) all(x == 0)) == TRUE)) != 0) {
     cat("\nDataset row(s)",
@@ -304,8 +320,6 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
     return(mplnParallelRun)
   }
 
-  # Calculate the number of cores and initiate cluster
-  cl <- parallel::makeCluster(parallel::detectCores() - 1)
 
   # Doing clusterExport
   parallel::clusterExport(cl = cl,
