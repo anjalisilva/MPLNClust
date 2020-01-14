@@ -29,6 +29,12 @@ test_that("Checking clustering results", {
                                 normalize = "Yes",
                                 numNodes = 2)
 
+  # Setting numNodes = 2 based on the following entry, otherwise error.
+  # "NB: you can’t use unexported functions and you shouldn’t open new graphics
+  # devices or use more than two cores. Individual examples shouldn’t
+  # take more than 5s."
+  # https://stackoverflow.com/questions/41307178/error-processing-vignette-failed-with-diagnostics-4-simultaneous-processes-spa
+
   expect_that(length(mplnResults), equals(16))
   expect_that(mplnResults, is_a("mplnParallel"))
   expect_that(mplnResults$initalization_method, equals("kmeans"))
