@@ -11,28 +11,29 @@ test_that("Checking clustering results", {
   trueSigma2 <- diag(6)
 
   set.seed(1234)
-  simulated_counts <- mplnDataGenerator(nObservations = 50,
+  simulated_counts <- mplnDataGenerator(nObservations = 100,
                                         dimensionality = 6,
                                         mixingProportions = c(0.79, 0.21),
                                         mu = rbind(trueMu1, trueMu2),
                                         sigma = rbind(trueSigma1, trueSigma2),
                                         produceImage = "No")
-
-   mplnResults <- MPLNClust::mplnParallel(dataset = simulated_counts$dataset,
+  set.seed(1234)
+  mplnResults <- MPLNClust::mplnParallel(dataset = simulated_counts$dataset,
                                 membership = simulated_counts$trueMembership,
                                 gmin = 1,
                                 gmax = 2,
                                 nChains = 3,
-                                nIterations = 500,
+                                nIterations = 800,
                                 initMethod = "kmeans",
-                                nInitIterations = 2,
-                                normalize = "Yes")
+                                nInitIterations = 1,
+                                normalize = "Yes",
+                                numNodes = 2)
 
   expect_that(length(mplnResults), equals(16))
   expect_that(mplnResults, is_a("mplnParallel"))
   expect_that(mplnResults$initalization_method, equals("kmeans"))
-  normFactors <- c(-0.38090382,  0.04043787,  0.21095606,
-    0.53566041, -0.44720551,  0.04105498)
+  normFactors <- c( -0.20985978,  0.07542025, -0.16272084,
+    0.43821243, -0.21190868,  0.07085663)
   expect_that(mplnResults$normalization_factors, equals(normFactors))
   numPara <- c(27, 55)
   expect_that(mplnResults$numb_of_parameters, equals(numPara))
@@ -41,7 +42,6 @@ test_that("Checking clustering results", {
   expect_that(trunc(mplnResults$AIC_all$AICmodelselected), equals(2))
   expect_that(trunc(mplnResults$BIC_all$BICmodelselected), equals(2))
 })
-
 
 context("Checking for invalid user input")
 test_that("Data clustering error upon invalid user input", {
@@ -196,3 +196,7 @@ test_that("Data clustering error upon invalid user input", {
     normalize = "Other"))
 
 })
+
+
+
+
