@@ -194,7 +194,7 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
   }
 
   if(all(membership != "none") && length(membership) != nObservations) {
-    stop("membership should a numeric vector, where length(membership)
+    stop("membership should be a numeric vector, where length(membership)
       should equal the number of observations. Otherwise, leave as 'none'.")
   }
 
@@ -619,57 +619,80 @@ mplnNonParallel <- function(dataset, membership = "none",
 
   dataset <- removeZeroCounts(dataset = dataset)$dataset
 
-  if (gmax < gmin) {
-    stop("gmax cannot be less than gmin")
-  }
-
-  if(is.na(nIterations)) {
-    nIterations <- 1000
-  }
-
-  # if(is.na(nChains) || nChains<3) {
-  #  nChains <- 3
-  #  cat("Recommended number of chains is minimum 3. nChains' set to 3")}
-
-  if(nIterations < 40) {
-    stop("RStan nIterations argument should be greater than 40")}
-
-
   dimensionality <- ncol(dataset)
   nObservations <- nrow(dataset)
 
-  if(class(membership) != "character" && length(membership) != nObservations) {
-    stop("Length of membership character vector and
-      sample size of dataset should match")
+  if(class(gmin) != "numeric" || class(gmax) != "numeric") {
+    stop("Class of gmin and gmin should be numeric.")
   }
 
-  if(class(membership) != "character" &&
+  if (gmax < gmin) {
+    stop("gmax cannot be less than gmin.")
+  }
+
+  if (class(nChains) != "numeric") {
+    stop("nChains should be a positive integer of class numeric specifying
+      the number of Markov chains.")
+  }
+
+  if(nChains < 3) {
+    cat("nChains is less than 3. Note: recommended minimum number of
+      chains is 3.")
+  }
+
+  if(class(nIterations) != "numeric") {
+    stop("nIterations should be a positive integer of class numeric,
+      specifying the number of iterations for each Markov chain
+      (including warmup).")
+  }
+
+  if(class(nIterations) == "numeric" && nIterations < 40) {
+    stop("nIterations argument should be greater than 40.")
+  }
+
+  if(all(membership != "none") && class(membership) != "numeric") {
+    stop("membership should be a numeric vector containing the
+      cluster membership. Otherwise, leave as 'none'.")
+  }
+
+  if(all(membership != "none") && length(membership) != nObservations) {
+    stop("membership should be a numeric vector, where length(membership)
+      should equal the number of observations. Otherwise, leave as 'none'.")
+  }
+
+  if(all(membership != "none") &&
       all((diff(sort(unique(membership))) == 1) != TRUE) ) {
     stop("Cluster memberships in the membership vector
-      are missing a cluster, e.g. 1, 3, 4, 5, 6 is missing cluster 2")
-  }
-
-  if(length(which(apply(dataset, 1, function(x) all(x == 0)) == TRUE)) != 0) {
-    cat("\nDataset row(s)",
-      c(which(apply(dataset, 1, function(x) all(x == 0)) == TRUE)),
-      "will be removed as this/these contain(s) all zeros")
-
-    if(class(membership) != "character") {
-      membership <- membership[- c(which(apply(dataset, 1, function(x)
-        all(x == 0)) == TRUE))]
-    }
-
-    dataset <- dataset[- c(which(apply(dataset, 1, function(x)
-      all(x == 0)) == TRUE)), ]
-    nObservations <- nrow(dataset)
-  }
-
-  if(class(membership) == "character") {
-    membership <- "Not provided"
+      are missing a cluster, e.g. 1, 3, 4, 5, 6 is missing cluster 2.")
   }
 
   if (gmax > nObservations) {
-    stop("gmax cannot be larger than nrow(dataset)")
+    stop("gmax cannot be larger than nrow(dataset).")
+  }
+
+  if (class(initMethod) == "character"){
+    if(initMethod != "kmeans" & initMethod != "random" & initMethod != "medoids" & initMethod != "medoids" & initMethod != "clara" & initMethod != "fanny") {
+      stop("initMethod should of class character, specifying
+        either: kmeans, random, medoids, clara, or fanny.")
+    }
+    } else if (class(initMethod) != "character") {
+      stop("initMethod should of class character, specifying
+        either: kmeans, random, medoids, clara, or fanny.")
+  }
+
+  if (class(nInitIterations) != "numeric") {
+    stop("nInitIterations should be positive integer or zero, specifying
+      the number of initialization runs to be considered.")
+  }
+
+  if (class(normalize) != "character") {
+    stop("normalize should be a string of class character specifying
+      if normalization should be performed.")
+  }
+
+  if (normalize != "Yes" && normalize != "No") {
+    stop("normalize should be a string indicating Yes or No, specifying
+      if normalization should be performed.")
   }
 
   # Calculating normalization factors
