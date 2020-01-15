@@ -18,7 +18,8 @@ test_that("Checking clustering results", {
                                         sigma = rbind(trueSigma1, trueSigma2),
                                         produceImage = "No")
   set.seed(1234)
-  mplnResults <- MPLNClust::mplnNonParallel(dataset = simulated_counts$dataset,
+  mplnNonParallelResults <- MPLNClust::mplnNonParallel(
+                                dataset = simulated_counts$dataset,
                                 membership = simulated_counts$trueMembership,
                                 gmin = 1,
                                 gmax = 2,
@@ -28,24 +29,18 @@ test_that("Checking clustering results", {
                                 nInitIterations = 1,
                                 normalize = "Yes")
 
-  # Setting numNodes = 2 based on the following entry, otherwise error.
-  # "NB: you can’t use unexported functions and you shouldn’t open new graphics
-  # devices or use more than two cores. Individual examples shouldn’t
-  # take more than 5s."
-  # https://stackoverflow.com/questions/41307178/error-processing-vignette-failed-with-diagnostics-4-simultaneous-processes-spa
-
-  expect_that(length(mplnResults), equals(16))
-  expect_that(mplnResults, is_a("mplnParallel"))
-  expect_that(mplnResults$initalization_method, equals("kmeans"))
-  normFactors <- c( -0.20985978,  0.07542025, -0.16272084,
-    0.43821243, -0.21190868,  0.07085663)
-  expect_that(mplnResults$normalization_factors, equals(normFactors))
+  expect_that(length(mplnNonParallelResults), equals(16))
+  expect_that(mplnNonParallelResults, is_a("mplnNonParallel"))
+  expect_that(mplnNonParallelResults$initalization_method, equals("kmeans"))
+  normFactors <- c(-0.62996925, -0.15999746,  0.12852236,
+    0.34015676,  0.28591670,  0.03537089)
+  expect_that(mplnNonParallelResults$normalization_factors, equals(normFactors))
   numPara <- c(27, 55)
-  expect_that(mplnResults$numb_of_parameters, equals(numPara))
-  expect_that(mplnResults$true_labels, equals(simulated_counts$trueMembership))
-  expect_that(trunc(mplnResults$ICL_all$ICLmodelselected), equals(2))
-  expect_that(trunc(mplnResults$AIC_all$AICmodelselected), equals(2))
-  expect_that(trunc(mplnResults$BIC_all$BICmodelselected), equals(2))
+  expect_that(mplnNonParallelResults$numb_of_parameters, equals(numPara))
+  expect_that(mplnNonParallelResults$true_labels, equals(simulated_counts$trueMembership))
+  expect_that(trunc(mplnNonParallelResults$ICL_all$ICLmodelselected), equals(2))
+  expect_that(trunc(mplnNonParallelResults$AIC_all$AICmodelselected), equals(2))
+  expect_that(trunc(mplnNonParallelResults$BIC_all$BICmodelselected), equals(2))
 })
 
 context("Checking for invalid user input")
@@ -67,7 +62,7 @@ test_that("Data clustering error upon invalid user input", {
     produceImage = "No")
 
   # dataset provided as character
-  expect_error(mplnParallel(dataset = "dataset",
+  expect_error(mplnNonParallel(dataset = "dataset",
     membership = simulated_counts$trueMembership,
     gmin = 1,
     gmax = 2,
@@ -78,7 +73,7 @@ test_that("Data clustering error upon invalid user input", {
     normalize = "Yes"))
 
   # dataset provided as logical
-  expect_error(mplnParallel(dataset = NA,
+  expect_error(mplnNonParallel(dataset = NA,
     membership = simulated_counts$trueMembership,
     gmin = 1,
     gmax = 2,
@@ -89,7 +84,7 @@ test_that("Data clustering error upon invalid user input", {
     normalize = "Yes"))
 
   # Incorrect size for true membership
-  expect_error(mplnParallel(dataset = simulated_counts$dataset,
+  expect_error(mplnNonParallel(dataset = simulated_counts$dataset,
     membership = simulated_counts$trueMembership[-1],
     gmin = 1,
     gmax = 2,
@@ -100,7 +95,7 @@ test_that("Data clustering error upon invalid user input", {
     normalize = "Yes"))
 
   # Incorrect class for true membership
-  expect_error(mplnParallel(dataset = simulated_counts$dataset,
+  expect_error(mplnNonParallel(dataset = simulated_counts$dataset,
     membership = "trueMembership",
     gmin = 1,
     gmax = 2,
@@ -111,7 +106,7 @@ test_that("Data clustering error upon invalid user input", {
     normalize = "Yes"))
 
   # Incorrect input type for gmin
-  expect_error(mplnParallel(dataset = simulated_counts$dataset,
+  expect_error(mplnNonParallel(dataset = simulated_counts$dataset,
     membership = simulated_counts$trueMembership,
     gmin = "1",
     gmax = 2,
@@ -122,7 +117,7 @@ test_that("Data clustering error upon invalid user input", {
     normalize = "Yes"))
 
   # Incorrect input for gmin and gmax
-  expect_error(mplnParallel(dataset = simulated_counts$dataset,
+  expect_error(mplnNonParallel(dataset = simulated_counts$dataset,
     membership = simulated_counts$trueMembership,
     gmin = 5,
     gmax = 2,
@@ -134,7 +129,7 @@ test_that("Data clustering error upon invalid user input", {
 
 
   # Incorrect input type for nChains
-  expect_error(mplnParallel(dataset = simulated_counts$dataset,
+  expect_error(mplnNonParallel(dataset = simulated_counts$dataset,
     membership = simulated_counts$trueMembership,
     gmin = 1,
     gmax = 2,
@@ -145,7 +140,7 @@ test_that("Data clustering error upon invalid user input", {
     normalize = "Yes"))
 
   # Incorrect input type for nIterations
-  expect_error(mplnParallel(dataset = simulated_counts$dataset,
+  expect_error(mplnNonParallel(dataset = simulated_counts$dataset,
     membership = simulated_counts$trueMembership,
     gmin = 1,
     gmax = 2,
@@ -156,7 +151,7 @@ test_that("Data clustering error upon invalid user input", {
     normalize = "Yes"))
 
   # Incorrect input type for initMethod
-  expect_error(mplnParallel(dataset = simulated_counts$dataset,
+  expect_error(mplnNonParallel(dataset = simulated_counts$dataset,
     membership = simulated_counts$trueMembership,
     gmin = 1,
     gmax = 2,
@@ -168,7 +163,7 @@ test_that("Data clustering error upon invalid user input", {
 
 
   # Incorrect input type for initMethod
-  expect_error(mplnParallel(dataset = simulated_counts$dataset,
+  expect_error(mplnNonParallel(dataset = simulated_counts$dataset,
     membership = simulated_counts$trueMembership,
     gmin = 1,
     gmax = 2,
@@ -179,7 +174,7 @@ test_that("Data clustering error upon invalid user input", {
     normalize = "Yes"))
 
   # Incorrect input type for nInitIterations
-  expect_error(mplnParallel(dataset = simulated_counts$dataset,
+  expect_error(mplnNonParallel(dataset = simulated_counts$dataset,
     membership = simulated_counts$trueMembership,
     gmin = 1,
     gmax = 2,
@@ -190,7 +185,7 @@ test_that("Data clustering error upon invalid user input", {
     normalize = "Yes"))
 
   # Incorrect input type for normalize
-  expect_error(mplnParallel(dataset = simulated_counts$dataset,
+  expect_error(mplnNonParallel(dataset = simulated_counts$dataset,
     membership = simulated_counts$trueMembership,
     gmin = 1,
     gmax = 2,
