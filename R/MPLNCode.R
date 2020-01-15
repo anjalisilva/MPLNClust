@@ -155,8 +155,6 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
     stop("Dataset needs to be a matrix.")
   }
 
-  dataset <- removeZeroCounts(dataset = dataset)$dataset
-
   dimensionality <- ncol(dataset)
   nObservations <- nrow(dataset)
 
@@ -166,6 +164,10 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
 
   if (gmax < gmin) {
     stop("gmax cannot be less than gmin.")
+  }
+
+  if (gmax > nObservations) {
+    stop("gmax cannot be larger than nrow(dataset).")
   }
 
   if (class(nChains) != "numeric") {
@@ -193,20 +195,23 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
       cluster membership. Otherwise, leave as 'none'.")
   }
 
-  if(all(membership != "none") && length(membership) != nObservations) {
-    stop("membership should be a numeric vector, where length(membership)
-      should equal the number of observations. Otherwise, leave as 'none'.")
-  }
-
   if(all(membership != "none") &&
       all((diff(sort(unique(membership))) == 1) != TRUE) ) {
     stop("Cluster memberships in the membership vector
       are missing a cluster, e.g. 1, 3, 4, 5, 6 is missing cluster 2.")
   }
 
-  if (gmax > nObservations) {
-    stop("gmax cannot be larger than nrow(dataset).")
+  if(all(membership != "none") && length(membership) != nObservations) {
+    stop("membership should be a numeric vector, where length(membership)
+      should equal the number of observations. Otherwise, leave as 'none'.")
   }
+
+  # Remove rows with zeros, if present
+  removezeros <- removeZeroCounts(dataset = dataset, membership = membership)
+  dataset <- removezeros$dataset
+  membership <- removezeros$membership
+  dimensionality <- ncol(dataset)
+  nObservations <- nrow(dataset)
 
   if (class(initMethod) == "character"){
     if(initMethod != "kmeans" & initMethod != "random" & initMethod != "medoids" & initMethod != "medoids" & initMethod != "clara" & initMethod != "fanny") {
@@ -245,25 +250,6 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
         parallel::makeCluster(parallel::detectCores() - 1).")
   }
 
-  # Remove rows with all zeros, if present
-  if(length(which(apply(dataset, 1, function(x) all(x == 0)) == TRUE)) != 0) {
-    cat("\nDataset row(s)",
-      c(which(apply(dataset, 1, function(x) all(x == 0)) == TRUE)),
-      "will be removed as this/these contain(s) all zeros")
-
-    if(class(membership) != "character") {
-      membership <- membership[- c(which(apply(dataset, 1, function(x)
-        all(x == 0)) == TRUE))]
-    }
-
-    dataset <- dataset[- c(which(apply(dataset, 1, function(x)
-      all(x == 0)) == TRUE)), ]
-    nObservations <- nrow(dataset)
-  }
-
-  if(class(membership) == "character") {
-    membership <- "Not provided"
-  }
 
   # Calculating normalization factors
   if(normalize == "Yes") {
@@ -610,14 +596,12 @@ mplnNonParallel <- function(dataset, membership = "none",
 
   # Performing checks
   if (typeof(dataset) != "double" & typeof(dataset) != "integer") {
-    stop("Dataset type needs to be integer")
+    stop("Dataset type needs to be integer.")
   }
 
   if (class(dataset) != "matrix") {
-    stop("Dataset needs to be a matrix")
+    stop("Dataset needs to be a matrix.")
   }
-
-  dataset <- removeZeroCounts(dataset = dataset)$dataset
 
   dimensionality <- ncol(dataset)
   nObservations <- nrow(dataset)
@@ -628,6 +612,10 @@ mplnNonParallel <- function(dataset, membership = "none",
 
   if (gmax < gmin) {
     stop("gmax cannot be less than gmin.")
+  }
+
+  if (gmax > nObservations) {
+    stop("gmax cannot be larger than nrow(dataset).")
   }
 
   if (class(nChains) != "numeric") {
@@ -655,20 +643,23 @@ mplnNonParallel <- function(dataset, membership = "none",
       cluster membership. Otherwise, leave as 'none'.")
   }
 
-  if(all(membership != "none") && length(membership) != nObservations) {
-    stop("membership should be a numeric vector, where length(membership)
-      should equal the number of observations. Otherwise, leave as 'none'.")
-  }
-
   if(all(membership != "none") &&
       all((diff(sort(unique(membership))) == 1) != TRUE) ) {
     stop("Cluster memberships in the membership vector
       are missing a cluster, e.g. 1, 3, 4, 5, 6 is missing cluster 2.")
   }
 
-  if (gmax > nObservations) {
-    stop("gmax cannot be larger than nrow(dataset).")
+  if(all(membership != "none") && length(membership) != nObservations) {
+    stop("membership should be a numeric vector, where length(membership)
+      should equal the number of observations. Otherwise, leave as 'none'.")
   }
+
+  # Remove rows with zeros, if present
+  removezeros <- removeZeroCounts(dataset = dataset, membership = membership)
+  dataset <- removezeros$dataset
+  membership <- removezeros$membership
+  dimensionality <- ncol(dataset)
+  nObservations <- nrow(dataset)
 
   if (class(initMethod) == "character"){
     if(initMethod != "kmeans" & initMethod != "random" & initMethod != "medoids" & initMethod != "medoids" & initMethod != "clara" & initMethod != "fanny") {
@@ -1429,28 +1420,23 @@ mplnCluster <- function(dataset, z, G, nChains, nIterations,
 }
 
 # Calculate and remove rows with zeros
-removeZeroCounts <- function(dataset, output = FALSE) {
+#' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
+removeZeroCounts <- function(dataset, membership = "none") {
 
   zeroSUMrows <- which(rowSums(dataset) == 0)
-  nbrZeroSUMrows <- length(zeroSUMrows)
 
-  if (output) {
-    write.csv(rownames(dataset[zeroSUMrows, ]),
-      file=paste0("zeroSUMrows_",
-        format(Sys.time(), "%d%b%Y"),".csv") )
-  }
-
-  if (nbrZeroSUMrows > 0) {
+  if (length(zeroSUMrows) > 0 && class(membership) == "numeric") {
     dataset <- dataset[- zeroSUMrows, ]
-    cat(paste(nbrZeroSUMrows,
-      "row(s) removed from the dataset because sum = 0",'\n'))
+    membership <- membership[- zeroSUMrows]
+  } else if(nbrZeroSUMrows > 0 && all(membership == "none")) {
+    dataset <- dataset[- zeroSUMrows, ]
+    membership <- "none"
   }
 
-
-  RESULTS <- list(dataset = dataset)
+  RESULTS <- list(dataset = dataset,
+                  membership = membership)
   class(RESULTS) <- "MPLN_ZerosRemoved"
   return(RESULTS)
-  # Developed by Anjali Silva
 }
 
 # Stan sampling
