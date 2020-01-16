@@ -1428,7 +1428,7 @@ removeZeroCounts <- function(dataset, membership = "none") {
   if (length(zeroSUMrows) > 0 && class(membership) == "numeric") {
     dataset <- dataset[- zeroSUMrows, ]
     membership <- membership[- zeroSUMrows]
-  } else if(nbrZeroSUMrows > 0 && all(membership == "none")) {
+  } else if(zeroSUMrows > 0 && all(membership == "none")) {
     dataset <- dataset[- zeroSUMrows, ]
     membership <- "none"
   }
