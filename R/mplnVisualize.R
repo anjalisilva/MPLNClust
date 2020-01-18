@@ -107,8 +107,6 @@ mplnVisualize <- function(dataset, clusterMembershipVector = NA,
                        qual_col_pals$maxcolors,
                        rownames(qual_col_pals)))
 
-  pathNow <- getwd()
-
   if (plots == 'all' || plots == 'heatmaps') {
   # Heatmap 1
     if (format == 'png') {
