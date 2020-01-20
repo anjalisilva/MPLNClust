@@ -395,8 +395,7 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
       to model selection via slope heuristics (Djump and DDSE)
       should be examined to ensure that sufficiently complex
       models have been considered.")
-    mat <- cbind(Kchoice, k/nObservations, k/nObservations,
-      - ll)
+    mat <- cbind(Kchoice, k/nObservations, k/nObservations, - ll)
     ResCapushe <- capushe ::capushe(mat, nObservations)
     DDSEmodel<- ResCapushe@DDSE@model
     Djumpmodel<- ResCapushe@Djump@model
@@ -805,26 +804,15 @@ mplnNonParallel <- function(dataset, membership = "none",
   # for Djump and DDSE
   if((gmax - gmin + 1) > 10 ) {
     # adapted based on HTSCluster package 2.0.8 (25 Oct 2016)
-    PMM <- nonParallelRun
-    runs <- gmin:gmax
-    gmax <- gmax
-    logLike.final <- suppressWarnings(do.call("cbind",
-      lapply(PMM, function(x) x$loglikelihood)))
-    # gives log-likelihood for each cluster at each run
-    logLike.val <- apply(logLike.final, 1, max)
-
-
+    Kchoice <- gmin:gmax # all the cluster/component sizes considered
     message("Note: diagnostic plots for results corresponding
       to model selection via slope heuristics (Djump and DDSE)
       should be examined to ensure that sufficiently complex
       models have been considered.")
-    Kchoice <- gmin:gmax
-    k <- k # number of parameters
-    mat <- cbind(Kchoice, k/nObservations, k/nObservations,
-      - logLike.val)
-    ResCapushe <- capushe::capushe(mat, nObservations)
-    DDSEmodel <- ResCapushe@DDSE@model
-    Djumpmodel <- ResCapushe@Djump@model
+    mat <- cbind(Kchoice, k/nObservations, k/nObservations, - ll)
+    ResCapushe <- capushe ::capushe(mat, nObservations)
+    DDSEmodel<- ResCapushe@DDSE@model
+    Djumpmodel<- ResCapushe@Djump@model
     final <- proc.time() - ptm
 
     RESULTS <- list(dataset = dataset,
