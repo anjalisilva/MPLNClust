@@ -65,9 +65,9 @@ function produces heatmaps and line plots.
 
 # MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
 #                              clusterMembershipVector =
-#                  MPLNClustResults$all_results[[1]]$all_results$clusterlabels,
-#                               fileName = 'TwoClusterModel', plots = 'all',
-#                               format = 'png')
+#                MPLNClustResults$all_results[[1]]$all_results$clusterlabels,
+#                                fileName = 'TwoClusterModel', plots = 'all',
+#                                format = 'png')
 
 }
 \author{

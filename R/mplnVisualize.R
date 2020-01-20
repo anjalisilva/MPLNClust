@@ -46,9 +46,9 @@
 #'
 #' # MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
 #' #                              clusterMembershipVector =
-#' #                  MPLNClustResults$all_results[[1]]$all_results$clusterlabels,
-#' #                               fileName = 'TwoClusterModel', plots = 'all',
-#' #                               format = 'png')
+#' #                MPLNClustResults$all_results[[1]]$all_results$clusterlabels,
+#' #                                fileName = 'TwoClusterModel', plots = 'all',
+#' #                                format = 'png')
 #'
 #' @author Anjali Silva, \email{anjali.silva@uhnresearch.ca}
 #'
@@ -102,7 +102,8 @@ mplnVisualize <- function(dataset, clusterMembershipVector = NA,
   vec <- unlist(ordervector)
   colorsvector <- unlist(anothervector)
 
-  qual_col_pals <- RColorBrewer::brewer.pal.info[brewer.pal.info$category == 'qual',]
+  qual_col_pals <- RColorBrewer::brewer.pal.info[
+                   brewer.pal.info$category == 'qual', ]
   col_vector <- unlist(mapply(RColorBrewer::brewer.pal,
                        qual_col_pals$maxcolors,
                        rownames(qual_col_pals)))
