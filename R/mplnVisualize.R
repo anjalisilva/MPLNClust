@@ -188,7 +188,7 @@ mplnVisualize <- function(dataset, clusterMembershipVector = NA,
                   col = c(rep("maroon", nrow(toplot_1)), 7),
                   xlab = "Samples", ylab = "Expression (log counts)",
                   cex = 1, lty = c(rep(2, nrow(toplot_1)), 1),
-                  lwd = c(rep(1, nrow(toplot_1)), 3), xaxt = "n",
+                  lwd = c(rep(3, nrow(toplot_1)), 4), xaxt = "n",
                   xlim = c(1, ncol(toplot1)), main = paste("Cluster ",
                   cluster))
         } else {
