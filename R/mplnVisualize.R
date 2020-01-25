@@ -12,6 +12,9 @@
 #' @param fileName Name for the plot being generated.
 #' @param plots A character string indicating which plots to be produced.
 #'    Options are 'heatmaps', 'lines', and 'all'. Default is 'all'.
+#' @param LinePlotColours Character string indicating if the line plots
+#'    should be multicoloured or monotone, in black. Options are
+#'    'multicolour' or 'black'. Default is 'black'.
 #' @param format Character string indicating the format of the image to
 #'    be produced. Default 'pdf'. Options 'pdf' or 'png'.
 #'
@@ -61,6 +64,7 @@
 #' @importFrom gplots redgreen
 mplnVisualize <- function(dataset, clusterMembershipVector = NA,
                           fileName = 'FileName', plots = 'all',
+                          LinePlotColours = "black",
                           format = 'pdf') {
 
   # Checking
@@ -160,23 +164,69 @@ mplnVisualize <- function(dataset, clusterMembershipVector = NA,
 
   if (plots == 'all' || plots == 'lines') {
   # Line Plots
-    for(cluster in seq_along(unique(clusterMembershipVector))) {
 
-      if (format == 'png') {
-        grDevices::png(paste0(pathNow, "/LinePlot_Cluster", cluster,
-          "_", fileName, ".png"))
-      } else {
-        grDevices::pdf(paste0(pathNow, "/LinePlot_Cluster", cluster,
-          "_", fileName, ".pdf"))
-      }
+    if (LinePlotColours == "multicolour") {
+      for(cluster in seq_along(unique(clusterMembershipVector))) {
+
+        if (format == 'png') {
+          grDevices::png(paste0(pathNow, "/LinePlot_Cluster", cluster,
+            "_", fileName, ".png"))
+        } else {
+          grDevices::pdf(paste0(pathNow, "/LinePlot_Cluster", cluster,
+            "_", fileName, ".pdf"))
+        }
+
         # Save how many observations below to each cluster size,
         # given by 'cluster'
-        toplot_1 = as.matrix(DataPlusLabs[which(DataPlusLabs[,
+        toplot_1 <- as.matrix(DataPlusLabs[which(DataPlusLabs[,
+                    ncol(dataset) + 1] == cluster), c(1:ncol(dataset))],
+                    ncol = ncol(dataset))
+
+        # Save column mean in last row
+        toplot1 <- rbind(log(toplot_1 + 1), colMeans(log(toplot_1 + 1)))
+        # If discontinunity is needed between samples (e.g. for 6 samples)
+        # toplot1_space=cbind(toplot1[,c(1:3)],rep(NA,nrow(toplot_1)+1),
+        # toplot1[,c(4:6)])
+
+        if (cluster == 7) {
+        # alter the colour from yellow, since yellow is used as
+        # average line colour
+        graphics::matplot(t(toplot1), type = "l", pch = 1,
+                    col = c(rep("maroon", nrow(toplot_1)), 7),
+                    xlab = "Samples", ylab = "Expression (log counts)",
+                    cex = 1, lty = c(rep(2, nrow(toplot_1)), 1),
+                    lwd = c(rep(3, nrow(toplot_1)), 4), xaxt = "n",
+                    xlim = c(1, ncol(toplot1)), main = paste("Cluster ",
+                    cluster))
+        } else {
+          graphics::matplot(t(toplot1), type = "l", pch = 1,
+          col = c(rep(cluster, nrow(toplot_1)), 7),
+          xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
+          lty = c(rep(2, nrow(toplot_1)), 1),
+          lwd = c(rep(3, nrow(toplot_1)), 4),
+          xaxt = "n", xlim = c(1, ncol(toplot1)),
+          main = paste("Cluster ", cluster)) }
+          axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
+          grDevices::dev.off()
+        }
+    } else if (LinePlotColours == "black") {
+      for(cluster in seq_along(unique(clusterMembershipVector))) {
+
+        if (format == 'png') {
+          grDevices::png(paste0(pathNow, "/LinePlot_Cluster", cluster,
+            "_", fileName, ".png"))
+        } else {
+          grDevices::pdf(paste0(pathNow, "/LinePlot_Cluster", cluster,
+            "_", fileName, ".pdf"))
+        }
+        # Save how many observations below to each cluster size,
+        # given by 'cluster'
+        toplot_1 <- as.matrix(DataPlusLabs[which(DataPlusLabs[,
           ncol(dataset) + 1] == cluster), c(1:ncol(dataset))],
           ncol = ncol(dataset))
 
         # Save column mean in last row
-        toplot1 = rbind(log(toplot_1 + 1), colMeans(log(toplot_1 + 1)))
+        toplot1 <- rbind(log(toplot_1 + 1), colMeans(log(toplot_1 + 1)))
         # If discontinunity is needed between samples (e.g. for 6 samples)
         # toplot1_space=cbind(toplot1[,c(1:3)],rep(NA,nrow(toplot_1)+1),
         # toplot1[,c(4:6)])
@@ -185,22 +235,23 @@ mplnVisualize <- function(dataset, clusterMembershipVector = NA,
           # alter the colour from yellow, since yellow is used as
           # average line colour
           graphics::matplot(t(toplot1), type = "l", pch = 1,
-                  col = c(rep("maroon", nrow(toplot_1)), 7),
-                  xlab = "Samples", ylab = "Expression (log counts)",
-                  cex = 1, lty = c(rep(2, nrow(toplot_1)), 1),
-                  lwd = c(rep(3, nrow(toplot_1)), 4), xaxt = "n",
-                  xlim = c(1, ncol(toplot1)), main = paste("Cluster ",
-                  cluster))
+            col = c(rep(1, nrow(toplot_1)), 7),
+            xlab = "Samples", ylab = "Expression (log counts)",
+            cex = 1, lty = c(rep(2, nrow(toplot_1)), 1),
+            lwd = c(rep(3, nrow(toplot_1)), 4), xaxt = "n",
+            xlim = c(1, ncol(toplot1)), main = paste("Cluster ",
+              cluster))
         } else {
           graphics::matplot(t(toplot1), type = "l", pch = 1,
-            col = c(rep(cluster, nrow(toplot_1)), 7),
+            col = c(rep(1, nrow(toplot_1)), 7),
             xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
             lty = c(rep(2, nrow(toplot_1)), 1),
-            lwd = c(rep(1, nrow(toplot_1)), 3),
+            lwd = c(rep(3, nrow(toplot_1)), 4),
             xaxt = "n", xlim = c(1, ncol(toplot1)),
             main = paste("Cluster ", cluster)) }
         axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
         grDevices::dev.off()
+      }
     }
   }
 }

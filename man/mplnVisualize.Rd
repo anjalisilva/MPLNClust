@@ -9,6 +9,7 @@ mplnVisualize(
   clusterMembershipVector = NA,
   fileName = "FileName",
   plots = "all",
+  LinePlotColours = "black",
   format = "pdf"
 )
 }
@@ -24,6 +25,10 @@ mpln(). Default NA.}
 
 \item{plots}{A character string indicating which plots to be produced.
 Options are 'heatmaps', 'lines', and 'all'. Default is 'all'.}
+
+\item{LinePlotColours}{Character string indicating if the line plots
+should be multicoloured or monotone, in black. Options are
+'multicolour' or 'black'. Default is 'black'.}
 
 \item{format}{Character string indicating the format of the image to
 be produced. Default 'pdf'. Options 'pdf' or 'png'.}
