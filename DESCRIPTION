@@ -3,7 +3,7 @@ Type: Package
 Title: Mixtures of Multivariate Poisson-Log Normal Model for Clustering Count Data
 Version: 0.1.0
 Authors@R: c(
-    person("A", "Silva", email = "anjali.silva@uhnresearch.ca", role = c("aut", "cre")),
+    person("Anjali", "Silva", email = "anjali.silva@uhnresearch.ca", role = c("aut", "cre")),
     person("Sanjeena", "Dang", role = "aut")
     )
 Maintainer: Anjali Silva <anjali.silva@uhnresearch.ca>
