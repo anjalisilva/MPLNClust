@@ -67,6 +67,7 @@
 #'
 #' @export
 #' @import graphics
+#' @import ggplot2
 #' @importFrom grDevices png
 #' @importFrom grDevices pdf
 #' @importFrom grDevices dev.off
@@ -75,9 +76,6 @@
 #' @importFrom pheatmap pheatmap
 #' @importFrom gplots heatmap.2
 #' @importFrom gplots redgreen
-#' @importFrom ggplot2 ggplot
-#' @importFrom ggplot2 ggsave
-#' @importFrom reshape melt
 mplnVisualize <- function(dataset, plots = 'all',
                           probabilities = NA,
                           clusterMembershipVector = NA,
@@ -311,7 +309,7 @@ mplnVisualize <- function(dataset, plots = 'all',
                                             id.vars = c("Sample","Cluster"))
 
     ggplot2::ggplot(data = tableProbabilitiesMelt,
-                    aes(fill = variable, y = value,
+                    ggplot2::aes(fill = variable, y = value,
                     x = Sample)) +
                     geom_bar(position = "fill", stat = "identity") +
                     theme_bw() +
