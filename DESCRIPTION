@@ -12,19 +12,21 @@ Description: Performs clustering using mixtures of multivariate Poisson-log norm
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.1.0)
-biocViews:
+biocViews: edgeR
 Imports: 
     coda,
     capushe,
     cluster,
     clusterGeneration,
-    edgeR,
     gplots,
+    ggplot2,
+    grDevices,
     MASS,
     mclust,
     mvtnorm,
     Rcpp (>= 1.0.2),
     RColorBrewer,
+    reshape, 
     rstan,
     parallel,
     pheatmap
