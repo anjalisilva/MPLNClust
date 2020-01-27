@@ -8,7 +8,7 @@ Authors@R: c(
     )
 Maintainer: Anjali Silva <anjali.silva@uhnresearch.ca>
 Description: Performs clustering using mixtures of multivariate Poisson-log normal distribution
-    and model selection using AIC, AIC3, BIC and ICL.
+    and model selection using AIC, AIC3, BIC and ICL. Permit to visualize clustering results.
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.1.0)
