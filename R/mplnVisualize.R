@@ -73,6 +73,7 @@
 #' @importFrom grDevices dev.off
 #' @importFrom RColorBrewer brewer.pal.info
 #' @importFrom RColorBrewer brewer.pal
+#' @importFrom randomcoloR distinctColorPalette
 #' @importFrom pheatmap pheatmap
 #' @importFrom gplots heatmap.2
 #' @importFrom gplots redgreen
@@ -311,7 +312,8 @@ mplnVisualize <- function(dataset, plots = 'all',
     ggplot2::ggplot(data = tableProbabilitiesMelt,
         ggplot2::aes(fill = variable, y = value, x = Sample)) +
         geom_bar(position = "fill", stat = "identity") +
-        scale_fill_manual(values = c(1:max(mclust::map(probabilities))),
+        scale_fill_manual(values = randomcoloR::distinctColorPalette(
+          max(mclust::map(probabilities))),
           name = "Cluster") + theme_bw() +
         theme(text = element_text(size = 10),
           panel.grid.major = element_blank(),
