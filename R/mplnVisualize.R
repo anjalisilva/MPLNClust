@@ -309,25 +309,21 @@ mplnVisualize <- function(dataset, plots = 'all',
                                             id.vars = c("Sample","Cluster"))
 
     ggplot2::ggplot(data = tableProbabilitiesMelt,
-                    ggplot2::aes(fill = variable, y = value,
-                    x = Sample)) +
-                    geom_bar(position = "fill", stat = "identity") +
-                    theme_bw() +
-                    theme(text = element_text(size = 10),
-                          panel.grid.major = element_blank(),
-                          panel.grid.minor = element_blank(),
-                          axis.text.x = element_text(face = "bold", angle = 90),
-                          axis.text.y = element_text(face="bold")) +
-                    coord_cartesian(ylim = c(0, 1)) +
-                    labs(x = "Observation") +
-                    # y axis tick mark lables
-                    scale_y_continuous(name = "Posterior probability",
-                      limits = c(0: 1)) +
-                    scale_fill_discrete(name = "Cluster")
+        ggplot2::aes(fill = variable, y = value, x = Sample)) +
+        geom_bar(position = "fill", stat = "identity") +
+        scale_fill_manual(values = c(1:max(mclust::map(probabilities))),
+          name = "Cluster") + theme_bw() +
+        theme(text = element_text(size = 10),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.text.x = element_text(face = "bold", angle = 90),
+          axis.text.y = element_text(face="bold")) +
+        coord_cartesian(ylim = c(0, 1)) +
+        labs(x = "Observation") +
+        # y axis tick mark lables
+        scale_y_continuous(name = "Posterior probability", limits = c(0: 1))
     ggplot2::ggsave(paste0(pathNow,"/barplot_", fileName,".",format))
-
   }
-
 
   return(NULL)
 }
