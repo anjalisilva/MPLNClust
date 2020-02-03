@@ -55,7 +55,7 @@ library("MPLNClust")
 
 ## Data Simulation
 
-The function *mplnDataGenerator* permits to simulate data from a mixture of MPLN distrubutions. See *?mplnDataGenerator* for more information, an example, and references. To simulate a dataset from a mixture of MPLN with 100 observations and a dimensionality of 6, with two components, each with a mixing proportion of 0.79 and 0.21, respectively, let us use *mplnDataGenerator*. This also requires the mean and covariance matrix for each component respectively. 
+The function *mplnDataGenerator* permits to simulate data from a mixture of MPLN distributions. See *?mplnDataGenerator* for more information, an example, and references. To simulate a dataset from a mixture of MPLN with 100 observations and a dimensionality of 6, with two components, each with a mixing proportion of 0.79 and 0.21, respectively, let us use *mplnDataGenerator*. This also requires the mean and covariance matrix for each component, respectively. 
 
 ``` r
 nObservations <- 100 # Biological samples e.g., genes
@@ -120,15 +120,15 @@ Once the count data is available, clustering can be performed using the *mplnPar
 Coarse grain parallelization is employed in *mplnParallel*, such that when a range of components/clusters (g = 1,...,G) are considered, each component/cluster size is run on a different processor. This can be performed because each component/cluster size is independent from another. All components/clusters in the range to be tested have been parallelized to run on a seperate core using the *parallel* R package. The number of cores used for clustering is internally determined using *parallel::detectCores() - 1*.
 
 ``` r
-mplnResults <- mplnParallel(dataset = sampleData$dataset,
-                    membership = sampleData$trueMembership,
-                    gmin = 1,
-                    gmax = 2,
-                    nChains = 3,
-                    nIterations = 500,
-                    initMethod = "kmeans",
-                    nInitIterations = 2,
-                    normalize = "Yes")
+mplnResults <- MPLNClust::mplnParallel(dataset = sampleData$dataset,
+                                       membership = sampleData$trueMembership,
+                                       gmin = 1,
+                                       gmax = 2,
+                                       nChains = 3,
+                                       nIterations = 500,
+                                       initMethod = "kmeans",
+                                       nInitIterations = 2,
+                                       normalize = "Yes")
 ```
 
 The model selected by BIC for this dataset can be viewed as follows.
@@ -147,15 +147,15 @@ table(mplnResults$BIC_all$BICmodelselected_labels, sampleData$truemembership)
 No internal parallelization is performed for *mplnNonParallel*. This permits the user to arrange own parallelization if necessary. This code will typically take longer than the *mplnParallel*, for same analysis. 
 
 ``` r
-mplnResultsNonParallel <- mplnNonParallel(dataset = sampleData$dataset,
-                                membership = sampleData$trueMembership,
-                                gmin = 1,
-                                gmax = 2,
-                                nChains = 3,
-                                nIterations = 500,
-                                initMethod = "kmeans",
-                                nInitIterations = 2,
-                                normalize = "Yes")
+mplnResultsNonParallel <- MPLNClust::mplnNonParallel(dataset = sampleData$dataset,
+                                                     membership = sampleData$trueMembership,
+                                                     gmin = 1,
+                                                     gmax = 2,
+                                                     nChains = 3,
+                                                     nIterations = 500,
+                                                     initMethod = "kmeans",
+                                                     nInitIterations = 2,
+                                                     normalize = "Yes")
 ```
 
 <br>
@@ -166,12 +166,12 @@ Clustering results can be viewed as heatmaps and line plots. If a matrix of prob
 
 ``` r
  # Visualizing results for model selected by BIC using heatmaps
- MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
-                              plots = 'all',
-                              clusterMembershipVector =
-                              mplnResults$BIC_all$BICmodelselected_labels,
-                              fileName = 'BICModel', 
-                              format = 'png')
+ MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
+                                         plots = 'all',
+                                         clusterMembershipVector =
+                                         mplnResults$BIC_all$BICmodelselected_labels,
+                                         fileName = 'BICModel', 
+                                         format = 'png')
 ```
 
 <img src="heatmap1_BICModel.png" alt="heatmap1_BICModel" width="250"/>
@@ -187,12 +187,12 @@ Rather than visualizing model selected by information criteria, labels for a spe
 
 ``` r
  # Visualizing line plots for model with 2 components
- MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
-                              plots = 'line',
-                              clusterMembershipVector =
-                              mplnResults$all_results[[2]]$all_results$clusterlabels,
-                              fileName = 'TwoComponentModel', 
-                              format = 'png')
+ MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
+                                         plots = 'line',
+                                         clusterMembershipVector =
+                                         mplnResults$all_results[[2]]$all_results$clusterlabels,
+                                         fileName = 'TwoComponentModel', 
+                                         format = 'png')
 ```
 <br>
 
@@ -200,14 +200,14 @@ By providing a matrix of probabilities for the observations belonging to each cl
 
 ``` r
  #  Visualizing line plots for model with 2 components provided probabilities
- MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
-                              plots = 'all',
-                              probabilities = mplnResults$all_results[[2]]$all_results$probaPost,
-                              clusterMembershipVector =
-                              mplnResults$all_results[[2]]$all_results$clusterlabels,
-                              LinePlotColours = "multicolour",
-                              fileName = 'AllPlotsWithProbability',
-                              format = 'png')
+ MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
+                                         plots = 'all',
+                                         probabilities = mplnResults$all_results[[2]]$all_results$probaPost,
+                                         clusterMembershipVector =
+                                         mplnResults$all_results[[2]]$all_results$clusterlabels,
+                                         LinePlotColours = "multicolour",
+                                         fileName = 'AllPlotsWithProbability',
+                                         format = 'png')
 ```
 <div style="text-align:center"><img src="barplot_AllPlotsWithProbability.png" alt="barplot_AllPlotsWithProbability" width="500"/>
 
