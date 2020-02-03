@@ -199,7 +199,7 @@ Rather than visualizing model selected by information criteria, labels for a spe
 By providing a matrix of probabilities for the observations belonging to each cluster, a barplot of probabilities can be produced.
 
 ``` r
- # Visualizing results for model selected by BIC using heatmaps
+ #  Visualizing line plots for model with 2 components provided probabilities
  MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
                               plots = 'all',
                               probabilities = mplnResults$all_results[[2]]$all_results$probaPost,
