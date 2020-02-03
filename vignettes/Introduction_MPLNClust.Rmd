@@ -165,7 +165,7 @@ mplnResultsNonParallel <- MPLNClust::mplnNonParallel(dataset = sampleData$datase
 Clustering results can be viewed as heatmaps and line plots. If a matrix of probabilities for the observations belonging to each cluster is provided, the option to produce a barplot of probabilities is also available.
 
 ``` r
- # Visualizing results for model selected by BIC using heatmaps
+ # Visualizing results for model selected by BIC using all plots; no probabilities provided
  MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
                                          plots = 'all',
                                          clusterMembershipVector =
