@@ -50,6 +50,8 @@ install_github("anjalisilva/MPLNClust", build_vignettes = TRUE)
 library("MPLNClust")
 ```
 
+<br>
+
 
 ## Data Simulation
 
@@ -88,7 +90,11 @@ sampleData <- mplnDataGenerator(nObservations = nObservations,
                                 produceImage = "Yes")
 
 ```
-The user has the option to produce the plot of log-transformed count data. <img src="PairsPlot_LogCounts.png" alt="Venn_15Oct2019" width="450"/>
+<br>
+
+The user has the option to produce the plot of log-transformed count data. 
+<div style="text-align:center"><img src="PairsPlot_LogCounts.png" alt="Venn_15Oct2019" width="450"/>
+<div style="text-align:left">
 
 The generated dataset can be checked:
 ``` r
@@ -99,13 +105,17 @@ summary(sampleData$dataset) # summary of data
 pairs(sampleData$dataset, col = sampleData$trueMembership + 1,
       main = "Pairs plot of counts") # visualize counts
 ```
-<img src="PairsPlot_Counts.png" alt="PairsPlot_Counts" width="450"/>
+<div style="text-align:center"><img src="PairsPlot_Counts.png" alt="PairsPlot_Counts" width="450"/>
+<div style="text-align:left">
 
+<br>
+
+<div style="text-align:left">
 ## Clustering
-
+<div style="text-align:left">
 Once the count data is available, clustering can be performed using the *mplnParallel* or *mplnNonParallel* function. See *?mplnParallel* or *?mplnNonParallel* for more information, an example, and references. Here, clustering will be performed using the above generated dataset. 
 
-### Parallel Clustering
+#### Parallel Clustering
 
 Coarse grain parallelization is employed in *mplnParallel*, such that when a range of components/clusters (g = 1,...,G) are considered, each component/cluster size is run on a different processor. This can be performed because each component/cluster size is independent from another. All components/clusters in the range to be tested have been parallelized to run on a seperate core using the *parallel* R package. The number of cores used for clustering is internally determined using *parallel::detectCores() - 1*.
 
@@ -130,7 +140,9 @@ mplnResults$BIC_all$BICmodelselected
 table(mplnResults$BIC_all$BICmodelselected_labels, sampleData$truemembership)
 ```
 
-### Non Parallel Clustering
+<br>
+
+#### Non Parallel Clustering
 
 No internal parallelization is performed for *mplnNonParallel*. This permits the user to arrange own parallelization if necessary. This code will typically take longer than the *mplnParallel*, for same analysis. 
 
@@ -146,17 +158,20 @@ mplnResultsNonParallel <- mplnNonParallel(dataset = sampleData$dataset,
                                 normalize = "Yes")
 ```
 
+<br>
+
 ## Results Visualization
 
-Clustering results can be viewed as heatmaps and line plots.
+Clustering results can be viewed as heatmaps and line plots. If a matrix of probabilities for the observations belonging to each cluster is provided, the option to produce a barplot of probabilities is also available.
 
 ``` r
- # Visualizing results for model selected by BIC
+ # Visualizing results for model selected by BIC using heatmaps
  MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
+                              plots = 'all',
                               clusterMembershipVector =
-                        mplnResults$BIC_all$BICmodelselected_labels,
-                               fileName = 'BICModel', plots = 'all',
-                               format = 'png')
+                              mplnResults$BIC_all$BICmodelselected_labels,
+                              fileName = 'BICModel', 
+                              format = 'png')
 ```
 
 <img src="heatmap1_BICModel.png" alt="heatmap1_BICModel" width="250"/>
@@ -164,20 +179,51 @@ Clustering results can be viewed as heatmaps and line plots.
 <img src="LinePlot_Cluster1_BICModel.png" alt="LinePlot_Cluster1_BICModel" width="200"/>
 <img src="LinePlot_Cluster2_BICModel.png" alt="LinePlot_Cluster2_BICModel" width="200"/>
 
-The first two images (above, left) show heatmaps of the results with observations (e.g., genes) along rows and samples along the columns. The last two images (above, right) show line plots of the two clusters. Values for each sample are connected by dashed lines to illustrate the trends of gene expression. The yellow line shows the mean gene expression level for each cluster. 
+The two images (above, left) show heatmaps of counts in the input dataset, with observations (e.g., genes) along rows and samples along the columns. The group membership based on clusters are shown to the left of heatmap. The last two images (above, right) show line plots of each cluster. Values for each sample are connected by dashed lines to illustrate the trends of expression (log counts). The yellow line shows the mean expression level (log counts) for each cluster. 
 
-Rather than visualizing model selected by information criteria, labels for a specific component/cluster size can also be visualized. In the below example, the results for G = 2 model is visualized. 
+<br>
+
+Rather than visualizing model selected by information criteria, labels for a specific component/cluster size can also be visualized. In the below example, the results for G = 2 model is visualized. Remember to alter file name to avoid overwriting. 
 
 ``` r
  # Visualizing line plots for model with 2 components
  MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
+                              plots = 'line',
                               clusterMembershipVector =
-                     mplnResults$all_results[[2]]$all_results$clusterlabels,
-                               fileName = 'TwoClusterModel', plots = 'line',
-                               format = 'png')
+                              mplnResults$all_results[[2]]$all_results$clusterlabels,
+                              fileName = 'TwoComponentModel', 
+                              format = 'png')
 ```
-\vspace{2in}
+<br>
 
+By providing a matrix of probabilities for the observations belonging to each cluster, a barplot of probabilities can be produced.
+
+``` r
+ # Visualizing results for model selected by BIC using heatmaps
+ MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
+                              plots = 'all',
+                              probabilities = mplnResults$all_results[[2]]$all_results$probaPost,
+                              clusterMembershipVector =
+                              mplnResults$all_results[[2]]$all_results$clusterlabels,
+                              LinePlotColours = "multicolour",
+                              fileName = 'AllPlotsWithProbability',
+                              format = 'png')
+```
+<div style="text-align:center"><img src="barplot_AllPlotsWithProbability.png" alt="barplot_AllPlotsWithProbability" width="500"/>
+
+<div style="text-align:left">
+The above plot illustrates, for each observation, the probability of belonging to component/cluster 1 (P1) or probability of belonging to component/cluster 2 (P2). In this example, there were 100 observations in the dataset. The bar for each observation look monotone, indicating high confidence in belonging to the indicated component/cluster. 
+
+<br>
+
+In an alternative case (not tested here), which resulted in the below bar plot, indicates variability in probability of belonging to a component/cluster for a given observation. For example, for the first observation there is about 0.41 probability (P1) of belonging to component/cluster 1 and about a 0.59 probability (P2) of belonging to component/cluster 2. Therefore, it is assigned to component/cluster 2. Alternatively, for the 25th observation there is about 0.99 probability (P1) of belonging to component/cluster 1 and about 0.01 probability (P2) of belonging to component/cluster 2.  Therefore, it is assigned to component/cluster 1. 
+
+<div style="text-align:center"><img src="barplot_AllPlotsWithProbability_LowConf.png" alt="barplot_AllPlotsWithProbability_LowConf" width="500"/>
+<div style="text-align:left">
+
+<br>
+
+<div style="text-align:left">
 ## References
 
 [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data. *BMC Bioinformatics* 20. ](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0)

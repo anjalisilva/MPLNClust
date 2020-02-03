@@ -23,13 +23,16 @@ library("MPLNClust")
 lsf.str("package:MPLNClust")
 ```
 
-For tutorials, refer to the vignette.
+For tutorials and plot interpretation, refer to the vignette.
 
 ``` r
 browseVignettes("MPLNClust")
 ```
 <img src="inst/extdata/Plot_ASilva.png" alt="Overview" width="800"/>
+<div style="text-align:center"><img src="inst/extdata/barplot_AllPlotsWithProbability_LowConf.png" alt="Probability" width="600" height="400"/>
+<div style="text-align:left">
 
+<div style="text-align:left">
 ## Details
 
 The MPLN distribution (Aitchison and Ho, 1989) is a multivariate log normal mixture of independent Poisson distributions. The hidden layer of the MPLN distribution is a multivariate Gaussian distribution, which allows for the specification of a covariance structure. Further, the MPLN distribution can account for overdispersion in count data. Additionally, the MPLN distribution supports negative and positive correlations.
