@@ -29,8 +29,8 @@ For tutorials and plot interpretation, refer to the vignette.
 browseVignettes("MPLNClust")
 ```
 
-<img src="inst/extdata/barplot_FourClusterModel.png" alt="Overview" width="450"/>
-<img src="inst/extdata/heatmap_FourClusterModel.png" alt="Overview" width="400"/>
+<img src="inst/extdata/barplot_FourClusterModel.png" alt="Overview" width="350"/>
+<img src="inst/extdata/heatmap_FourClusterModel.png" alt="Overview" width="300"/>
 <div style="text-align:center"><img src="inst/extdata/LinePlots_FourClusterModel.png" alt="Lineplot" width="600" height="400"/>
 
 <div style="text-align:left">
