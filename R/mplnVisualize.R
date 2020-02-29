@@ -225,7 +225,7 @@ mplnVisualize <- function(dataset, plots = 'all',
                          labels_col = colnames(dataset),
                          annotation_row = annotation_row,
                          annotation_colors = list(Cluster = heatMap2RowAnnotation[
-                           unique(clusterMembershipVector)]),
+                           sort(unique(clusterMembershipVector))]),
                          fontface = "italic", legend = TRUE, scale ="row",
                          border_color = "black", cluster_row = FALSE,
                          cluster_col = FALSE,
