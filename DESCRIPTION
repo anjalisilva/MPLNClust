@@ -12,12 +12,13 @@ Description: Performs clustering using mixtures of multivariate Poisson-log norm
 Encoding: UTF-8
 LazyData: true
 Depends: R (>= 3.1.0)
-biocViews: edgeR
+biocViews: 
 Imports: 
     coda,
     capushe,
     cluster,
     clusterGeneration,
+    edgeR,
     gplots,
     ggplot2,
     grDevices,
@@ -32,7 +33,7 @@ Imports:
     parallel,
     pheatmap
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.0.0
+RoxygenNote: 7.0.2
 Suggests: 
     testthat,
     knitr,
