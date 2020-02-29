@@ -47,15 +47,15 @@
 #' #                                       sigma = rbind(trueSigma1, trueSigma2),
 #' #                                       produceImage = "No")
 #'
-#' # MPLNClustResults <- mpln(dataset = simulatedCounts$dataset,
-#' #                          membership = NA,
-#' #                          gmin = 2,
-#' #                          gmax = 2,
-#' #                          nChains = 3,
-#' #                          nIterations = 100,
-#' #                          initMethod = "kmeans",
-#' #                          nInitIterations = 0,
-#' #                          normalize = "Yes")
+#' # MPLNClustResults <- mplnParallel(dataset = simulatedCounts$dataset,
+#' #                                  membership = "none",
+#' #                                  gmin = 2,
+#' #                                  gmax = 2,
+#' #                                  nChains = 3,
+#' #                                  nIterations = 200,
+#' #                                  initMethod = "kmeans",
+#' #                                  nInitIterations = 0,
+#' #                                  normalize = "Yes")
 #'
 #' # MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
 #' #                              clusterMembershipVector =
@@ -84,8 +84,7 @@ mplnVisualize <- function(dataset, plots = 'all',
                           LinePlotColours = "black",
                           format = 'pdf') {
 
-  # Checking
-
+  # Checking user input
   if (typeof(dataset) != "double" & typeof(dataset) != "integer") {
     stop("\n Dataset type needs to be integer")
   }
@@ -290,7 +289,7 @@ mplnVisualize <- function(dataset, plots = 'all',
     }
   }
 
-  if (plots == 'all' || plots == 'bar') {
+  if ((plots == 'all' || plots == 'bar') && !is.na(probabilities)) {
     # Bar plot
 
     tableProbabilities <- as.data.frame(cbind(Sample = c(1:nrow(probabilities)),

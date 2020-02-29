@@ -69,15 +69,15 @@ is also available.
 #                                       sigma = rbind(trueSigma1, trueSigma2),
 #                                       produceImage = "No")
 
-# MPLNClustResults <- mpln(dataset = simulatedCounts$dataset,
-#                          membership = NA,
-#                          gmin = 2,
-#                          gmax = 2,
-#                          nChains = 3,
-#                          nIterations = 100,
-#                          initMethod = "kmeans",
-#                          nInitIterations = 0,
-#                          normalize = "Yes")
+# MPLNClustResults <- mplnParallel(dataset = simulatedCounts$dataset,
+#                                  membership = "none",
+#                                  gmin = 2,
+#                                  gmax = 2,
+#                                  nChains = 3,
+#                                  nIterations = 200,
+#                                  initMethod = "kmeans",
+#                                  nInitIterations = 0,
+#                                  normalize = "Yes")
 
 # MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
 #                              clusterMembershipVector =
