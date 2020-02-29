@@ -176,12 +176,12 @@ mplnVisualize <- function(dataset, plots = 'all',
                       main = paste("Clustering results, G =",
                              max(clusterMembershipVector)))
     graphics::par(xpd = TRUE)
-    graphics::legend("topright",
+    graphics::legend( xpd = TRUE, x = -0.1, y= 0,
       legend = paste0("Cluster ", unique(colorsvector)),
       col = unique(coloursBarPlot[colorsvector]),
       lty = 1,
       lwd = 5,
-      cex =.8,  xpd = TRUE, horiz = FALSE)
+      cex =.8, horiz = FALSE)
     grDevices::dev.off()
 
 
@@ -225,7 +225,7 @@ mplnVisualize <- function(dataset, plots = 'all',
                          labels_col = colnames(dataset),
                          annotation_row = annotation_row,
                          annotation_colors = list(Cluster = heatMap2RowAnnotation[
-                           1:max(clusterMembershipVector)]),
+                           unique(clusterMembershipVector)]),
                          fontface = "italic", legend = TRUE, scale ="row",
                          border_color = "black", cluster_row = FALSE,
                          cluster_col = FALSE,
@@ -240,7 +240,7 @@ mplnVisualize <- function(dataset, plots = 'all',
   # Line Plots
 
     if (LinePlotColours == "multicolour") {
-      for(cluster in seq_along(unique(clusterMembershipVector))) {
+      for(cluster in unique(clusterMembershipVector)) {
         if (format == 'png') {
           grDevices::png(paste0(pathNow, "/LinePlot_Cluster", cluster,
             "_", fileName, ".png"))
@@ -262,17 +262,17 @@ mplnVisualize <- function(dataset, plots = 'all',
         # toplot1[,c(4:6)])
 
         graphics::matplot(t(toplot1), type = "l", pch = 1,
-        col = c(rep(coloursBarPlot[cluster], nrow(toplot_1)), 7),
-        xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
-        lty = c(rep(2, nrow(toplot_1)), 1),
-        lwd = c(rep(3, nrow(toplot_1)), 4),
-        xaxt = "n", xlim = c(1, ncol(toplot1)),
-        main = paste("Cluster ", cluster))
+                          col = c(rep(coloursBarPlot[cluster], nrow(toplot_1)), 7),
+                          xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
+                          lty = c(rep(2, nrow(toplot_1)), 1),
+                          lwd = c(rep(3, nrow(toplot_1)), 4),
+                          xaxt = "n", xlim = c(1, ncol(toplot1)),
+                          main = paste("Cluster ", cluster))
         axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
         grDevices::dev.off()
       }
     } else if (LinePlotColours == "black") {
-      for(cluster in seq_along(unique(clusterMembershipVector))) {
+      for(cluster in unique(clusterMembershipVector)) {
 
         if (format == 'png') {
           grDevices::png(paste0(pathNow, "/LinePlot_Cluster", cluster,
@@ -332,9 +332,8 @@ mplnVisualize <- function(dataset, plots = 'all',
           panel.grid.minor = element_blank(),
           axis.text.x = element_text(face = "bold", angle = 90),
           axis.text.y = element_text(face="bold")) +
-        coord_cartesian(ylim = c(0, 1)) +
+        coord_cartesian(ylim = c(0, 1), xlim = c(1, nrow(probabilities))) +
         labs(x = "Observation") +
-        # y axis tick mark lables
         scale_y_continuous(name = "Posterior probability", limits = c(0: 1))
     ggplot2::ggsave(paste0(pathNow,"/barplot_", fileName,".",format))
   }
