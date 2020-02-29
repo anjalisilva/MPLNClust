@@ -80,10 +80,11 @@ is also available.
 #                                  normalize = "Yes")
 
 # MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
+#                              plots = 'all',
 #                              clusterMembershipVector =
-#                MPLNClustResults$all_results[[1]]$all_results$clusterlabels,
-#                                fileName = 'TwoClusterModel', plots = 'all',
-#                                format = 'png')
+#                              MPLNClustResults$all_results[[1]]$all_results$clusterlabels,
+#                              fileName = 'TwoClusterModel',
+#                              format = 'png')
 
 }
 \author{

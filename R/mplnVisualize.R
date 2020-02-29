@@ -58,10 +58,11 @@
 #' #                                  normalize = "Yes")
 #'
 #' # MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
+#' #                              plots = 'all',
 #' #                              clusterMembershipVector =
-#' #                MPLNClustResults$all_results[[1]]$all_results$clusterlabels,
-#' #                                fileName = 'TwoClusterModel', plots = 'all',
-#' #                                format = 'png')
+#' #                              MPLNClustResults$all_results[[1]]$all_results$clusterlabels,
+#' #                              fileName = 'TwoClusterModel',
+#' #                              format = 'png')
 #'
 #' @author Anjali Silva, \email{anjali.silva@uhnresearch.ca}
 #'
@@ -105,7 +106,7 @@ mplnVisualize <- function(dataset, plots = 'all',
   }
 
   if (class(probabilities) == "logical") {
-    cat("\n probabilities are not provided.")
+    cat("\n Probabilities are not provided. Barplot of probabilities will not be produced.")
   } else if (class(probabilities) == "matrix") {
       if (nrow(probabilities) != length(clusterMembershipVector)) {
         stop("\n length(probabilities) should match nrow(dataset)")
@@ -299,20 +300,17 @@ mplnVisualize <- function(dataset, plots = 'all',
     names(tableProbabilities) <- c("Sample", "Cluster",
                                    paste0("P", rep(1:(ncol(tableProbabilities)-2))))
 
-    tableProbabilities$Cluster <- factor(tableProbabilities$Cluster,
-                                         levels =
-                                         levels(factor(tableProbabilities$Cluster)),
-                                         labels =
-                                         paste0("C", c(1:max(tableProbabilities$Cluster))))
-
     tableProbabilitiesMelt <- reshape::melt(tableProbabilities,
                                             id.vars = c("Sample","Cluster"))
+
+    coloursBarPlot <- c(1:20)
+    coloursBarPlot[7] <- "magenta" # alter the colour from yellow, since yellow
+                                   # is used as average line colour
 
     ggplot2::ggplot(data = tableProbabilitiesMelt,
         ggplot2::aes(fill = variable, y = value, x = Sample)) +
         geom_bar(position = "fill", stat = "identity") +
-        scale_fill_manual(values = randomcoloR::distinctColorPalette(
-          max(mclust::map(probabilities))),
+        scale_fill_manual(values = coloursBarPlot,
           name = "Cluster") + theme_bw() +
         theme(text = element_text(size = 10),
           panel.grid.major = element_blank(),
