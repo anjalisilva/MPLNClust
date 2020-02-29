@@ -28,10 +28,12 @@ For tutorials and plot interpretation, refer to the vignette.
 ``` r
 browseVignettes("MPLNClust")
 ```
-<img src="inst/extdata/Plot_ASilva.png" alt="Overview" width="800"/>
-<div style="text-align:center"><img src="inst/extdata/barplot_AllPlotsWithProbability_LowConf.png" alt="Probability" width="600" height="400"/>
-<div style="text-align:left">
 
+<img src="inst/extdata/barplot_FourClusterModel.png" alt="Overview" width="450"/>
+<img src="inst/extdata/heatmap_FourClusterModel.png" alt="Overview" width="400"/>
+<div style="text-align:center"><img src="inst/extdata/LinePlots_FourClusterModel.png" alt="Lineplot" width="600" height="400"/>
+
+<div style="text-align:left">
 <div style="text-align:left">
 
 ## Details
