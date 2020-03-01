@@ -140,6 +140,8 @@ mplnResults$BIC_all$BICmodelselected
 table(mplnResults$BIC_all$BICmodelselected_labels, sampleData$truemembership)
 ```
 
+If a range of components/clusters > 10 is considered, Djump and DDSE will be available in addition to AIC, BIC, AIC3 and ICL.
+
 <br>
 
 #### Non Parallel Clustering
