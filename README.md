@@ -30,6 +30,12 @@ browseVignettes("MPLNClust")
 ```
 <p float="center">
   <img src="inst/extdata/barplot_FourClusterModel.png" alt="Overview" width="400"/>
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  &nbsp;
   <img src="inst/extdata/heatmap_FourClusterModel.png" alt="Overview" width="380"/>
 </p>
 
