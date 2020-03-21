@@ -153,7 +153,7 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
     stop("Dataset type needs to be integer.")
   }
 
-  if (any((dataset%%1 == 0) == TRUE)) {
+  if (any((dataset %% 1 == 0) == FALSE)) {
     stop("Dataset should be a matrix of counts.")
   }
 
@@ -601,7 +601,7 @@ mplnNonParallel <- function(dataset, membership = "none",
     stop("Dataset type needs to be integer.")
   }
 
-  if (any((dataset%%1 == 0) == TRUE)) {
+  if (any((dataset %% 1 == 0) == FALSE)) {
     stop("Dataset should be a matrix of counts.")
   }
 
