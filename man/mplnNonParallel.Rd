@@ -18,7 +18,9 @@ mplnNonParallel(
 }
 \arguments{
 \item{dataset}{A dataset of class matrix and type integer such that
-rows correspond to observations and columns correspond to variables.}
+rows correspond to observations and columns correspond to variables.
+If rowSums are zero, these rows will be removed prior to cluster
+analysis.}
 
 \item{membership}{A numeric vector of length nrow(dataset) containing the
 cluster membership of each observation. If not available,
@@ -81,7 +83,8 @@ results.
 \description{
 Performs clustering using mixtures of multivariate Poisson-log
 normal (MPLN) distribution and model selection using AIC, AIC3,
-BIC and ICL. No internal parallelization is performed.
+BIC and ICL. No internal parallelization, thus code is run in
+serial.
 }
 \examples{
 # Generating simulated data

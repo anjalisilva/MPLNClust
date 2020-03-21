@@ -13,6 +13,8 @@
 #'
 #' @param dataset A dataset of class matrix and type integer such that
 #'    rows correspond to observations and columns correspond to variables.
+#'    If rowSums are zero, these rows will be removed prior to cluster
+#'    analysis.
 #' @param membership A numeric vector of length nrow(dataset) containing the
 #'    cluster membership of each observation. If not available,
 #'    leave as "none".
@@ -153,6 +155,10 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
 
   if (class(dataset) != "matrix") {
     stop("Dataset needs to be a matrix.")
+  }
+
+  if (any(colSums(dataset) <= 0)) {
+    stop("Column sums cannot be less than or equal to 0. Double check dataset.")
   }
 
   dimensionality <- ncol(dataset)
@@ -450,10 +456,13 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
 #'
 #' Performs clustering using mixtures of multivariate Poisson-log
 #' normal (MPLN) distribution and model selection using AIC, AIC3,
-#' BIC and ICL. No internal parallelization is performed.
+#' BIC and ICL. No internal parallelization, thus code is run in
+#' serial.
 #'
 #' @param dataset A dataset of class matrix and type integer such that
 #'    rows correspond to observations and columns correspond to variables.
+#'    If rowSums are zero, these rows will be removed prior to cluster
+#'    analysis.
 #' @param membership A numeric vector of length nrow(dataset) containing the
 #'    cluster membership of each observation. If not available,
 #'    leave as "none".
@@ -590,6 +599,10 @@ mplnNonParallel <- function(dataset, membership = "none",
 
   if (class(dataset) != "matrix") {
     stop("Dataset needs to be a matrix.")
+  }
+
+  if (any(colSums(dataset) <= 0)) {
+    stop("Column sums cannot be less than or equal to 0. Double check dataset.")
   }
 
   dimensionality <- ncol(dataset)
