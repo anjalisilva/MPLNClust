@@ -1379,7 +1379,7 @@ mplnCluster <- function(dataset,
                                      type = "F")
     norm_sigma_outer[it_outer] <- norm(sigma_all_outer[[it_outer]] -
                                        sigma_all_outer[[it_outer - 1]],
-                                       type="F")
+                                       type = "F")
     median_mu_outer[[it_outer]] <- median(norm_mu_outer, na.rm = TRUE)
     median_sigma_outer[[it_outer]] <- median(norm_sigma_outer, na.rm = TRUE)
     # par(mfrow=c(1,2))
