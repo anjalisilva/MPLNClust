@@ -305,41 +305,42 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
     # to set the cluster seed if you want reproducible results
     # clusterSetRNGStream(cl = cl, iseed = g)
     mplnParallelRun <- callingClustering(data = dataset,
-      gmin = g,
-      gmax = g,
-      nChains = nChains,
-      initMethod = initMethod,
-      nInitIterations = nInitIterations,
-      nIterations = nIterations,
-      normFactors = normFactors,
-      model = mod)
+                                         gmin = g,
+                                         gmax = g,
+                                         nChains = nChains,
+                                         initMethod = initMethod,
+                                         nInitIterations = nInitIterations,
+                                         nIterations = nIterations,
+                                         normFactors = normFactors,
+                                         model = mod)
     return(mplnParallelRun)
   }
 
 
   # Doing clusterExport
   parallel::clusterExport(cl = cl,
-    varlist = c("nInitIterations",
-      "dataset",
-      "initMethod",
-      "normFactors",
-      "nChains",
-      "nIterations",
-      "calcLikelihood",
-      "calcParameters",
-      "callingClustering",
-      "mplnCluster",
-      "initializationRun",
-      "mplnParallelCode",
-      "mod",
-      "AICFunction",
-      "AIC3Function",
-      "BICFunction",
-      "ICLFunction",
-      "removeZeroCounts",
-      "stanRun",
-      "calcZvalue"),
-    envir = environment())
+                          varlist = c(
+                            "nInitIterations",
+                            "dataset",
+                            "initMethod",
+                            "normFactors",
+                            "nChains",
+                            "nIterations",
+                            "calcLikelihood",
+                            "calcParameters",
+                            "callingClustering",
+                            "mplnCluster",
+                            "initializationRun",
+                            "mplnParallelCode",
+                            "mod",
+                            "AICFunction",
+                            "AIC3Function",
+                            "BICFunction",
+                            "ICLFunction",
+                            "removeZeroCounts",
+                            "stanRun",
+                            "calcZvalue"),
+                          envir = environment())
 
   # Doing clusterEvalQ
   parallel::clusterEvalQ(cl, library(parallel))
@@ -352,11 +353,11 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
   parallel::clusterEvalQ(cl, library(clusterGeneration))
   parallel::clusterEvalQ(cl, library(coda))
 
-  parallelRun = list()
+  parallelRun <- list()
   cat("\nRunning parallel code now.")
-  parallelRun = parallel::clusterMap(cl = cl,
-                                     fun = mplnParallelCode,
-                                     g = gmin:gmax)
+  parallelRun <- parallel::clusterMap(cl = cl,
+                                      fun = mplnParallelCode,
+                                      g = gmin:gmax)
   cat("\nDone parallel code.")
   parallel::stopCluster(cl)
 
@@ -365,35 +366,35 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
   for(g in seq_along(1:(gmax - gmin + 1))) {
     # save the final log-likelihood
     ll[g] <- unlist(tail(parallelRun[[g]]$all_results$loglikelihood,
-      n = 1))
+                    n = 1))
 
     k[g] <- calcParameters(numberG = g,
-      dimensionality = dimensionality)
+                           dimensionality = dimensionality)
 
     if (g == max(1:(gmax - gmin + 1))) { # starting model selection
       bic <- BICFunction(ll = ll,
-        k = k,
-        n = nObservations,
-        run = parallelRun,
-        gmin = gmin,
-        gmax = gmax)
+                         k = k,
+                         n = nObservations,
+                         run = parallelRun,
+                         gmin = gmin,
+                         gmax = gmax)
 
       icl <- ICLFunction(bIc = bic,
-        gmin = gmin,
-        gmax = gmax,
-        run = parallelRun)
+                         gmin = gmin,
+                         gmax = gmax,
+                         run = parallelRun)
 
       aic <- AICFunction(ll = ll,
-        k = k,
-        run = parallelRun,
-        gmin = gmin,
-        gmax = gmax )
+                         k = k,
+                         run = parallelRun,
+                         gmin = gmin,
+                         gmax = gmax )
 
       aic3 <- AIC3Function(ll = ll,
-        k = k,
-        run = parallelRun,
-        gmin = gmin,
-        gmax = gmax)
+                           k = k,
+                           run = parallelRun,
+                           gmin = gmin,
+                           gmax = gmax)
     }
   }
 
@@ -412,42 +413,42 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
     final <- proc.time() - ptm
 
     RESULTS <- list(dataset = dataset,
-      dimensionality = dimensionality,
-      normalization_factors = normFactors,
-      gmin = gmin,
-      gmax = gmax,
-      initalization_method = initMethod,
-      all_results = parallelRun,
-      loglikelihood = ll,
-      numb_of_parameters = k,
-      true_labels = membership,
-      ICL_all = icl,
-      BIC_all = bic,
-      AIC_all = aic,
-      AIC3_all = aic3,
-      slope_heuristics = ResCapushe,
-      Djumpmodel_selected = ResCapushe@Djump@model,
-      DDSEmodel_selected = ResCapushe@DDSE@model,
-      total_time = final)
+                    dimensionality = dimensionality,
+                    normalization_factors = normFactors,
+                    gmin = gmin,
+                    gmax = gmax,
+                    initalization_method = initMethod,
+                    all_results = parallelRun,
+                    loglikelihood = ll,
+                    numb_of_parameters = k,
+                    true_labels = membership,
+                    ICL_all = icl,
+                    BIC_all = bic,
+                    AIC_all = aic,
+                    AIC3_all = aic3,
+                    slope_heuristics = ResCapushe,
+                    Djumpmodel_selected = ResCapushe@Djump@model,
+                    DDSEmodel_selected = ResCapushe@DDSE@model,
+                    total_time = final)
 
   } else {# end of Djump and DDSE
     final <- proc.time() - ptm
     RESULTS <- list(dataset = dataset,
-      dimensionality = dimensionality,
-      normalization_factors=normFactors,
-      gmin = gmin,
-      gmax = gmax,
-      initalization_method = initMethod,
-      all_results = parallelRun,
-      loglikelihood = ll,
-      numb_of_parameters = k,
-      true_labels = membership,
-      ICL_all = icl,
-      BIC_all = bic,
-      AIC_all = aic,
-      AIC3_all = aic3,
-      slope_heuristics = "Not used",
-      total_time = final)
+                    dimensionality = dimensionality,
+                    normalization_factors=normFactors,
+                    gmin = gmin,
+                    gmax = gmax,
+                    initalization_method = initMethod,
+                    all_results = parallelRun,
+                    loglikelihood = ll,
+                    numb_of_parameters = k,
+                    true_labels = membership,
+                    ICL_all = icl,
+                    BIC_all = bic,
+                    AIC_all = aic,
+                    AIC3_all = aic3,
+                    slope_heuristics = "Not used",
+                    total_time = final)
   }
 
   class(RESULTS) <- "mplnParallel"
