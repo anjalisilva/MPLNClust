@@ -587,13 +587,15 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
 #' @importFrom utils tail
 #' @importFrom utils write.csv
 #'
-mplnNonParallel <- function(dataset, membership = "none",
-  gmin = 1, gmax = 2,
-  nChains = 3, nIterations = 1000,
-  initMethod = "kmeans", nInitIterations = 0,
-  normalize = "Yes") {
-
-
+mplnNonParallel <- function(dataset,
+                            membership = "none",
+                            gmin = 1,
+                            gmax = 2,
+                            nChains = 3,
+                            nIterations = 1000,
+                            initMethod = "kmeans",
+                            nInitIterations = 0,
+                            normalize = "Yes") {
   ptm <- proc.time()
 
   # Performing checks
@@ -665,7 +667,8 @@ mplnNonParallel <- function(dataset, membership = "none",
   }
 
   # Remove rows with zeros, if present
-  removezeros <- removeZeroCounts(dataset = dataset, membership = membership)
+  removezeros <- removeZeroCounts(dataset = dataset,
+                                  membership = membership)
   dataset <- removezeros$dataset
   membership <- removezeros$membership
   dimensionality <- ncol(dataset)
@@ -699,10 +702,10 @@ mplnNonParallel <- function(dataset, membership = "none",
   # Calculating normalization factors
   if(normalize == "Yes") {
     normFactors <- log(as.vector(edgeR::calcNormFactors(as.matrix(dataset),
-      method = "TMM")))
+                                                        method = "TMM")))
   } else if(normalize == "No") {
     normFactors <- rep(0, dimensionality)
-  } else{
+  } else {
     stop("normFactors should be 'Yes' or 'No' ")
   }
 
@@ -732,7 +735,8 @@ mplnNonParallel <- function(dataset, membership = "none",
   }
   }'
 
-  mod <- rstan::stan_model(model_code = stancode, verbose = FALSE)
+  mod <- rstan::stan_model(model_code = stancode,
+                           verbose = FALSE)
   nonParallelRun <- list()
 
   # Constructing non parallel code
@@ -747,37 +751,37 @@ mplnNonParallel <- function(dataset, membership = "none",
     if(nInitIterations != 0) {
       # cat("\nRunning initialization for G =", clustersize)
       initializeruns <- initializationRun(gmodel = clustersize,
-        dataset = dataset,
-        init_method = initMethod,
-        init_iterations = nInitIterations,
-        n_chain = nChains,
-        numb_iterations = nIterations,
-        initialization = NA,
-        normalizefactors = normFactors,
-        mod = mod)
+                                          dataset = dataset,
+                                          init_method = initMethod,
+                                          init_iterations = nInitIterations,
+                                          n_chain = nChains,
+                                          numb_iterations = nIterations,
+                                          initialization = NA,
+                                          normalizefactors = normFactors,
+                                          mod = mod)
       # cat("\nInitialization done for G =", clustersize)
       # cat("\nRunning clustering for G =", clustersize)
       nonParallelRun[[gmodel]] <- mplnCluster(dataset = dataset,
-        z = NA,
-        G = clustersize,
-        nChains = nChains,
-        nIterations = nIterations,
-        initialization = initializeruns,
-        normalizefac = normFactors,
-        mod = mod)
+                                              z = NA,
+                                              G = clustersize,
+                                              nChains = nChains,
+                                              nIterations = nIterations,
+                                              initialization = initializeruns,
+                                              normalizefac = normFactors,
+                                              mod = mod)
       # cat("\nClustering done for G =", clustersize)
     } else if(nInitIterations == 0) {
       # cat("\nNo initialization done for G =", clustersize)
       # cat("\nRunning clustering for G =", clustersize)
       nonParallelRun[[gmodel]] <- mplnCluster(dataset = dataset,
-        z = mclust::unmap(stats::kmeans(log(dataset + 1/3),
-          clustersize)$cluster),
-        G = clustersize,
-        nChains = nChains,
-        nIterations = nIterations,
-        initialization = NA,
-        normalizefac = normFactors,
-        mod = mod)
+                                              z = mclust::unmap(stats::kmeans(log(dataset + 1 / 3),
+                                                clustersize)$cluster),
+                                              G = clustersize,
+                                              nChains = nChains,
+                                              nIterations = nIterations,
+                                              initialization = NA,
+                                              normalizefac = normFactors,
+                                              mod = mod)
       # cat("\nClustering done for G =", clustersize)
     }
   }
@@ -793,32 +797,32 @@ mplnNonParallel <- function(dataset, membership = "none",
 
     if (g == max(1:(gmax - gmin + 1))) { # starting model selection
       bic <- BICFunction(ll = ll,
-        k = k,
-        n = nObservations,
-        run = nonParallelRun,
-        gmin = gmin,
-        gmax = gmax,
-        parallel = FALSE)
+                         k = k,
+                         n = nObservations,
+                         run = nonParallelRun,
+                         gmin = gmin,
+                         gmax = gmax,
+                         parallel = FALSE)
 
       icl <- ICLFunction(bIc = bic,
-        gmin = gmin,
-        gmax = gmax,
-        run = nonParallelRun,
-        parallel = FALSE)
+                         gmin = gmin,
+                         gmax = gmax,
+                         run = nonParallelRun,
+                         parallel = FALSE)
 
       aic <- AICFunction(ll = ll,
-        k = k,
-        run = nonParallelRun,
-        gmin = gmin,
-        gmax = gmax,
-        parallel = FALSE)
+                         k = k,
+                         run = nonParallelRun,
+                         gmin = gmin,
+                         gmax = gmax,
+                         parallel = FALSE)
 
       aic3 <- AIC3Function(ll = ll,
-        k = k,
-        run = nonParallelRun,
-        gmin = gmin,
-        gmax = gmax,
-        parallel = FALSE)
+                           k = k,
+                           run = nonParallelRun,
+                           gmin = gmin,
+                           gmax = gmax,
+                           parallel = FALSE)
     }
   }
 
@@ -830,49 +834,49 @@ mplnNonParallel <- function(dataset, membership = "none",
       to model selection via slope heuristics (Djump and DDSE)
       should be examined to ensure that sufficiently complex
       models have been considered.")
-    mat <- cbind(Kchoice, k/nObservations, k/nObservations, - ll)
+    mat <- cbind(Kchoice, k / nObservations, k / nObservations, - ll)
     ResCapushe <- capushe ::capushe(mat, nObservations)
     DDSEmodel<- ResCapushe@DDSE@model
     Djumpmodel<- ResCapushe@Djump@model
     final <- proc.time() - ptm
 
     RESULTS <- list(dataset = dataset,
-      dimensionality = dimensionality,
-      normalization_factors = normFactors,
-      gmin = gmin,
-      gmax = gmax,
-      initalization_method = initMethod,
-      all_results = nonParallelRun,
-      loglikelihood = ll,
-      numb_of_parameters = k,
-      true_labels = membership,
-      ICL_all = icl,
-      BIC_all = bic,
-      AIC_all = aic,
-      AIC3_all = aic3,
-      slope_heuristics = ResCapushe,
-      Djumpmodel_selected = ResCapushe@Djump@model,
-      DDSEmodel_selected = ResCapushe@DDSE@model,
-      total_time = final)
+                    dimensionality = dimensionality,
+                    normalization_factors = normFactors,
+                    gmin = gmin,
+                    gmax = gmax,
+                    initalization_method = initMethod,
+                    all_results = nonParallelRun,
+                    loglikelihood = ll,
+                    numb_of_parameters = k,
+                    true_labels = membership,
+                    ICL_all = icl,
+                    BIC_all = bic,
+                    AIC_all = aic,
+                    AIC3_all = aic3,
+                    slope_heuristics = ResCapushe,
+                    Djumpmodel_selected = ResCapushe@Djump@model,
+                    DDSEmodel_selected = ResCapushe@DDSE@model,
+                    total_time = final)
 
   } else {# end of Djump and DDSE
     final <- proc.time() - ptm
     RESULTS <- list(dataset = dataset,
-      dimensionality = dimensionality,
-      normalization_factors = normFactors,
-      gmin = gmin,
-      gmax = gmax,
-      initalization_method = initMethod,
-      all_results = nonParallelRun,
-      loglikelihood = ll,
-      numb_of_parameters = k,
-      true_labels = membership,
-      ICL_all = icl,
-      BIC_all = bic,
-      AIC_all = aic,
-      AIC3_all = aic3,
-      slope_heuristics = "Not used",
-      total_time = final)
+                    dimensionality = dimensionality,
+                    normalization_factors = normFactors,
+                    gmin = gmin,
+                    gmax = gmax,
+                    initalization_method = initMethod,
+                    all_results = nonParallelRun,
+                    loglikelihood = ll,
+                    numb_of_parameters = k,
+                    true_labels = membership,
+                    ICL_all = icl,
+                    BIC_all = bic,
+                    AIC_all = aic,
+                    AIC3_all = aic3,
+                    slope_heuristics = "Not used",
+                    total_time = final)
   }
 
   class(RESULTS) <- "mplnNonParallel"
@@ -882,9 +886,14 @@ mplnNonParallel <- function(dataset, membership = "none",
 
 
 # Log likelihood calculation
-calcLikelihood <- function(z, PI, dataset,
-  mu_g, G, Sig_g,
-  thetaStan, normFactors) {
+calcLikelihood <- function(z,
+                           PI,
+                           dataset,
+                           mu_g,
+                           G,
+                           Sig_g,
+                           thetaStan,
+                           normFactors) {
   nObservations <- nrow(dataset)
   like <- matrix(NA, nrow = nObservations, ncol = G)
   for (g in seq_along(1:G)) {
@@ -892,16 +901,16 @@ calcLikelihood <- function(z, PI, dataset,
       x <- thetaStan[[g]][i, ]
       dimensionality <- ncol(dataset)
       like[i, g] <- (z[i, g] * (log(PI[g]) +
-          t(dataset[i, ]) %*% (x + normFactors) -
-          sum(exp(x + normFactors)) -
-          sum(lfactorial(dataset[i, ])) -
-          dimensionality / 2 * log(2 * pi) -
-          1 / 2 * log(det(Sig_g[((g - 1) *
-              dimensionality + 1):(g * dimensionality), ])) -
-          0.5 * t(x-mu_g[g, ]) %*%
-          solve(Sig_g[((g - 1) *
-              dimensionality + 1):(g * dimensionality), ]) %*%
-          (x - mu_g[g, ])))
+                    t(dataset[i, ]) %*% (x + normFactors) -
+                    sum(exp(x + normFactors)) -
+                    sum(lfactorial(dataset[i, ])) -
+                    dimensionality / 2 * log(2 * pi) -
+                    1 / 2 * log(det(Sig_g[((g - 1) *
+                        dimensionality + 1):(g * dimensionality), ])) -
+                    0.5 * t(x-mu_g[g, ]) %*%
+                    solve(Sig_g[((g - 1) *
+                        dimensionality + 1):(g * dimensionality), ]) %*%
+                    (x - mu_g[g, ])))
     }
   }
   loglike <- sum(rowSums(like))
@@ -911,7 +920,8 @@ calcLikelihood <- function(z, PI, dataset,
 
 
 # Parameter calculation
-calcParameters <- function(numberG, dimensionality) {
+calcParameters <- function(numberG,
+                           dimensionality) {
 
   muPara <- dimensionality * numberG
 
@@ -929,9 +939,14 @@ calcParameters <- function(numberG, dimensionality) {
 }
 
 # Zvalue calculation
-calcZvalue <- function(theta_Stan, dataset, G,
-  mu_g, Sig_g, PI,
-  normalizefactors) {
+calcZvalue <- function(theta_Stan,
+                       dataset,
+                       G,
+                       mu_g,
+                       Sig_g,
+                       PI,
+                       normalizefactors) {
+
   dimensionality <- ncol(dataset)
   nObservations <- nrow(dataset)
   forz <- matrix(NA,ncol = G, nrow = nObservations)
@@ -941,26 +956,27 @@ calcZvalue <- function(theta_Stan, dataset, G,
       x <- theta_Stan[[g]][i, ]
       # for zig calculation (the numerator part)
       forz[i, g] <- PI[g] * exp(t(dataset[i, ]) %*%
-          (x + normalizefactors) -
-          sum(exp(x + normalizefactors)) -
-          sum(lfactorial(dataset[i, ])) -
-          dimensionality / 2 * log(2 * pi) - 1 / 2 *
-          log(det(Sig_g[((g - 1) *
-              dimensionality + 1):(g*dimensionality), ])) -
-          0.5 * t(x-mu_g[g, ]) %*%
-          solve(Sig_g[((g - 1) *
-              dimensionality + 1):(g * dimensionality), ]) %*%
-          (x - mu_g[g, ]))
+                    (x + normalizefactors) -
+                    sum(exp(x + normalizefactors)) -
+                    sum(lfactorial(dataset[i, ])) -
+                    dimensionality / 2 * log(2 * pi) - 1 / 2 *
+                    log(det(Sig_g[((g - 1) *
+                        dimensionality + 1):(g*dimensionality), ])) -
+                    0.5 * t(x-mu_g[g, ]) %*%
+                    solve(Sig_g[((g - 1) *
+                        dimensionality + 1):(g * dimensionality), ]) %*%
+                    (x - mu_g[g, ]))
     }
 
     # check which forz == 0 and rowSums(forz)==0 and which of these
     # have both equalling to 0 (because 0/0 =NaN)
     if (G == 1) {
-      errorpossible <- Reduce(intersect, list(which(forz == 0),
-        which(rowSums(forz) == 0)))
+      errorpossible <- Reduce(intersect,
+                              list(which(forz == 0),
+                              which(rowSums(forz) == 0)))
       zvalue <- forz / rowSums(forz)
       zvalue[errorpossible, ] <- 1
-    }else {
+    } else {
       zvalue <- forz / rowSums(forz)
     }
   }
@@ -969,11 +985,11 @@ calcZvalue <- function(theta_Stan, dataset, G,
   # have both equalling to 0 (because 0/0 =NaN)
   if (G == 1) {
     errorpossible <- Reduce(intersect,
-      list(which(forz == 0),
-        which(rowSums(forz) == 0)))
+                            list(which(forz == 0),
+                            which(rowSums(forz) == 0)))
     zvalue <- forz / rowSums(forz)
     zvalue[errorpossible, ] <- 1
-  }else {
+  } else {
     zvalue <- forz / rowSums(forz)
   }
   return(zvalue)
@@ -982,10 +998,16 @@ calcZvalue <- function(theta_Stan, dataset, G,
 
 
 # Calling clustering
-callingClustering <- function(data, gmin, gmax, nChains,
-  nIterations = NA, initMethod=NA,
-  nInitIterations = NA,
-  normFactors, model) {
+callingClustering <- function(data,
+                              gmin,
+                              gmax,
+                              nChains,
+                              nIterations = NA,
+                              initMethod = NA,
+                              nInitIterations = NA,
+                              normFactors,
+                              model) {
+
   ptm_inner = proc.time()
 
   for (gmodel in seq_along(1:(gmax - gmin + 1))) {
@@ -999,37 +1021,37 @@ callingClustering <- function(data, gmin, gmax, nChains,
     if(nInitIterations != 0) {
       # cat("\nRunning initialization for G =", clustersize)
       initializeruns <- initializationRun(gmodel = clustersize,
-        dataset = data,
-        init_method = initMethod,
-        init_iterations = nInitIterations,
-        n_chain = nChains,
-        numb_iterations = nIterations,
-        initialization = NA,
-        normalizefactors = normFactors,
-        mod = model)
+                                          dataset = data,
+                                          init_method = initMethod,
+                                          init_iterations = nInitIterations,
+                                          n_chain = nChains,
+                                          numb_iterations = nIterations,
+                                          initialization = NA,
+                                          normalizefactors = normFactors,
+                                          mod = model)
       # cat("\nInitialization done for G =", clustersize)
       # cat("\nRunning clustering for G =", clustersize)
       allruns <- mplnCluster(dataset = data,
-        z = NA,
-        G = clustersize,
-        nChains = nChains,
-        nIterations = nIterations,
-        initialization = initializeruns,
-        normalizefac = normFactors,
-        mod = model)
+                             z = NA,
+                             G = clustersize,
+                             nChains = nChains,
+                             nIterations = nIterations,
+                             initialization = initializeruns,
+                             normalizefac = normFactors,
+                             mod = model)
       # cat("\nClustering done for G =", clustersize)
     } else if(nInitIterations == 0) {
       # cat("\nNo initialization done for G =", clustersize)
       # cat("\nRunning clustering for G =", clustersize)
       allruns <- mplnCluster(dataset = data,
-        z = mclust::unmap(stats::kmeans(log(data + 1/3),
-          clustersize)$cluster),
-        G = clustersize,
-        nChains = nChains,
-        nIterations = nIterations,
-        initialization = NA,
-        normalizefac = normFactors,
-        mod = model)
+                             z = mclust::unmap(stats::kmeans(log(data + 1 / 3),
+                              clustersize)$cluster),
+                             G = clustersize,
+                             nChains = nChains,
+                             nIterations = nIterations,
+                             initialization = NA,
+                             normalizefac = normFactors,
+                             mod = model)
       # cat("\nClustering done for G =", clustersize)
     }
   }
@@ -1037,10 +1059,10 @@ callingClustering <- function(data, gmin, gmax, nChains,
   final_inner <- proc.time() - ptm_inner
 
   RESULTS <- list(gmin = gmin,
-    gmax = gmax,
-    initalization_method = initMethod,
-    all_results = allruns,
-    total_time = final_inner)
+                  gmax = gmax,
+                  initalization_method = initMethod,
+                  all_results = allruns,
+                  total_time = final_inner)
 
   class(RESULTS) <- "mplnCallingClustering"
   return(RESULTS)
@@ -1048,11 +1070,15 @@ callingClustering <- function(data, gmin, gmax, nChains,
 }
 
 # Initialization
-initializationRun <- function(gmodel, dataset, init_method,
-  init_iterations, n_chain,
-  numb_iterations,
-  initialization = NA,
-  normalizefactors, mod) {
+initializationRun <- function(gmodel,
+                              dataset,
+                              init_method,
+                              init_iterations,
+                              n_chain,
+                              numb_iterations,
+                              initialization = NA,
+                              normalizefactors,
+                              mod) {
 
   z <- init_runs <- list()
   logL_init <- vector()
@@ -1064,7 +1090,7 @@ initializationRun <- function(gmodel, dataset, init_method,
     # user, then each run will give a different result.
     set.seed(iterations)
     if (init_method == "kmeans" | is.na(init_method)) {
-      z[[iterations]] <- mclust::unmap(stats::kmeans(log(dataset + 1/3),
+      z[[iterations]] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 3),
         gmodel)$cluster)
     } else if (init_method == "random") {
       if(gmodel == 1) { # generating z if g=1
@@ -1072,51 +1098,55 @@ initializationRun <- function(gmodel, dataset, init_method,
           ncol = gmodel,
           nrow = nObservations)
       } else { # generating z if g>1
-        z_conv = 0
+        z_conv <- 0
         while(! z_conv) {
           # ensure that dimension of z is same as G (i.e.,
           # if one column contains all 0s, then generate z again)
           z[[iterations]] <- t(stats::rmultinom(nObservations, size = 1,
             prob = rep(1 / gmodel, gmodel)))
           if(length(which(colSums(z[[iterations]]) > 0)) == gmodel) {
-            z_conv = 1
+            z_conv <- 1
           }
         }
       }
-    }else if (init_method == "medoids") {
-      z[[iterations]] <- mclust::unmap(cluster::pam(log(dataset + 1/3),
+    } else if (init_method == "medoids") {
+      z[[iterations]] <- mclust::unmap(cluster::pam(log(dataset + 1 / 3),
         k = gmodel)$cluster)
-    }else if (init_method == "clara") {
-      z[[iterations]] <- mclust::unmap(cluster::clara(log(dataset + 1/3),
+    } else if (init_method == "clara") {
+      z[[iterations]] <- mclust::unmap(cluster::clara(log(dataset + 1 / 3),
         k = gmodel)$cluster)
-    }else if (init_method == "fanny") {
-      z[[iterations]] <- mclust::unmap(cluster::fanny(log(dataset + 1/3),
+    } else if (init_method == "fanny") {
+      z[[iterations]] <- mclust::unmap(cluster::fanny(log(dataset + 1 / 3),
         k = gmodel)$cluster)
     }
 
     init_runs[[iterations]] <- mplnCluster(dataset = dataset,
-      z = z[[iterations]],
-      G = gmodel,
-      nChains = n_chain,
-      nIterations = numb_iterations,
-      initialization = "init",
-      normalizefac = normalizefactors,
-      mod = mod)
+                                           z = z[[iterations]],
+                                           G = gmodel,
+                                           nChains = n_chain,
+                                           nIterations = numb_iterations,
+                                           initialization = "init",
+                                           normalizefac = normalizefactors,
+                                           mod = mod)
     logL_init[iterations] <-
       unlist(utils::tail((init_runs[[iterations]]$loglikelihood), n = 1))
   }
 
-  initialization <- init_runs[[which(logL_init ==
-      max(logL_init, na.rm = TRUE))[1]]]
+  initialization <- init_runs[[which(logL_init == max(logL_init, na.rm = TRUE))[1]]]
   return(initialization)
   # Developed by Anjali Silva
 }
 
 
 # AIC calculation
-AICFunction <- function(ll, k, run, gmin, gmax, parallel = TRUE) {
+AICFunction <- function(ll,
+                        k,
+                        run,
+                        gmin,
+                        gmax,
+                        parallel = TRUE) {
   AIC <- - 2 * ll + 2 * k
-  AICmodel <- seq(gmin, gmax, 1)[grep(min(AIC,na.rm = TRUE), AIC)]
+  AICmodel <- seq(gmin, gmax, 1)[grep(min(AIC, na.rm = TRUE), AIC)]
   if(isTRUE(parallel) == "FALSE"){
     # if non parallel run
     AICmodel_labels <- run[[grep(min(AIC,na.rm = TRUE), AIC)]]$clusterlabels
@@ -1132,16 +1162,21 @@ AICFunction <- function(ll, k, run, gmin, gmax, parallel = TRUE) {
   }
 
   AICresults<-list(allAICvalues = AIC,
-    AICmodelselected = AICmodel,
-    AICmodelselected_labels = AICmodel_labels,
-    AICMessage = AICMessage)
+                   AICmodelselected = AICmodel,
+                   AICmodelselected_labels = AICmodel_labels,
+                   AICMessage = AICMessage)
   class(AICresults) <- "AIC"
   return(AICresults)
 }
 
 
 # AIC3 calculation
-AIC3Function <- function(ll, k, run, gmin, gmax, parallel = TRUE) {
+AIC3Function <- function(ll,
+                         k,
+                         run,
+                         gmin,
+                         gmax,
+                         parallel = TRUE) {
   AIC3 <- - 2 * ll + 3 * k
   AIC3model <- seq(gmin, gmax, 1)[grep(min(AIC3,na.rm = TRUE), AIC3)]
   if(isTRUE(parallel) == "FALSE"){
@@ -1158,16 +1193,22 @@ AIC3Function <- function(ll, k, run, gmin, gmax, parallel = TRUE) {
     AIC3Message <- "Spurious or empty cluster resulted."
   }
   AIC3results <- list(allAIC3values = AIC3,
-    AIC3modelselected = AIC3model,
-    AIC3modelselected_labels = AIC3model_labels,
-    AIC3Message = AIC3Message)
+                      AIC3modelselected = AIC3model,
+                      AIC3modelselected_labels = AIC3model_labels,
+                      AIC3Message = AIC3Message)
   class(AIC3results) <- "AIC3"
   return(AIC3results)
 }
 
 
 # BIC calculation
-BICFunction <- function(ll, k, n, run, gmin, gmax, parallel = TRUE) {
+BICFunction <- function(ll,
+                        k,
+                        n,
+                        run,
+                        gmin,
+                        gmax,
+                        parallel = TRUE) {
   BIC <- - 2 * ll + (k * log(n))
   BICmodel <- seq(gmin, gmax, 1)[grep(min(BIC, na.rm = TRUE), BIC)]
   if(isTRUE(parallel) == "FALSE") {
@@ -1195,7 +1236,11 @@ BICFunction <- function(ll, k, n, run, gmin, gmax, parallel = TRUE) {
 }
 
 # ICL calculation
-ICLFunction <- function(bIc, gmax, gmin, run, parallel = TRUE) {
+ICLFunction <- function(bIc,
+                        gmax,
+                        gmin,
+                        run,
+                        parallel = TRUE) {
   ICL <- vector()
   for (g in 1:(gmax - gmin + 1)) {
     if(isTRUE(parallel) == "FALSE") {
