@@ -1277,23 +1277,22 @@ mplnCluster <- function(dataset, z, G, nChains, nIterations,
 
     theta_Stan <- E_theta2 <- list()
     rstan_results <- stanRun(model = mod,
-      gmin = 1,
-      gmax = G,
-      dataset = dataset,
-      mu_all_outer = mu_all_outer,
-      it_outer = it_outer,
-      sigma_all_outer = sigma_all_outer,
-      numb_iterations = nIterations,
-      n_chain = nChains,
-      normalizefacs = normalizefac)
+                             gmin = 1,
+                             gmax = G,
+                             dataset = dataset,
+                             mu_all_outer = mu_all_outer,
+                             it_outer = it_outer,
+                             sigma_all_outer = sigma_all_outer,
+                             numb_iterations = nIterations,
+                             n_chain = nChains,
+                             normalizefacs = normalizefac)
 
     fit <- rstan_results$fitrstan
     nIterations <- rstan_results$numb_iterations
 
     for (g in seq_along(1:G)) {
       tt <- as.matrix(fit[[g]])
-      theta_Stan[[g]] <- matrix(NA, nrow = nObservations,
-        ncol = dimensionality)
+      theta_Stan[[g]] <- matrix(NA, nrow = nObservations, ncol = dimensionality)
       E_theta2[[g]] <- list()
 
       for (i in seq_along(1:nObservations)) {
@@ -1301,7 +1300,7 @@ mplnCluster <- function(dataset, z, G, nChains, nIterations,
         theta_mat <- tt[, c(i, zz)]
         theta_Stan[[g]][i, ] <- colMeans(theta_mat)
         E_theta2[[g]][[i]] <- z[i, g] * t(tt[, c(i,zz)]) %*% tt[, c(i,zz)]/
-          ((0.5 * nIterations) * nChains)
+                              ((0.5 * nIterations) * nChains)
       }
 
       mu_g[g, ] <- colSums(z[, g] * theta_Stan[[g]]) / sum(z[, g])
@@ -1313,21 +1312,21 @@ mplnCluster <- function(dataset, z, G, nChains, nIterations,
     sigma_all_outer[[it_outer]] <- Sig_g
 
     logL[it_outer] <- calcLikelihood(z = z,
-      PI = PI,
-      dataset = dataset,
-      mu_g = mu_all_outer[[it_outer]],
-      G = G,
-      Sig_g = sigma_all_outer[[it_outer]],
-      thetaStan = theta_Stan,
-      normFactors = normalizefac)
+                                     PI = PI,
+                                     dataset = dataset,
+                                     mu_g = mu_all_outer[[it_outer]],
+                                     G = G,
+                                     Sig_g = sigma_all_outer[[it_outer]],
+                                     thetaStan = theta_Stan,
+                                     normFactors = normalizefac)
 
     # convergence of outer loop
     norm_mu_outer[it_outer] <- norm((mu_all_outer[[it_outer]] -
-        mu_all_outer[[it_outer - 1]]),
-      type = "F")
+                                     mu_all_outer[[it_outer - 1]]),
+                                     type = "F")
     norm_sigma_outer[it_outer] <- norm(sigma_all_outer[[it_outer]] -
-        sigma_all_outer[[it_outer - 1]],
-      type="F")
+                                       sigma_all_outer[[it_outer - 1]],
+                                       type="F")
     median_mu_outer[[it_outer]] <- median(norm_mu_outer, na.rm = TRUE)
     median_sigma_outer[[it_outer]] <- median(norm_sigma_outer, na.rm = TRUE)
     # par(mfrow=c(1,2))
@@ -1395,23 +1394,23 @@ mplnCluster <- function(dataset, z, G, nChains, nIterations,
   } # end of outer loop
 
   results <- list(finalmu = mu_all_outer[[it_outer]] +
-      matrix(rep(normalizefac,
-        nrow(mu_all_outer[[it_outer]])),
-        byrow=TRUE, ncol =
-          ncol(mu_all_outer[[it_outer]])),
-    finalsigma = sigma_all_outer[[it_outer]],
-    allmu = lapply(mu_all_outer, function(x)
-      (x + matrix(rep(normalizefac,
-        nrow(mu_all_outer[[it_outer]])),
-        byrow = TRUE,
-        ncol = ncol(mu_all_outer[[it_outer]])))),
-    allsigma = sigma_all_outer,
-    clusterlabels = programclust,
-    iterations = it_outer,
-    proportion = PI,
-    loglikelihood = logL,
-    probaPost = z,
-    stanresults = fit)
+                            matrix(rep(normalizefac,
+                            nrow(mu_all_outer[[it_outer]])),
+                            byrow=TRUE, ncol =
+                              ncol(mu_all_outer[[it_outer]])),
+                finalsigma = sigma_all_outer[[it_outer]],
+                             allmu = lapply(mu_all_outer, function(x)
+                             (x + matrix(rep(normalizefac,
+                             nrow(mu_all_outer[[it_outer]])),
+                             byrow = TRUE,
+                             ncol = ncol(mu_all_outer[[it_outer]])))),
+                allsigma = sigma_all_outer,
+                clusterlabels = programclust,
+                iterations = it_outer,
+                proportion = PI,
+                loglikelihood = logL,
+                probaPost = z,
+                stanresults = fit)
 
   class(results) <- "MPLNcluster"
   return(results)
