@@ -283,9 +283,16 @@ mplnVisualize <- function(dataset, plots = 'all',
         }
         # Save how many observations below to each cluster size,
         # given by 'cluster'
-        toplot_1 <- as.matrix(DataPlusLabs[which(DataPlusLabs[,
-          ncol(dataset) + 1] == cluster), c(1:ncol(dataset))],
-          ncol = ncol(dataset))
+        if (length(which(DataPlusLabs[, ncol(dataset) + 1] == cluster)) == 1) {
+          toplot_1 <- t(as.matrix(DataPlusLabs[which(DataPlusLabs[,
+            ncol(dataset) + 1] == cluster), c(1:ncol(dataset))],
+            ncol = ncol(dataset)))
+          rownames(toplot_1) <- names(which(DataPlusLabs[, ncol(dataset) + 1] == cluster))
+        } else if (length(which(DataPlusLabs[, ncol(dataset) + 1] == cluster)) > 1) {
+          toplot_1 <- as.matrix(DataPlusLabs[which(DataPlusLabs[,
+            ncol(dataset) + 1] == cluster), c(1:ncol(dataset))],
+            ncol = ncol(dataset))
+        }
 
         # Save column mean in last row
         toplot1 <- rbind(log(toplot_1 + 1), colMeans(log(toplot_1 + 1)))
