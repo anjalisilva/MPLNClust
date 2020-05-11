@@ -26,7 +26,7 @@ Imports:
     mclust,
     mvtnorm,
     randomcoloR,
-    Rcpp (>= 1.0.2),
+    Rcpp,
     RColorBrewer,
     reshape, 
     rstan,
