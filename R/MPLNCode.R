@@ -48,9 +48,9 @@
 #'   \item normalization_factors - A vector of normalization factors used
 #'      for input dataset.
 #'   \item gmin - Minimum number of components considered in the clustering
-#'      run
+#'      run.
 #'   \item gmax - Maximum number of components considered in the clustering
-#'      run
+#'      run.
 #'   \item initalization_method - Method used for initialization.
 #'   \item all_results - A list with all results.
 #'   \item loglikelihood - A vector with value of final log-likelihoods for
