@@ -3,7 +3,7 @@
 ## Description
 `MPLNClust` is an R package for performing clustering using mixtures of multivariate Poisson-log normal (MPLN) distribution. It was developed for count data, with clustering of RNA sequencing data as a motivation. However, the vector of normalization factors can be relaxed and clustering method may be applied to other types of count data. 
 
-Main functions include *mplnVariational*, *mplnMCMCParallel* or *mplnMCMCNonParallel* to carry out model-based clustering using mixtures of MPLN model. Function *mplnVariational* (under constrcution) uses a variational expectation-maximization (EM) for parameter estimation. Functions *mplnMCMCParallel* or *mplnMCMCNonParallel* uses a Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) for parameter estimation. Here, method of *mplnVariational* function is computationally efficient and faster compared to  *mplnMCMCParallel* or *mplnMCMCNonParallel*. Information criteria (AIC, BIC, AIC3 and ICL) are offered for model selection. Function *mplnVisualize* is available to visualize clustering data. Function *mplnDataGenerator* is available to generate simlulation data via mixtures of MPLN. For more information see details. 
+Main functions include __*mplnVariational*__ (under constrcution), __*mplnMCMCParallel*__ or __*mplnMCMCNonParallel*__ to carry out model-based clustering using mixtures of MPLN model. Information criteria (AIC, BIC, AIC3 and ICL) are offered for model selection. Function __*mplnVisualize*__ permit to visualize clustering results. Function __*mplnDataGenerator*__ is available to generate simlulation data via mixtures of MPLN. For more information see details. 
 
 ## Installation
 
@@ -17,7 +17,11 @@ library("MPLNClust")
 
 ## Overview
 
-`MPLNClust` contains 5 functions. For the purpose of generating simlulation data via mixtures of MPLN: *mplnDataGenerator*. For carrying out clustering of count data using mixtures of MPLN via variational EM: *mplnMCMCVariational* (under construction). For carrying out clustering of count data via MCMC-EM with parallelization: *mplnParallel*. For carrying out clustering of count data  via MCMC-EM with no parallelization: *mplnMCMCNonParallel*. For visualizing clustered data: *mplnVisualize*. 
+`MPLNClust` contains 5 functions. For the purpose of generating simlulation data via mixtures of MPLN: *mplnDataGenerator*. For carrying out clustering of count data using mixtures of MPLN via variational expectation-maximization (EM): *mplnMCMCVariational* (under construction). Functions *mplnMCMCParallel* or *mplnMCMCNonParallel* uses a Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) for parameter estimation. Function *mplnParallel* uses MCMC-EM with parallelization while *mplnMCMCNonParallel* uses MCMC-EM with no parallelization. Here, method of *mplnVariational* function is computationally efficient and faster compared to  *mplnMCMCParallel* or *mplnMCMCNonParallel*. For visualizing clustered data: *mplnVisualize*. 
+
+
+
+
 
 ``` r
 lsf.str("package:MPLNClust")
@@ -29,14 +33,14 @@ For tutorials and plot interpretation, refer to the vignette.
 browseVignettes("MPLNClust")
 ```
 <p float="center">
-  <img src="inst/extdata/barplot_FourClusterModel.png" alt="Overview" width="400"/>
+  <img src="inst/extdata/barplot_FourClusterModel.png" alt="Overview" width="350"/>
   &nbsp;
   &nbsp;
   &nbsp;
   &nbsp;
   &nbsp;
   &nbsp;
-  <img src="inst/extdata/heatmap_FourClusterModel.png" alt="Overview" width="380"/>
+  <img src="inst/extdata/heatmap_FourClusterModel.png" alt="Overview" width="332.5"/>
 </p>
 
 <div style="text-align:center"><img src="inst/extdata/LinePlots_FourClusterModel.png" alt="Lineplot" width="600" height="400"/>
