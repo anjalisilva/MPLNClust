@@ -143,14 +143,21 @@
 #' @importFrom utils tail
 #' @importFrom utils write.csv
 #'
-mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
-  nChains = 3, nIterations = 1000,
-  initMethod = "kmeans", nInitIterations = 0,
-  normalize = "Yes", numNodes = NA) {
+mplnParallel <- function(dataset,
+                         membership = "none",
+                         gmin = 1,
+                         gmax = 2,
+                         nChains = 3,
+                         nIterations = 1000,
+                         initMethod = "kmeans",
+                         nInitIterations = 0,
+                         normalize = "Yes",
+                         numNodes = NA) {
 
+  # Keeping track of time
   ptm <- proc.time()
 
-  # Performing checks
+  # Performing checks of user input
   if (typeof(dataset) != "double" & typeof(dataset) != "integer") {
     stop("Dataset type needs to be integer.")
   }
@@ -218,7 +225,7 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
       should equal the number of observations. Otherwise, leave as 'none'.")
   }
 
-  # Remove rows with zeros, if present
+  # Remove rows with only zeros, if present
   removezeros <- removeZeroCounts(dataset = dataset, membership = membership)
   dataset <- removezeros$dataset
   membership <- removezeros$membership
@@ -226,9 +233,10 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
   nObservations <- nrow(dataset)
 
   if (class(initMethod) == "character"){
-    if(initMethod != "kmeans" & initMethod != "random" & initMethod != "medoids" & initMethod != "medoids" & initMethod != "clara" & initMethod != "fanny") {
-    stop("initMethod should of class character, specifying
-      either: kmeans, random, medoids, clara, or fanny.")
+    initMethodsUsed <- c("kmeans", "random", "medoids", "clara", "fanny")
+    if(any((initMethod == initMethodsUsed) != TRUE)) {
+      stop("initMethod should of class character, specifying
+        either: kmeans, random, medoids, clara, or fanny.")
     }
   } else if (class(initMethod) != "character") {
     stop("initMethod should of class character, specifying
@@ -681,7 +689,8 @@ mplnNonParallel <- function(dataset,
   nObservations <- nrow(dataset)
 
   if (class(initMethod) == "character"){
-    if(initMethod != "kmeans" & initMethod != "random" & initMethod != "medoids" & initMethod != "medoids" & initMethod != "clara" & initMethod != "fanny") {
+    initMethodsUsed <- c("kmeans", "random", "medoids", "clara", "fanny")
+    if(any((initMethod == initMethodsUsed) != TRUE)) {
       stop("initMethod should of class character, specifying
         either: kmeans, random, medoids, clara, or fanny.")
     }
@@ -912,7 +921,7 @@ calcLikelihood <- function(z,
                     sum(exp(x + normFactors)) -
                     sum(lfactorial(dataset[i, ])) -
                     dimensionality / 2 * log(2 * pi) -
-                    1 / 2 * log(det(Sig_g[((g - 1) *
+                    0.5 * log(det(Sig_g[((g - 1) *
                         dimensionality + 1):(g * dimensionality), ])) -
                     0.5 * t(x-mu_g[g, ]) %*%
                     solve(Sig_g[((g - 1) *
@@ -969,7 +978,7 @@ calcZvalue <- function(theta_Stan,
                     (x + normalizefactors) -
                     sum(exp(x + normalizefactors)) -
                     sum(lfactorial(dataset[i, ])) -
-                    dimensionality / 2 * log(2 * pi) - 1 / 2 *
+                    dimensionality / 2 * log(2 * pi) - 0.5 *
                     log(det(Sig_g[((g - 1) *
                         dimensionality + 1):(g*dimensionality), ])) -
                     0.5 * t(x-mu_g[g, ]) %*%
@@ -1371,7 +1380,7 @@ mplnCluster <- function(dataset,
         zz <- c(1:(dimensionality - 1)) * nObservations + i
         theta_mat <- tt[, c(i, zz)]
         theta_Stan[[g]][i, ] <- colMeans(theta_mat)
-        E_theta2[[g]][[i]] <- z[i, g] * t(tt[, c(i,zz)]) %*% tt[, c(i,zz)]/
+        E_theta2[[g]][[i]] <- z[i, g] * t(tt[, c(i, zz)]) %*% tt[, c(i, zz)]/
                               ((0.5 * nIterations) * nChains)
       }
 
@@ -1533,8 +1542,8 @@ stanRun <- function(model,
     data1 <- list(d = ncol(dataset),
                  N = nrow(dataset),
                  y = dataset,
-                 mu = mu_all_outer[[it_outer-1]][g, ],
-                 Sigma = sigma_all_outer[[it_outer-1]][((g - 1) *
+                 mu = mu_all_outer[[it_outer - 1]][g, ],
+                 Sigma = sigma_all_outer[[it_outer - 1]][((g - 1) *
                          dimensionality + 1):(g*dimensionality), ],
                 normfactors = as.vector(normalizefacs))
     stanproceed <- 0
