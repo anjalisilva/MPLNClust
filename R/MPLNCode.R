@@ -1,15 +1,17 @@
-#' Model-Based Clustering Using MPLN via Parallel Performance
+#' Clustering Using MPLN with MCMC-EM via Parallel Performance
 #'
 #' Performs clustering using mixtures of multivariate Poisson-log
-#' normal (MPLN) distribution and model selection using AIC, AIC3,
-#' BIC and ICL. Coarse grain parallelization is employed, such that
+#' normal (MPLN) distribution with Markov chain Monte Carlo
+#' expectation-maximization algorithm (MCMC-EM) for parameter
+#' estimation. Coarse grain parallelization is employed, such that
 #' when a range of components/clusters (g = 1,...,G) are considered, each
 #' G is run on a different processor. This can be performed because
 #' each component/cluster size is independent from another. All
 #' components/clusters in the range to be tested have been parallelized
 #' to run on a seperate core using the *parallel* R package. The number of
 #' nodes to be used for clustering can be specified or calculated using
-#' *parallel::detectCores() - 1*.
+#' *parallel::detectCores() - 1*. Model selection can be performed using
+#' AIC, AIC3, BIC and ICL.
 #'
 #' @param dataset A dataset of class matrix and type integer such that
 #'    rows correspond to observations and columns correspond to variables.
@@ -457,12 +459,15 @@ mplnParallel <- function(dataset, membership = "none", gmin = 1, gmax = 2,
 }
 
 
-#' Model-Based Clustering Using MPLN via Non-Parallel Performance
+
+#' Clustering Using MPLN  with MCMC-EM via Non-Parallel Performance
 #'
 #' Performs clustering using mixtures of multivariate Poisson-log
-#' normal (MPLN) distribution and model selection using AIC, AIC3,
-#' BIC and ICL. No internal parallelization, thus code is run in
-#' serial.
+#' normal (MPLN) distribution with Markov chain Monte Carlo
+#' expectation-maximization algorithm (MCMC-EM) for parameter
+#' estimation. No internal parallelization, thus code is run in
+#' serial. Model selection can be performed using AIC, AIC3, BIC
+#' and ICL.
 #'
 #' @param dataset A dataset of class matrix and type integer such that
 #'    rows correspond to observations and columns correspond to variables.
@@ -886,6 +891,7 @@ mplnNonParallel <- function(dataset,
 }
 
 
+
 # Log likelihood calculation
 calcLikelihood <- function(z,
                            PI,
@@ -920,6 +926,7 @@ calcLikelihood <- function(z,
 }
 
 
+
 # Parameter calculation
 calcParameters <- function(numberG,
                            dimensionality) {
@@ -938,6 +945,8 @@ calcParameters <- function(numberG,
   return(paraTotal)
   # Developed by Anjali Silva
 }
+
+
 
 # Zvalue calculation
 calcZvalue <- function(theta_Stan,
@@ -996,6 +1005,7 @@ calcZvalue <- function(theta_Stan,
   return(zvalue)
   # Developed by Anjali Silva
 }
+
 
 
 # Calling clustering
@@ -1070,6 +1080,8 @@ callingClustering <- function(data,
   # Developed by Anjali Silva
 }
 
+
+
 # Initialization
 initializationRun <- function(gmodel,
                               dataset,
@@ -1139,6 +1151,7 @@ initializationRun <- function(gmodel,
 }
 
 
+
 # AIC calculation
 AICFunction <- function(ll,
                         k,
@@ -1171,6 +1184,7 @@ AICFunction <- function(ll,
 }
 
 
+
 # AIC3 calculation
 AIC3Function <- function(ll,
                          k,
@@ -1200,6 +1214,7 @@ AIC3Function <- function(ll,
   class(AIC3results) <- "AIC3"
   return(AIC3results)
 }
+
 
 
 # BIC calculation
@@ -1235,6 +1250,8 @@ BICFunction <- function(ll,
   class(BICresults) <- "BIC"
   return(BICresults)
 }
+
+
 
 # ICL calculation
 ICLFunction <- function(bIc,
@@ -1283,6 +1300,7 @@ ICLFunction <- function(bIc,
   return(ICLresults)
   # Developed by Anjali Silva
 }
+
 
 
 # Clustering function
@@ -1471,6 +1489,8 @@ mplnCluster <- function(dataset,
   # Developed by Anjali Silva
 }
 
+
+
 # Calculate and remove rows with zeros
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
 removeZeroCounts <- function(dataset,
@@ -1491,6 +1511,8 @@ removeZeroCounts <- function(dataset,
   class(RESULTS) <- "MPLN_ZerosRemoved"
   return(RESULTS)
 }
+
+
 
 # Stan sampling
 stanRun <- function(model,
@@ -1530,12 +1552,13 @@ stanRun <- function(model,
                                        verbose = FALSE,
                                        refresh = -1)
 
+      # Checking convergence
       if (all(rstan::summary(fitrstan[[g]])$summary[, "Rhat"] < 1.1) == TRUE &&
           all(rstan::summary(fitrstan[[g]])$summary[, "n_eff"] > 100) == TRUE) {
         stanproceed <- 1
       } else if(all(rstan::summary(fitrstan[[g]])$summary[, "Rhat"] < 1.1) != TRUE ||
                 all(rstan::summary(fitrstan[[g]])$summary[, "n_eff"] > 100) != TRUE) {
-        if(try == 10) { # stop after 10 attempts
+        if(try == 10) { # Stop after 10 attempts
           stanproceed <- 1
         }
         numb_iterations <- numb_iterations + 100
@@ -1550,3 +1573,5 @@ stanRun <- function(model,
   return(results)
   # Developed by Anjali Silva
 }
+
+# [END]
