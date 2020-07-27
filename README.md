@@ -33,7 +33,7 @@ For tutorials and plot interpretation, refer to the vignette:
 browseVignettes("MPLNClust")
 ```
 
-Some of the visualizations that could be created using this package:
+Some of the visualizations that could be created using this package, using simulated RNA sequencing data as an example:
 
 <p float="center">
   <img src="inst/extdata/barplot_FourClusterModel.png" alt="Overview" width="350"/>
@@ -45,6 +45,8 @@ Some of the visualizations that could be created using this package:
   &nbsp;
   
   <img src="inst/extdata/heatmap_FourClusterModel.png" alt="Overview" width="332.5"/>
+  
+ Figures: Posterior probability of belonging to a cluster (left); Heatmap of counts across clusters (right). 
   
 </p>
 
