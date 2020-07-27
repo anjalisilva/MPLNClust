@@ -37,7 +37,6 @@ Some of the visualizations that could be created using this package:
 
 <p float="center">
   <img src="inst/extdata/barplot_FourClusterModel.png" alt="Overview" width="350"/>
-  
   &nbsp;
   &nbsp;
   &nbsp;
