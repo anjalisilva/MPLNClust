@@ -38,21 +38,20 @@ Some of the visualizations that could be created using this package:
 <p float="center">
   <img src="inst/extdata/barplot_FourClusterModel.png" alt="Overview" width="350"/>
   
-  Figure: Posterior probability of belonging to a cluster. 
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  &nbsp;
   
-  &nbsp;
-  &nbsp;
-  &nbsp;
-  &nbsp;
-  &nbsp;
-  &nbsp;
   <img src="inst/extdata/heatmap_FourClusterModel.png" alt="Overview" width="332.5"/>
   
-  Figure: Heatmap of raw counts across clusters. 
-
 </p>
 
 <div style="text-align:center"><img src="inst/extdata/LinePlots_FourClusterModel.png" alt="Lineplot" width="600" height="400"/>
+
+Figure: Observations divided by cluster. The yellow line represents the mean value for each cluster.
 
 <div style="text-align:left">
 <div style="text-align:left">
