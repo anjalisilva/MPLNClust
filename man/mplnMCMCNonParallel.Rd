@@ -54,30 +54,30 @@ Returns an S3 object of class MPLN with results.
 \itemize{
 \item dataset - The input dataset on which clustering is performed.
 \item dimensionality - Dimensionality of the input dataset.
-\item normalization_factors - A vector of normalization factors used
+\item normalizationFactors - A vector of normalization factors used
 for input dataset.
 \item gmin - Minimum number of components considered in the clustering
 run
 \item gmax - Maximum number of components considered in the clustering
 run
-\item initalization_method - Method used for initialization.
-\item all_results - A list with all results.
-\item loglikelihood - A vector with value of final log-likelihoods for
+\item initalizationMethod - Method used for initialization.
+\item allResults - A list with all results.
+\item logLikelihood - A vector with value of final log-likelihoods for
 each cluster size.
-\item numb_of_parameters - A vector with number of parameters for each
+\item numbParameters - A vector with number of parameters for each
 cluster size.
-\item true_labels - The vector of true labels, if provided by user.
-\item ICL_all - A list with all ICL model selection results.
-\item BIC_all - A list with all BIC model selection results.
-\item AIC_all - A list with all AIC model selection results.
-\item AIC3_all - A list with all AIC3 model selection results.
-\item slope_heuristics - If more than 10 models are considered, slope heuristic
+\item trueLabels - The vector of true labels, if provided by user.
+\item ICLresults - A list with all ICL model selection results.
+\item BICresults - A list with all BIC model selection results.
+\item AICresults - A list with all AIC model selection results.
+\item AIC3results - A list with all AIC3 model selection results.
+\item slopeHeuristics - If more than 10 models are considered, slope heuristic
 results.
-\item Djumpmodel_selected - If more than 10 models are considered, slope heuristic
+\item DjumpModelSelected - If more than 10 models are considered, slope heuristic
 results.
-\item DDSEmodel_selected - If more than 10 models are considered, slope heuristic
+\item DDSEModelSelected - If more than 10 models are considered, slope heuristic
 results.
-\item total_time - Total time used for clustering and model selection.
+\item totalTime - Total time used for clustering and model selection.
 }
 }
 \description{

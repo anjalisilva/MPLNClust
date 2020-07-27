@@ -74,7 +74,8 @@
 mplnDataGenerator <- function(nObservations,
                               dimensionality,
                               mixingProportions,
-                              mu, sigma,
+                              mu,
+                              sigma,
                               produceImage = "No",
                               ImageName = "sampleName") {
 
@@ -128,18 +129,18 @@ mplnDataGenerator <- function(nObservations,
   # Begin calculations - generate z
   z <- t(stats::rmultinom(nObservations, size = 1, mixingProportions))
 
-  y <- theta <- n_g <- vector("list", length = length(mixingProportions))
+  y <- theta <- nG <- vector("list", length = length(mixingProportions))
 
   # For visualization only
   theta2 <- matrix(NA, ncol = dimensionality, nrow = nObservations)
 
   for (i in seq_along(1:length(mixingProportions))) {
-    n_g[[i]] <- which(z[, i] == 1)
-    theta[[i]] <- mvtnorm::rmvnorm(n = length(n_g[[i]]),
+    nG[[i]] <- which(z[, i] == 1)
+    theta[[i]] <- mvtnorm::rmvnorm(n = length(nG[[i]]),
                                    mean = mu[i, ],
                                    sigma = sigma[((i - 1) *
                                    dimensionality + 1):(i * dimensionality), ])
-    theta2[n_g[[i]], ] <- mvtnorm::rmvnorm(n = length(n_g[[i]]),
+    theta2[nG[[i]], ] <- mvtnorm::rmvnorm(n = length(nG[[i]]),
                                   mean = mu[i, ],
                                   sigma = sigma[((i  -1) *
                                   dimensionality + 1):(i * dimensionality), ])
@@ -166,20 +167,20 @@ mplnDataGenerator <- function(nObservations,
     # Obtaining path to save images
     pathNow <- getwd()
     grDevices::png(paste0(pathNow, "/PairsPlot_", ImageName,".png"))
-    graphics::pairs(log(y2), col = map(z) + 1,
+    graphics::pairs(log(y2), col = mclust::map(z) + 1,
           main = "Pairs plot of log-transformed data")
     grDevices::dev.off()
   }
 
   results <- list(dataset = y2,
-                  trueMembership = map(z),
+                  trueMembership = mclust::map(z),
                   probaPost = z,
                   trueNormFactors = norms,
                   observations = nObservations,
                   dimensionality = dimensionality,
                   mixingProportions = mixingProportions,
-                  mu = mu,
-                  sigma = sigma)
+                  trueMu = mu,
+                  trueSigma = sigma)
 
   class(results) <- "mplnDataGenerator"
   return(results)
