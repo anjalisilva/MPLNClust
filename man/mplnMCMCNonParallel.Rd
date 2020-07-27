@@ -105,15 +105,15 @@ and ICL.
 #                                 produceImage = "No")
 
 # Clustering
-# mplnResults <- mplnNonParallel(dataset = sampleData$dataset,
-#                      membership = sampleData$trueMembership,
-#                      gmin = 1,
-#                      gmax = 2,
-#                      nChains = 3,
-#                      nIterations = 1000,
-#                      initMethod = "kmeans",
-#                      nInitIterations = 2,
-#                      normalize = "Yes")
+# mplnResults <- mplnMCMCNonParallel(dataset = sampleData$dataset,
+#                                    membership = sampleData$trueMembership,
+#                                    gmin = 1,
+#                                    gmax = 2,
+#                                    nChains = 3,
+#                                    nIterations = 1000,
+#                                    initMethod = "kmeans",
+#                                    nInitIterations = 2,
+#                                    normalize = "Yes")
 
 }
 \references{

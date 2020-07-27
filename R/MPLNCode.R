@@ -88,15 +88,15 @@
 #' #                                 produceImage = "No")
 #'
 #' # Clustering
-#' # mplnResults <- mplnParallel(dataset = sampleData$dataset,
-#' #                     membership = sampleData$trueMembership,
-#' #                     gmin = 1,
-#' #                     gmax = 2,
-#' #                     nChains = 3,
-#' #                     nIterations = 1000,
-#' #                     initMethod = "kmeans",
-#' #                     nInitIterations = 2,
-#' #                     normalize = "Yes")
+#' # mplnResults <- mplnMCMCParallel(dataset = sampleData$dataset,
+#' #                                 membership = sampleData$trueMembership,
+#' #                                 gmin = 1,
+#' #                                 gmax = 2,
+#' #                                 nChains = 3,
+#' #                                 nIterations = 1000,
+#' #                                 initMethod = "kmeans",
+#' #                                 nInitIterations = 2,
+#' #                                 normalize = "Yes")
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
 #'          \email{sdang@math.binghamton.edu}. }
@@ -548,15 +548,15 @@ mplnMCMCParallel <- function(dataset,
 #' #                                 produceImage = "No")
 #'
 #' # Clustering
-#' # mplnResults <- mplnNonParallel(dataset = sampleData$dataset,
-#' #                      membership = sampleData$trueMembership,
-#' #                      gmin = 1,
-#' #                      gmax = 2,
-#' #                      nChains = 3,
-#' #                      nIterations = 1000,
-#' #                      initMethod = "kmeans",
-#' #                      nInitIterations = 2,
-#' #                      normalize = "Yes")
+#' # mplnResults <- mplnMCMCNonParallel(dataset = sampleData$dataset,
+#' #                                    membership = sampleData$trueMembership,
+#' #                                    gmin = 1,
+#' #                                    gmax = 2,
+#' #                                    nChains = 3,
+#' #                                    nIterations = 1000,
+#' #                                    initMethod = "kmeans",
+#' #                                    nInitIterations = 2,
+#' #                                    normalize = "Yes")
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
 #'          \email{sdang@math.binghamton.edu}. }
