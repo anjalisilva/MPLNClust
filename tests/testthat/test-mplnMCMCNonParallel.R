@@ -4,7 +4,8 @@ library(MPLNClust)
 test_that("Checking clustering results", {
 
   # Generating simulated data
-  # This part works with Test Package, but not during Check
+  # 27 July 2020
+  # This part works with 'Test Package', but not during 'Check'
   # Error: could not find function "cpp_object_initializer"
   # Adding the function doesn't help
 
