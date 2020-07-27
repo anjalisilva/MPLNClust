@@ -134,10 +134,10 @@ mplnResults <- MPLNClust::mplnMCMCParallel(dataset = sampleData$dataset,
 The model selected by BIC for this dataset can be viewed as follows.
 
 ``` r
-mplnResults$BIC_all$BICmodelselected
+mplnResults$BICresults$BICmodelselected
 
 # Cross tabulation of BIC selected model labels with true lables
-table(mplnResults$BIC_all$BICmodelselected_labels, sampleData$truemembership)
+table(mplnResults$BICresults$BICmodelSelectedLabels, sampleData$truemembership)
 ```
 
 If a range of components/clusters > 10 is considered, Djump and DDSE will be available in addition to AIC, BIC, AIC3 and ICL.
@@ -171,7 +171,7 @@ Clustering results can be viewed as heatmaps and line plots. If a matrix of prob
  MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
                                          plots = 'all',
                                          clusterMembershipVector =
-                                         mplnResults$BIC_all$BICmodelselected_labels,
+                                         mplnResults$BICresults$BICmodelselected_labels,
                                          fileName = 'BICModel', 
                                          format = 'png')
 ```
@@ -192,7 +192,7 @@ Rather than visualizing model selected by information criteria, labels for a spe
  MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
                                          plots = 'line',
                                          clusterMembershipVector =
-                                         mplnResults$all_results[[2]]$all_results$clusterlabels,
+                                         mplnResults$allResults[[2]]$allResults$clusterlabels,
                                          fileName = 'TwoComponentModel', 
                                          format = 'png')
 ```
@@ -204,9 +204,9 @@ By providing a matrix of probabilities for the observations belonging to each cl
  #  Visualizing line plots for model with 2 components provided probabilities
  MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
                                          plots = 'all',
-                                         probabilities = mplnResults$all_results[[2]]$all_results$probaPost,
+                                         probabilities = mplnResults$allResults[[2]]$allResults$probaPost,
                                          clusterMembershipVector =
-                                         mplnResults$all_results[[2]]$all_results$clusterlabels,
+                                         mplnResults$allResults[[2]]$allResults$clusterlabels,
                                          LinePlotColours = "multicolour",
                                          fileName = 'AllPlotsWithProbability',
                                          format = 'png')
