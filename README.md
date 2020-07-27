@@ -1,10 +1,11 @@
 # `MPLNClust`
 
 ## Description
-`MPLNClust` is an R package for performing clustering using mixtures of multivariate Poisson-log normal (MPLN) distribution. It was developed for count data, with clustering of RNA sequencing data as a motivation. However, the vector of normalization factors can be relaxed and clustering method may be applied to other types of count data. 
+`MPLNClust` is an R package for performing clustering using mixtures of multivariate Poisson-log normal (MPLN) distribution by [Silva et al., 2019](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0). It was developed for count data, with clustering of RNA sequencing data as a motivation. However, the vector of normalization factors can be relaxed and clustering method may be applied to other types of count data. 
 
-Main functions include __*mplnVariational*__ (under constrcution), __*mplnMCMCParallel*__ or __*mplnMCMCNonParallel*__ to carry out model-based clustering using mixtures of MPLN model. Information criteria (AIC, BIC, AIC3 and ICL) are offered for model selection. Function __*mplnVisualize*__ permit to visualize clustering results. Function __*mplnDataGenerator*__ is available to generate simlulation data via mixtures of MPLN. For more information see details. 
+Main functions include __*mplnVariational*__ (under constrcution), __*mplnMCMCParallel*__ or __*mplnMCMCNonParallel*__ to carry out model-based clustering using mixtures of MPLN model. Information criteria (AIC, BIC, AIC3 and ICL) are offered for model selection. Function __*mplnVisualize*__ permit to visualize clustering results. Function __*mplnDataGenerator*__ is available to generate simlulation data. 
 
+Framework of *mplnVariational* makes it computationally efficient and faster compared to *mplnMCMCParallel* or *mplnMCMCNonParallel*. Therefore, *mplnVariational* may perform better for large datasets. 
 
 ## Installation
 
@@ -19,7 +20,7 @@ library("MPLNClust")
 
 ## Overview
 
-`MPLNClust` contains 5 functions. For the purpose of generating simlulation data via mixtures of MPLN: __*mplnDataGenerator*__. For carrying out clustering of count data using mixtures of MPLN via variational expectation-maximization (EM): __*mplnMCMCVariational*__ (under construction). Functions __*mplnMCMCParallel__* or __*mplnMCMCNonParallel*__ uses a Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) for parameter estimation. Function *mplnMCMCParallel* uses MCMC-EM with parallelization while *mplnMCMCNonParallel* uses MCMC-EM with no parallelization. Here, method of *mplnVariational* function is computationally efficient and faster compared to *mplnMCMCParallel* or *mplnMCMCNonParallel*. For visualizing clustering results: __*mplnVisualize*__. 
+`MPLNClust` contains 5 functions. For the purpose of generating simlulation data via mixtures of MPLN: __*mplnDataGenerator*__. For carrying out clustering of count data using mixtures of MPLN via variational expectation-maximization (EM): __*mplnMCMCVariational*__ (under construction). Functions __*mplnMCMCParallel__* or __*mplnMCMCNonParallel*__ uses a Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) for parameter estimation. Function *mplnMCMCParallel* uses MCMC-EM with parallelization while *mplnMCMCNonParallel* uses MCMC-EM with no parallelization. For visualizing clustering results: __*mplnVisualize*__. 
 
 To list all functions available in the package: 
 
@@ -33,7 +34,7 @@ For tutorials and plot interpretation, refer to the vignette:
 browseVignettes("MPLNClust")
 ```
 
-Some of the visualizations that could be created using this package, using simulated RNA sequencing data as an example:
+Some of the visualizations that could be created, shown with simulated RNA sequencing data as an example:
 
 <p float="center">
   <img src="inst/extdata/barplot_FourClusterModel.png" alt="Overview" width="350"/>
@@ -66,7 +67,7 @@ A mixture of MPLN distributions is introduced for clustering count data by [Silv
 
 ### MCMC-EM Framework for Parameter Estimation 
 
-In 2019, [Silva et al., 2019](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0) used an MCMC-EM framework via Stan for parameter estimation. This method is employed in functions __*mplnMCMCParallel*__ and __*mplnMCMCNonParallel*__. 
+[Silva et al., 2019](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0) used an MCMC-EM framework via Stan for parameter estimation. This method is employed in functions __*mplnMCMCParallel*__ and __*mplnMCMCNonParallel*__. 
 
 Coarse grain parallelization is employed in *mplnMCMCParallel*, such that when a range of components/clusters (g = 1,...,G) are considered, each component/cluster size is run on a different processor. This can be performed because each component/cluster size is independent from another. All components/clusters in the range to be tested have been parallelized to run on a seperate core using the *parallel* R package. The number of cores used for clustering is calculated using *parallel::detectCores() - 1*. No internal parallelization is performed for *mplnMCMCNonParallel*. 
 
@@ -89,7 +90,12 @@ To check the convergence of MCMC chains, the potential scale reduction factor an
 
 ## Maintainer
 
-* Anjali Silva (anjali.silva@uhnresearch.ca). `MPLNClust` welcomes bug reports, enhancement requests, and other contributions. Please email anjali.silva@uhnresearch.ca with subject line 'MPLNClust: ...'. 
+* Anjali Silva (anjali.silva@uhnresearch.ca). 
+
+
+## Contributions
+
+`MPLNClust` welcomes issues, enhancement requests, and other contributions. To submit an issue, use the [GitHub issues](https://github.com/anjalisilva/MPLNClust/issues). Otherwise, email anjali.silva@uhnresearch.ca with subject line 'MPLNClust: ...'. 
 
 
 ## Acknowledgments
