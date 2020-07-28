@@ -2,39 +2,40 @@
 % Please edit documentation in R/mplnModelSelection.R
 \name{ICLFunction}
 \alias{ICLFunction}
-\title{Perform Model Section Via Bayesian Information Criterion}
+\title{Model Section Via Integrated Completed Likelihood}
 \usage{
-ICLFunction(resultsBIC, clusterRunOutput, gmax, gmin, parallel = TRUE)
+ICLFunction(resultsBIC, clusterRunOutput, gmax, gmin, parallel = FALSE)
 }
 \arguments{
 \item{resultsBIC}{Output from BICFunction.}
 
-\item{clusterRunOutput}{Output from mplnVariational, mplnMCMCParallel, or
-mplnMCMCNonParallel functions. This is required.}
+\item{clusterRunOutput}{Output from MPLNClust::mplnVariational,
+MPLNClust::mplnMCMCParallel, or MPLNClust::mplnMCMCNonParallel functions.
+This is required.}
 
-\item{gmax}{A positive integer, >gmin, specifying the maximum number of
+\item{gmax}{A positive integer, > gmin, specifying the maximum number of
 components to be considered in the clustering run.}
 
 \item{gmin}{A positive integer specifying the minimum number of components
 to be considered in the clustering run.}
 
-\item{parallel}{TRUE or FALSE indicating if mplnMCMCParallel has been used.}
+\item{parallel}{TRUE or FALSE indicating if MPLNClust::mplnMCMCParallel
+has been used.}
 }
 \value{
 Returns an S3 object of class MPLN with results.
 \itemize{
-\item allBICvalues - A vector of BIC values for each cluster size.
-\item BICmodelselected - An integer specifying model selected by BIC
-\item BICmodelSelectedLabels - A vector of integers specifying cluster labels
+\item allICLvalues - A vector of ICL values for each cluster size.
+\item ICLmodelselected - An integer specifying model selected by ICL.
+\item ICLmodelSelectedLabels - A vector of integers specifying cluster labels
 for the model selected. Only provided if user input clusterRunOutput.
-\item BICMessage - A character vector indicating if spurious clusters are
+\item ICLMessage - A character vector indicating if spurious clusters are
 detected. Otherwise, NA.
 }
 }
 \description{
-Performs model selection using Bayesian Information Criterion (BIC) by
-Schwarz (1978). Formula: - 2 * logLikelihood + (nParameters * log(nObservations)).
-Require the output from function BICFunction.
+Performs model selection using integrated completed likelihood (ICL) by
+Biernacki et al., (2000). Require the output from function MPLNClust::BICFunction.
 }
 \examples{
 # Generating simulated data
@@ -61,6 +62,15 @@ Require the output from function BICFunction.
 #                                 normalize = "Yes")
 #
 # Model selection
+#
+#' # BICmodel <- BICFunction(logLikelihood = mplnResults$logLikelihood,
+#                         nParameters = mplnResults$numbParameters,
+#                         nObservations = nrow(mplnResults$dataset),
+#                         clusterRunOutput = mplnResults$allResults,
+#                         gmin = mplnResults$gmin,
+#                         gmax = mplnResults$gmax,
+#                         parallel = TRUE)
+#
 # ICLmodel <- ICLFunction(resultsBIC = BICmodel,
 #                         clusterRunOutput = mplnResults$allResults,
 #                         gmin = mplnResults$gmin,

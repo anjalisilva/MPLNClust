@@ -1,4 +1,4 @@
-#' Perform Model Section Via Akaike Information Criterion
+#' Model Section Via Akaike Information Criterion
 #'
 #' Performs model selection using Akaike Information Criterion (AIC).
 #' Formula: - 2 * logLikelihood + 2 * nParameters.
@@ -15,7 +15,8 @@
 #'    to be considered in the clustering run.
 #' @param gmax A positive integer, >gmin, specifying the maximum number of
 #'    components to be considered in the clustering run.
-#' @param parallel TRUE or FALSE indicating if mplnMCMCParallel has been used.
+#' @param parallel TRUE or FALSE indicating if MPLNClust::mplnMCMCParallel
+#'    has been used.
 #'
 #' @return Returns an S3 object of class MPLN with results.
 #' \itemize{
@@ -77,7 +78,7 @@ AICFunction <- function(logLikelihood,
                         clusterRunOutput = NA,
                         gmin,
                         gmax,
-                        parallel = TRUE) {
+                        parallel = FALSE) {
 
   AIC <- - 2 * logLikelihood + 2 * nParameters
   AICmodel <- seq(gmin, gmax, 1)[grep(min(AIC, na.rm = TRUE), AIC)]
@@ -113,7 +114,7 @@ AICFunction <- function(logLikelihood,
 }
 
 
-#' Perform Model Section Via Akaike Information Criterion by Bozdogan (1994)
+#' Model Section Via Akaike Information Criterion by Bozdogan (1994)
 #'
 #' Performs model selection using Akaike Information Criterion by
 #' Bozdogan (1994), called AIC3. Formula: - 2 * logLikelihood + 3 * nParameters.
@@ -130,7 +131,8 @@ AICFunction <- function(logLikelihood,
 #'    to be considered in the clustering run.
 #' @param gmax A positive integer, >gmin, specifying the maximum number of
 #'    components to be considered in the clustering run.
-#' @param parallel TRUE or FALSE indicating if mplnMCMCParallel has been used.
+#' @param parallel TRUE or FALSE indicating if MPLNClust::mplnMCMCParallel
+#'    has been used.
 #'
 #' @return Returns an S3 object of class MPLN with results.
 #' \itemize{
@@ -197,7 +199,7 @@ AIC3Function <- function(logLikelihood,
                          clusterRunOutput = NA,
                          gmin,
                          gmax,
-                         parallel = TRUE) {
+                         parallel = FALSE) {
   AIC3 <- - 2 * logLikelihood + 3 * nParameters
   AIC3model <- seq(gmin, gmax, 1)[grep(min(AIC3,na.rm = TRUE), AIC3)]
   AIC3Message <- NA # For spurious clusters
@@ -231,7 +233,7 @@ AIC3Function <- function(logLikelihood,
 
 
 
-#' Perform Model Section Via Bayesian Information Criterion
+#' Model Section Via Bayesian Information Criterion
 #'
 #' Performs model selection using Bayesian Information Criterion (BIC) by
 #' Schwarz (1978). Formula: - 2 * logLikelihood + (nParameters * log(nObservations)).
@@ -250,7 +252,8 @@ AIC3Function <- function(logLikelihood,
 #'    to be considered in the clustering run.
 #' @param gmax A positive integer, >gmin, specifying the maximum number of
 #'    components to be considered in the clustering run.
-#' @param parallel TRUE or FALSE indicating if mplnMCMCParallel has been used.
+#' @param parallel TRUE or FALSE indicating if MPLNClust::mplnMCMCParallel
+#'    has been used.
 #'
 #' @return Returns an S3 object of class MPLN with results.
 #' \itemize{
@@ -313,7 +316,7 @@ BICFunction <- function(logLikelihood,
                         clusterRunOutput = NA,
                         gmin,
                         gmax,
-                        parallel = TRUE) {
+                        parallel = FALSE) {
   BIC <- - 2 * logLikelihood + (nParameters * log(nObservations))
   BICmodel <- seq(gmin, gmax, 1)[grep(min(BIC, na.rm = TRUE), BIC)]
   BICMessage <- NA # For spurious clusters
@@ -348,28 +351,29 @@ BICFunction <- function(logLikelihood,
 
 
 
-#' Perform Model Section Via Bayesian Information Criterion
+#' Model Section Via Integrated Completed Likelihood
 #'
-#' Performs model selection using Bayesian Information Criterion (BIC) by
-#' Schwarz (1978). Formula: - 2 * logLikelihood + (nParameters * log(nObservations)).
-#' Require the output from function BICFunction.
+#' Performs model selection using integrated completed likelihood (ICL) by
+#' Biernacki et al., (2000). Require the output from function MPLNClust::BICFunction.
 #'
 #' @param resultsBIC Output from BICFunction.
-#' @param clusterRunOutput Output from mplnVariational, mplnMCMCParallel, or
-#'    mplnMCMCNonParallel functions. This is required.
+#' @param clusterRunOutput Output from MPLNClust::mplnVariational,
+#'    MPLNClust::mplnMCMCParallel, or MPLNClust::mplnMCMCNonParallel functions.
+#'    This is required.
 #' @param gmin A positive integer specifying the minimum number of components
 #'    to be considered in the clustering run.
-#' @param gmax A positive integer, >gmin, specifying the maximum number of
+#' @param gmax A positive integer, > gmin, specifying the maximum number of
 #'    components to be considered in the clustering run.
-#' @param parallel TRUE or FALSE indicating if mplnMCMCParallel has been used.
+#' @param parallel TRUE or FALSE indicating if MPLNClust::mplnMCMCParallel
+#'    has been used.
 #'
 #' @return Returns an S3 object of class MPLN with results.
 #' \itemize{
-#'   \item allBICvalues - A vector of BIC values for each cluster size.
-#'   \item BICmodelselected - An integer specifying model selected by BIC
-#'   \item BICmodelSelectedLabels - A vector of integers specifying cluster labels
+#'   \item allICLvalues - A vector of ICL values for each cluster size.
+#'   \item ICLmodelselected - An integer specifying model selected by ICL.
+#'   \item ICLmodelSelectedLabels - A vector of integers specifying cluster labels
 #'     for the model selected. Only provided if user input clusterRunOutput.
-#'   \item BICMessage - A character vector indicating if spurious clusters are
+#'   \item ICLMessage - A character vector indicating if spurious clusters are
 #'     detected. Otherwise, NA.
 #' }
 #'
@@ -401,6 +405,15 @@ BICFunction <- function(logLikelihood,
 #' #                                 normalize = "Yes")
 #' #
 #' # Model selection
+#' #
+#' #' # BICmodel <- BICFunction(logLikelihood = mplnResults$logLikelihood,
+#' #                         nParameters = mplnResults$numbParameters,
+#' #                         nObservations = nrow(mplnResults$dataset),
+#' #                         clusterRunOutput = mplnResults$allResults,
+#' #                         gmin = mplnResults$gmin,
+#' #                         gmax = mplnResults$gmax,
+#' #                         parallel = TRUE)
+#' #
 #' # ICLmodel <- ICLFunction(resultsBIC = BICmodel,
 #' #                         clusterRunOutput = mplnResults$allResults,
 #' #                         gmin = mplnResults$gmin,
@@ -422,7 +435,7 @@ ICLFunction <- function(resultsBIC,
                         clusterRunOutput,
                         gmax,
                         gmin,
-                        parallel = TRUE) {
+                        parallel = FALSE) {
     ICL <- vector()
     for (g in 1:(gmax - gmin + 1)) {
 

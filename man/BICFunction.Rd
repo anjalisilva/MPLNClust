@@ -2,7 +2,7 @@
 % Please edit documentation in R/mplnModelSelection.R
 \name{BICFunction}
 \alias{BICFunction}
-\title{Perform Model Section Via Bayesian Information Criterion}
+\title{Model Section Via Bayesian Information Criterion}
 \usage{
 BICFunction(
   logLikelihood,
@@ -11,7 +11,7 @@ BICFunction(
   clusterRunOutput = NA,
   gmin,
   gmax,
-  parallel = TRUE
+  parallel = FALSE
 )
 }
 \arguments{
@@ -35,7 +35,8 @@ to be considered in the clustering run.}
 \item{gmax}{A positive integer, >gmin, specifying the maximum number of
 components to be considered in the clustering run.}
 
-\item{parallel}{TRUE or FALSE indicating if mplnMCMCParallel has been used.}
+\item{parallel}{TRUE or FALSE indicating if MPLNClust::mplnMCMCParallel
+has been used.}
 }
 \value{
 Returns an S3 object of class MPLN with results.
