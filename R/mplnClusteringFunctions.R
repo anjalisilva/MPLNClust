@@ -371,38 +371,38 @@ mplnMCMCParallel <- function(dataset,
   cat("\nDone parallel code.")
   parallel::stopCluster(cl)
 
-  BIC <- ICL <- AIC <- AIC3 <- Djump <- DDSE <- k <- logLikelihood <- vector()
+  BIC <- ICL <- AIC <- AIC3 <- Djump <- DDSE <- nParameters <- logLikelihood <- vector()
 
   for(g in seq_along(1:(gmax - gmin + 1))) {
     # save the final log-likelihood
     logLikelihood[g] <- unlist(tail(parallelRun[[g]]$allResults$logLikelihood,
       n = 1))
 
-    k[g] <- calcParameters(numberG = g,
+    nParameters[g] <- calcParameters(numberG = g,
       dimensionality = dimensionality)
 
     if (g == max(1:(gmax - gmin + 1))) { # starting model selection
       bic <- BICFunction(logLikelihood = logLikelihood,
-        k = k,
-        n = nObservations,
-        run = parallelRun,
+        nParameters = nParameters,
+        nObservations = nObservations,
+        clusterRunOutput = parallelRun,
         gmin = gmin,
         gmax = gmax)
 
-      icl <- ICLFunction(bIc = bic,
+      icl <- ICLFunction(resultsBIC = bic,
         gmin = gmin,
         gmax = gmax,
-        run = parallelRun)
+        clusterRunOutput = parallelRun)
 
       aic <- AICFunction(logLikelihood = logLikelihood,
-        k = k,
-        run = parallelRun,
+        nParameters = nParameters,
+        clusterRunOutput = parallelRun,
         gmin = gmin,
         gmax = gmax )
 
       aic3 <- AIC3Function(logLikelihood = logLikelihood,
-        k = k,
-        run = parallelRun,
+        nParameters = nParameters,
+        clusterRunOutput = parallelRun,
         gmin = gmin,
         gmax = gmax)
     }
@@ -416,7 +416,7 @@ mplnMCMCParallel <- function(dataset,
       to model selection via slope heuristics (Djump and DDSE)
       should be examined to ensure that sufficiently complex
       models have been considered.")
-    mat <- cbind(Kchoice, k / nObservations, k / nObservations, - logLikelihood)
+    mat <- cbind(Kchoice, nParameters / nObservations, nParameters / nObservations, - logLikelihood)
     ResCapushe <- capushe ::capushe(mat, nObservations)
     DDSEmodel<- ResCapushe@DDSE@model
     Djumpmodel<- ResCapushe@Djump@model
@@ -430,7 +430,7 @@ mplnMCMCParallel <- function(dataset,
                     initalizationMethod = initMethod,
                     allResults = parallelRun,
                     logLikelihood = logLikelihood,
-                    numbParameters = k,
+                    numbParameters = nParameters,
                     trueLabels = membership,
                     ICLresults = icl,
                     BICresults = bic,
@@ -441,7 +441,7 @@ mplnMCMCParallel <- function(dataset,
                     DDSEModelSelected = ResCapushe@DDSE@model,
                     totalTime = final)
 
-  } else {# end of Djump and DDSE
+  } else {
     final <- proc.time() - ptm
     RESULTS <- list(dataset = dataset,
                     dimensionality = dimensionality,
@@ -451,7 +451,7 @@ mplnMCMCParallel <- function(dataset,
                     initalizationMethod = initMethod,
                     allResults = parallelRun,
                     logLikelihood = logLikelihood,
-                    numbParameters = k,
+                    numbParameters = nParameters,
                     trueLabels = membership,
                     ICLresults = icl,
                     BICresults = bic,
@@ -803,17 +803,17 @@ mplnMCMCNonParallel <- function(dataset,
   }
 
 
-  BIC <- ICL <- AIC <- AIC3 <- Djump <- DDSE <- k <- logLikelihood <- vector()
+  BIC <- ICL <- AIC <- AIC3 <- Djump <- DDSE <- nParameters <- logLikelihood <- vector()
 
   for(g in seq_along(1:(gmax - gmin + 1))) {
     # save the final log-likelihood
     logLikelihood[g] <- unlist(utils::tail(nonParallelRun[[g]]$logLikelihood, n = 1))
 
-    k[g] <- calcParameters(numberG = g, dimensionality = dimensionality)
+    nParameters[g] <- calcParameters(numberG = g, dimensionality = dimensionality)
 
     if (g == max(1:(gmax - gmin + 1))) { # starting model selection
       bic <- BICFunction(logLikelihood = logLikelihood,
-                        k = k,
+                        nParameters = nParameters,
                         n = nObservations,
                         run = nonParallelRun,
                         gmin = gmin,
@@ -827,14 +827,14 @@ mplnMCMCNonParallel <- function(dataset,
                         parallel = FALSE)
 
       aic <- AICFunction(logLikelihood = logLikelihood,
-                        k = k,
+                        nParameters = nParameters,
                         run = nonParallelRun,
                         gmin = gmin,
                         gmax = gmax,
                         parallel = FALSE)
 
       aic3 <- AIC3Function(logLikelihood = logLikelihood,
-                          k = k,
+                          nParameters = nParameters,
                           run = nonParallelRun,
                           gmin = gmin,
                           gmax = gmax,
@@ -850,7 +850,7 @@ mplnMCMCNonParallel <- function(dataset,
       to model selection via slope heuristics (Djump and DDSE)
       should be examined to ensure that sufficiently complex
       models have been considered.")
-    mat <- cbind(Kchoice, k / nObservations, k / nObservations, - logLikelihood)
+    mat <- cbind(Kchoice, nParameters / nObservations, nParameters / nObservations, - logLikelihood)
     ResCapushe <- capushe ::capushe(mat, nObservations)
     DDSEmodel<- ResCapushe@DDSE@model
     Djumpmodel<- ResCapushe@Djump@model
@@ -864,7 +864,7 @@ mplnMCMCNonParallel <- function(dataset,
                     initalizationMethod = initMethod,
                     allResults = nonParallelRun,
                     logLikelihood = logLikelihood,
-                    numbParameters = k,
+                    numbParameters = nParameters,
                     trueLabels = membership,
                     ICLresults = icl,
                     BICresults = bic,
@@ -885,7 +885,7 @@ mplnMCMCNonParallel <- function(dataset,
                     initalizationMethod = initMethod,
                     allResults = nonParallelRun,
                     logLikelihood = logLikelihood,
-                    numbParameters = k,
+                    numbParameters = nParameters,
                     trueLabels = membership,
                     ICLresults = icl,
                     BICresults = bic,
@@ -1135,13 +1135,13 @@ initializationRun <- function(gmodel,
       }
     } else if (initMethod == "medoids") {
       z[[iterations]] <- mclust::unmap(cluster::pam(log(dataset + 1 / 3),
-        k = gmodel)$cluster)
+        nParameters = gmodel)$cluster)
     } else if (initMethod == "clara") {
       z[[iterations]] <- mclust::unmap(cluster::clara(log(dataset + 1 / 3),
-        k = gmodel)$cluster)
+        nParameters = gmodel)$cluster)
     } else if (initMethod == "fanny") {
       z[[iterations]] <- mclust::unmap(cluster::fanny(log(dataset + 1 / 3),
-        k = gmodel)$cluster)
+        nParameters = gmodel)$cluster)
     }
 
     initRuns[[iterations]] <- mplnCluster(dataset = dataset,
@@ -1158,157 +1158,6 @@ initializationRun <- function(gmodel,
 
   initialization <- initRuns[[which(logLinit == max(logLinit, na.rm = TRUE))[1]]]
   return(initialization)
-  # Developed by Anjali Silva
-}
-
-
-
-# AIC calculation
-AICFunction <- function(logLikelihood,
-                        k,
-                        run,
-                        gmin,
-                        gmax,
-                        parallel = TRUE) {
-  AIC <- - 2 * logLikelihood + 2 * k
-  AICmodel <- seq(gmin, gmax, 1)[grep(min(AIC, na.rm = TRUE), AIC)]
-  if(isTRUE(parallel) == "FALSE"){
-    # if non parallel run
-    AICmodelLabels <- run[[grep(min(AIC,na.rm = TRUE), AIC)]]$clusterlabels
-  }else{
-    # if parallel run
-    AICmodelLabels <- run[[grep(min(AIC,na.rm = TRUE), AIC)]]$allResults$clusterlabels
-  }
-  AICMessage <- NA
-
-  if (max(AICmodelLabels) != AICmodel) {
-    AICmodel <- max(AICmodelLabels)
-    AICMessage <- "Spurious or empty cluster resulted."
-  }
-
-  AICresults<-list(allAICvalues = AIC,
-                   AICmodelselected = AICmodel,
-                   AICmodelSelectedLabels = AICmodelLabels,
-                   AICMessage = AICMessage)
-  class(AICresults) <- "AIC"
-  return(AICresults)
-}
-
-
-
-# AIC3 calculation
-AIC3Function <- function(logLikelihood,
-                         k,
-                         run,
-                         gmin,
-                         gmax,
-                         parallel = TRUE) {
-  AIC3 <- - 2 * logLikelihood + 3 * k
-  AIC3model <- seq(gmin, gmax, 1)[grep(min(AIC3,na.rm = TRUE), AIC3)]
-  if(isTRUE(parallel) == "FALSE"){
-    # if non parallel run
-    AIC3modelLabels <- run[[grep(min(AIC3,na.rm = TRUE), AIC3)]]$clusterlabels
-  } else{
-    # if parallel run
-    AIC3modelLabels <- run[[grep(min(AIC3,na.rm = TRUE), AIC3)]]$allResults$clusterlabels
-  }
-  AIC3Message <- NA
-
-  if (max(AIC3modelLabels) != AIC3model) {
-    AIC3model <- max(AIC3modelLabels)
-    AIC3Message <- "Spurious or empty cluster resulted."
-  }
-  AIC3results <- list(allAIC3values = AIC3,
-                      AIC3modelselected = AIC3model,
-                      AIC3modelSelectedLabels = AIC3modelLabels,
-                      AIC3Message = AIC3Message)
-  class(AIC3results) <- "AIC3"
-  return(AIC3results)
-}
-
-
-
-# BIC calculation
-BICFunction <- function(logLikelihood,
-                        k,
-                        n,
-                        run,
-                        gmin,
-                        gmax,
-                        parallel = TRUE) {
-  BIC <- - 2 * logLikelihood + (k * log(n))
-  BICmodel <- seq(gmin, gmax, 1)[grep(min(BIC, na.rm = TRUE), BIC)]
-  if(isTRUE(parallel) == "FALSE") {
-    # if non parallel run
-    BICmodelLabels <- run[[grep(min(BIC, na.rm = TRUE),
-      BIC)]]$clusterlabels
-  } else {
-    # if parallel run
-    BICmodelLabels <- run[[grep(min(BIC, na.rm = TRUE),
-      BIC)]]$allResults$clusterlabels
-  }
-  BICMessage <- NA
-
-  if (max(BICmodelLabels) != BICmodel) {
-    BICmodel <- max(BICmodelLabels)
-    BICMessage <- "Spurious or empty cluster resulted."
-  }
-
-  BICresults <- list(allBICvalues = BIC,
-                     BICmodelselected = BICmodel,
-                     BICmodelSelectedLabels = BICmodelLabels,
-                     BICMessage = BICMessage)
-  class(BICresults) <- "BIC"
-  return(BICresults)
-}
-
-
-
-# ICL calculation
-ICLFunction <- function(bIc,
-                        gmax,
-                        gmin,
-                        run,
-                        parallel = TRUE) {
-                        ICL <- vector()
-                        for (g in 1:(gmax - gmin + 1)) {
-    if(isTRUE(parallel) == "FALSE") {
-      # if non parallel run
-      z <- run[[g]]$probaPost
-      mapz <- mclust::unmap(run[[g]]$clusterlabels)
-    } else {
-      # if parallel run
-      z <- run[[g]]$allResults$probaPost
-      mapz <- mclust::unmap(run[[g]]$allResults$clusterlabels)
-    }
-    forICL <- function(g){sum(log(z[which(mapz[, g] == 1), g]))}
-    ICL[g] <- bIc$allBICvalues[g] + sum(sapply(1:ncol(mapz), forICL))
-  }
-  ICLmodel <- seq(gmin, gmax, 1)[grep(min(ICL, na.rm = TRUE), ICL)]
-
-  if(isTRUE(parallel) == "FALSE") {
-    # if non parallel run
-    ICLmodelLabels <- run[[grep(min(ICL, na.rm = TRUE),
-      ICL)]]$clusterlabels
-  } else {
-    # if parallel run
-    ICLmodelLabels <- run[[grep(min(ICL, na.rm = TRUE),
-      ICL)]]$allResults$clusterlabels
-  }
-
-  ICLMessage <- NA
-
-  if (max(ICLmodelLabels) != ICLmodel) {
-    ICLmodel <- max(ICLmodelLabels)
-    ICLMessage <- "Spurious or empty cluster resulted."
-  }
-
-  ICLresults <- list(allICLvalues = ICL,
-                     ICLmodelselected = ICLmodel,
-                     ICLmodelSelectedLabels = ICLmodelLabels,
-                     ICLMessage = ICLMessage)
-  class(ICLresults) <- "ICL"
-  return(ICLresults)
   # Developed by Anjali Silva
 }
 
