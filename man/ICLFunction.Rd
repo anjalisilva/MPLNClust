@@ -2,7 +2,7 @@
 % Please edit documentation in R/mplnModelSelection.R
 \name{ICLFunction}
 \alias{ICLFunction}
-\title{Model Section Via Integrated Completed Likelihood}
+\title{Model Selection Via Integrated Completed Likelihood}
 \usage{
 ICLFunction(resultsBIC, clusterRunOutput, gmax, gmin, parallel = FALSE)
 }

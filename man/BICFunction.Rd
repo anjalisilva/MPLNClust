@@ -2,7 +2,7 @@
 % Please edit documentation in R/mplnModelSelection.R
 \name{BICFunction}
 \alias{BICFunction}
-\title{Model Section Via Bayesian Information Criterion}
+\title{Model Selection Via Bayesian Information Criterion}
 \usage{
 BICFunction(
   logLikelihood,

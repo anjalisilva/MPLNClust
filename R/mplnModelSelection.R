@@ -1,4 +1,4 @@
-#' Model Section Via Akaike Information Criterion
+#' Model Selection Via Akaike Information Criterion
 #'
 #' Performs model selection using Akaike Information Criterion (AIC).
 #' Formula: - 2 * logLikelihood + 2 * nParameters.
@@ -114,7 +114,7 @@ AICFunction <- function(logLikelihood,
 }
 
 
-#' Model Section Via Akaike Information Criterion by Bozdogan (1994)
+#' Model Selection Via Akaike Information Criterion by Bozdogan (1994)
 #'
 #' Performs model selection using Akaike Information Criterion by
 #' Bozdogan (1994), called AIC3. Formula: - 2 * logLikelihood + 3 * nParameters.
@@ -233,7 +233,7 @@ AIC3Function <- function(logLikelihood,
 
 
 
-#' Model Section Via Bayesian Information Criterion
+#' Model Selection Via Bayesian Information Criterion
 #'
 #' Performs model selection using Bayesian Information Criterion (BIC) by
 #' Schwarz (1978). Formula: - 2 * logLikelihood + (nParameters * log(nObservations)).
@@ -351,7 +351,7 @@ BICFunction <- function(logLikelihood,
 
 
 
-#' Model Section Via Integrated Completed Likelihood
+#' Model Selection Via Integrated Completed Likelihood
 #'
 #' Performs model selection using integrated completed likelihood (ICL) by
 #' Biernacki et al., (2000). Require the output from function MPLNClust::BICFunction.

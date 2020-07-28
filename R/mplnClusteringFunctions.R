@@ -387,24 +387,28 @@ mplnMCMCParallel <- function(dataset,
         nObservations = nObservations,
         clusterRunOutput = parallelRun,
         gmin = gmin,
-        gmax = gmax)
+        gmax = gmax,
+        parallel = TRUE)
 
       icl <- ICLFunction(resultsBIC = bic,
         gmin = gmin,
         gmax = gmax,
-        clusterRunOutput = parallelRun)
+        clusterRunOutput = parallelRun,
+        parallel = TRUE)
 
       aic <- AICFunction(logLikelihood = logLikelihood,
         nParameters = nParameters,
         clusterRunOutput = parallelRun,
         gmin = gmin,
-        gmax = gmax )
+        gmax = gmax,
+        parallel = TRUE)
 
       aic3 <- AIC3Function(logLikelihood = logLikelihood,
         nParameters = nParameters,
         clusterRunOutput = parallelRun,
         gmin = gmin,
-        gmax = gmax)
+        gmax = gmax,
+        parallel = TRUE)
     }
   }
 

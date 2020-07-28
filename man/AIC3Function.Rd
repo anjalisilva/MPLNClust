@@ -2,7 +2,7 @@
 % Please edit documentation in R/mplnModelSelection.R
 \name{AIC3Function}
 \alias{AIC3Function}
-\title{Model Section Via Akaike Information Criterion by Bozdogan (1994)}
+\title{Model Selection Via Akaike Information Criterion by Bozdogan (1994)}
 \usage{
 AIC3Function(
   logLikelihood,
