@@ -1,6 +1,30 @@
+# RStudio files
 .Rproj.user
 .Rproj
+
+# History files
 .Rhistory
+.Rapp.history
+
+# Session Data files
 .RData
+
+# Output files from R CMD check
+/*.Rcheck/
+
+# User-specific files
 .Ruserdata
+
+# Produced vignettes
+vignettes/*.html
+vignettes/*.pdf
+
+
+# knitr and R markdown default cache directories
+*_cache/
+/cache/
+
+
 inst/doc
+
+# Reference: Michael Chirico, R.gitignore, Accessed July 2020, https://github.com/github/gitignore/blob/master/R.gitignore
