@@ -3,7 +3,7 @@
 ## Description
 `MPLNClust` is an R package for performing clustering using mixtures of multivariate Poisson-log normal (MPLN) distribution by [Silva et al., 2019](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0). It was developed for count data, with clustering of RNA sequencing data as a motivation. However, the vector of normalization factors can be relaxed and clustering method may be applied to other types of count data. 
 
-Main functions include __*mplnVariational*__ (under construction), __*mplnMCMCParallel*__ or __*mplnMCMCNonParallel*__ to carry out model-based clustering using mixtures of MPLN model. Information criteria (AIC, BIC, AIC3 and ICL) are offered for model selection. Function __*mplnVisualize*__ permit to visualize clustering results. Function __*mplnDataGenerator*__ is available to generate simlulation data. 
+Main functions include __*mplnVariational*__, __*mplnMCMCParallel*__ or __*mplnMCMCNonParallel*__ to carry out model-based clustering using mixtures of MPLN model. Information criteria (AIC, BIC, AIC3 and ICL) are offered for model selection. Function __*mplnVisualize*__ permit to visualize clustering results. Function __*mplnDataGenerator*__ is available to generate simlulation data. 
 
 Framework of *mplnVariational* makes it computationally efficient and faster compared to *mplnMCMCParallel* or *mplnMCMCNonParallel*. Therefore, *mplnVariational* may perform better for large datasets. For more information, see details section below. 
 
@@ -22,7 +22,7 @@ library("MPLNClust")
 
 `MPLNClust` contains 9 functions. 
 
-For carrying out clustering of count data using mixtures of MPLN via variational expectation-maximization (EM): __*mplnVariational*__ (under construction). Functions __*mplnMCMCParallel*__ or __*mplnMCMCNonParallel*__ uses a Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) for parameter estimation. Function *mplnMCMCParallel* uses MCMC-EM with parallelization while *mplnMCMCNonParallel* uses MCMC-EM with no parallelization.
+For carrying out clustering of count data using mixtures of MPLN via variational expectation-maximization (EM): __*mplnVariational*__. Functions __*mplnMCMCParallel*__ or __*mplnMCMCNonParallel*__ uses a Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) for parameter estimation. Function *mplnMCMCParallel* uses MCMC-EM with parallelization while *mplnMCMCNonParallel* uses MCMC-EM with no parallelization.
 
 For the purpose of generating simlulation data via mixtures of MPLN: __*mplnDataGenerator*__. 
 
