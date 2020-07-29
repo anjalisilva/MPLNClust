@@ -1,4 +1,4 @@
-context("Checking for parallel clustering performance")
+context("Checking for MCMCEM parallel clustering performance")
 library(MPLNClust)
 
 test_that("Checking clustering results", {
