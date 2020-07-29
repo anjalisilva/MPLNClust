@@ -90,7 +90,7 @@ parallelization, thus code is run in serial.
 # trueSigma1 <- diag(6) * 2
 # trueSigma2 <- diag(6)
 
-# sampleData <- mplnDataGenerator(nObservations = 100,
+# sampleData <- mplnDataGenerator(nObservations = 1000,
 #                                 dimensionality = 6,
 #                                 mixingProportions = c(0.79, 0.21),
 #                                 mu = rbind(trueMu1, trueMu2),
