@@ -1,4 +1,4 @@
-#' Clustering Using MPLN with MCMC-EM via Parallel Performance
+#' Clustering Using MPLN With MCMC-EM Via Parallel Performance
 #'
 #' Performs clustering using mixtures of multivariate Poisson-log
 #' normal (MPLN) distribution with Markov chain Monte Carlo
@@ -10,7 +10,7 @@
 #' components/clusters in the range to be tested have been parallelized
 #' to run on a seperate core using the *parallel* R package. The number of
 #' nodes to be used for clustering can be specified or calculated using
-#' *parallel::detectCores() - 1*. Model selection can be performed using
+#' *parallel::detectCores() - 1*. Model selection is performed using
 #' AIC, AIC3, BIC and ICL.
 #'
 #' @param dataset A dataset of class matrix and type integer such that
@@ -22,7 +22,7 @@
 #'    leave as "none".
 #' @param gmin A positive integer specifying the minimum number of components
 #'    to be considered in the clustering run.
-#' @param gmax A positive integer, >gmin, specifying the maximum number of
+#' @param gmax A positive integer, > gmin, specifying the maximum number of
 #'    components to be considered in the clustering run.
 #' @param nChains A positive integer specifying the number of Markov chains.
 #'    Default is 3, the recommended minimum number.
@@ -32,7 +32,9 @@
 #' @param initMethod An algorithm for initialization. Current options are
 #'    "kmeans", "random", "medoids", "clara", or "fanny". Default is "kmeans".
 #' @param nInitIterations A positive integer or zero, specifying the number
-#'    of initialization runs to be considered. Default is 0.
+#'    of initialization runs to be performed. This many runs, each with 10
+#'    iterations, will be performed via MPLNClust and values from the run with
+#'    highest log-likelihood will be used as initialization values. Default is 0.
 #' @param normalize A string with options "Yes" or "No" specifying
 #'     if normalization should be performed. Currently, normalization factors
 #'     are calculated using TMM method of edgeR package. Default is "Yes".
@@ -41,7 +43,7 @@
 #'     leave as NA, so default will be detected as
 #'     parallel::makeCluster(parallel::detectCores() - 1).
 #'
-#' @return Returns an S3 object of class MPLN with results.
+#' @return Returns an S3 object of class mplnMCMCParallel with results.
 #' \itemize{
 #'   \item dataset - The input dataset on which clustering is performed.
 #'   \item dimensionality - Dimensionality of the input dataset.
@@ -467,18 +469,17 @@ mplnMCMCParallel <- function(dataset,
 
   class(RESULTS) <- "mplnMCMCParallel"
   return(RESULTS)
-  # [END]
-  }
+}
 
 
 
-#' Clustering Using MPLN  with MCMC-EM via Non-Parallel Performance
+#' Clustering Using MPLN  With MCMC-EM Via Non-Parallel Performance
 #'
 #' Performs clustering using mixtures of multivariate Poisson-log
 #' normal (MPLN) distribution with Markov chain Monte Carlo
 #' expectation-maximization algorithm (MCMC-EM) for parameter
 #' estimation. No internal parallelization, thus code is run in
-#' serial. Model selection can be performed using AIC, AIC3, BIC
+#' serial. Model selection is performed using AIC, AIC3, BIC
 #' and ICL.
 #'
 #' @param dataset A dataset of class matrix and type integer such that
@@ -490,7 +491,7 @@ mplnMCMCParallel <- function(dataset,
 #'    leave as "none".
 #' @param gmin A positive integer specifying the minimum number of components
 #'    to be considered in the clustering run.
-#' @param gmax A positive integer, >gmin, specifying the maximum number of
+#' @param gmax A positive integer, > gmin, specifying the maximum number of
 #'    components to be considered in the clustering run.
 #' @param nChains A positive integer specifying the number of Markov chains.
 #'    Default is 3, the recommended minimum number.
@@ -499,13 +500,15 @@ mplnMCMCParallel <- function(dataset,
 #'    The upper limit will depend on size of dataset.
 #' @param initMethod An algorithm for initialization. Current options are
 #'    "kmeans", "random", "medoids", "clara", or "fanny". Default is "kmeans"
-#' @param nInitIterations A positive integer specifying the number of
-#'     initialization runs to be considered.
+#' @param nInitIterations A positive integer or zero, specifying the number
+#'    of initialization runs to be performed. This many runs, each with 10
+#'    iterations, will be performed via MPLNClust and values from the run with
+#'    highest log-likelihood will be used as initialization values. Default is 0.
 #' @param normalize A string with options "Yes" or "No" specifying
 #'     if normalization should be performed. Currently, normalization factors
 #'     are calculated using TMM method of edgeR package. Default is "Yes".
 #'
-#' @return Returns an S3 object of class MPLN with results.
+#' @return Returns an S3 object of class mplnMCMCNonParallel with results.
 #' \itemize{
 #'   \item dataset - The input dataset on which clustering is performed.
 #'   \item dimensionality - Dimensionality of the input dataset.
@@ -901,8 +904,7 @@ mplnMCMCNonParallel <- function(dataset,
 
   class(RESULTS) <- "mplnMCMCNonParallel"
   return(RESULTS)
-  # [END]
-  }
+}
 
 
 
@@ -1139,13 +1141,13 @@ initializationRun <- function(gmodel,
       }
     } else if (initMethod == "medoids") {
       z[[iterations]] <- mclust::unmap(cluster::pam(log(dataset + 1 / 3),
-        nParameters = gmodel)$cluster)
+        k = gmodel)$cluster)
     } else if (initMethod == "clara") {
       z[[iterations]] <- mclust::unmap(cluster::clara(log(dataset + 1 / 3),
-        nParameters = gmodel)$cluster)
+        k = gmodel)$cluster)
     } else if (initMethod == "fanny") {
       z[[iterations]] <- mclust::unmap(cluster::fanny(log(dataset + 1 / 3),
-        nParameters = gmodel)$cluster)
+        k = gmodel)$cluster)
     }
 
     initRuns[[iterations]] <- mplnCluster(dataset = dataset,
