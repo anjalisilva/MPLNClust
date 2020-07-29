@@ -22,7 +22,7 @@ library("MPLNClust")
 
 `MPLNClust` contains 9 functions. 
 
-For carrying out clustering of count data using mixtures of MPLN via variational expectation-maximization (EM): __*mplnMCMCVariational*__ (under construction). Functions __*mplnMCMCParallel*__ or __*mplnMCMCNonParallel*__ uses a Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) for parameter estimation. Function *mplnMCMCParallel* uses MCMC-EM with parallelization while *mplnMCMCNonParallel* uses MCMC-EM with no parallelization.
+For carrying out clustering of count data using mixtures of MPLN via variational expectation-maximization (EM): __*mplnVariational*__ (under construction). Functions __*mplnMCMCParallel*__ or __*mplnMCMCNonParallel*__ uses a Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) for parameter estimation. Function *mplnMCMCParallel* uses MCMC-EM with parallelization while *mplnMCMCNonParallel* uses MCMC-EM with no parallelization.
 
 For the purpose of generating simlulation data via mixtures of MPLN: __*mplnDataGenerator*__. 
 
