@@ -33,27 +33,25 @@
 #' # Not run
 #' # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 #' # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
-
+#' #
 #' # trueSigma1 <- diag(6) * 2
 #' # trueSigma2 <- diag(6)
-
+#' #
 #' # sampleData <- mplnDataGenerator(nObservations = 100,
 #' #                                 dimensionality = 6,
 #' #                                 mixingProportions = c(0.79, 0.21),
 #' #                                 mu = rbind(trueMu1, trueMu2),
 #' #                                 sigma = rbind(trueSigma1, trueSigma2),
 #' #                                 produceImage = "No")
-
+#' #
 #' # Clustering
-#' # mplnResults <- mplnMCMCParallel(dataset = sampleData$dataset,
-#' #                                 membership = sampleData$trueMembership,
-#' #                                 gmin = 1,
-#' #                                 gmax = 2,
-#' #                                 nChains = 3,
-#' #                                 nIterations = 1000,
-#' #                                 initMethod = "kmeans",
-#' #                                 nInitIterations = 2,
-#' #                                 normalize = "Yes")
+#' # mplnResults <- mplnVariational(dataset = sampleData$dataset,
+#' #                                membership = sampleData$trueMembership,
+#' #                                gmin = 1,
+#' #                                gmax = 2,
+#' #                                initMethod = "kmeans",
+#' #                                nInitIterations = 2,
+#' #                                normalize = "Yes")
 #' #
 #' # Model selection
 #' # AICmodel <- AICFunction(logLikelihood = mplnResults$logLikelihood,
@@ -61,7 +59,7 @@
 #' #                         clusterRunOutput = mplnResults$allResults,
 #' #                         gmin = mplnResults$gmin,
 #' #                         gmax = mplnResults$gmax,
-#' #                         parallel = TRUE)
+#' #                         parallel = FALSE)
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
 #'
@@ -79,6 +77,35 @@ AICFunction <- function(logLikelihood,
                         gmin,
                         gmax,
                         parallel = FALSE) {
+
+  # Performing checks
+  if(class(gmin) != "numeric" || class(gmax) != "numeric") {
+    stop("Class of gmin and gmin should be numeric.")
+  }
+
+  if (gmax < gmin) {
+    stop("gmax cannot be less than gmin.")
+  }
+
+  if(class(nParameters) != "numeric") {
+    stop("nParameters should be a vector of integers indicating
+      number of parameters for each cluster size.")
+  }
+
+  if(class(logLikelihood) != "numeric") {
+    stop("logLikelihood should be a vector of numeric values.")
+  }
+
+  if(length(logLikelihood) != (gmax - gmin + 1)) {
+    stop("logLikelihood should be a vector of length (gmax - gmin + 1).")
+  }
+
+  if(class(parallel) != "logical") {
+    stop("Should be logical, TRUE or FALSE indicating if
+          MPLNClust::mplnMCMCParallel has been used.")
+  }
+
+
 
   AIC <- - 2 * logLikelihood + 2 * nParameters
   AICmodel <- seq(gmin, gmax, 1)[grep(min(AIC, na.rm = TRUE), AIC)]
@@ -161,15 +188,13 @@ AICFunction <- function(logLikelihood,
 #' #                                 produceImage = "No")
 
 #' # Clustering
-#' # mplnResults <- mplnMCMCParallel(dataset = sampleData$dataset,
-#' #                                 membership = sampleData$trueMembership,
-#' #                                 gmin = 1,
-#' #                                 gmax = 2,
-#' #                                 nChains = 3,
-#' #                                 nIterations = 1000,
-#' #                                 initMethod = "kmeans",
-#' #                                 nInitIterations = 2,
-#' #                                 normalize = "Yes")
+#' # mplnResults <- mplnVariational(dataset = sampleData$dataset,
+#' #                                membership = sampleData$trueMembership,
+#' #                                gmin = 1,
+#' #                                gmax = 2,
+#' #                                initMethod = "kmeans",
+#' #                                nInitIterations = 2,
+#' #                                normalize = "Yes")
 #' #
 #' # Model selection
 #' # AIC3model <- AIC3Function(logLikelihood = mplnResults$logLikelihood,
@@ -177,7 +202,7 @@ AICFunction <- function(logLikelihood,
 #' #                           clusterRunOutput = mplnResults$allResults,
 #' #                           gmin = mplnResults$gmin,
 #' #                           gmax = mplnResults$gmax,
-#' #                           parallel = TRUE)
+#' #                           parallel = FALSE)
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
 #'
@@ -200,6 +225,35 @@ AIC3Function <- function(logLikelihood,
                          gmin,
                          gmax,
                          parallel = FALSE) {
+
+  # Performing checks
+  if(class(gmin) != "numeric" || class(gmax) != "numeric") {
+    stop("Class of gmin and gmin should be numeric.")
+  }
+
+  if (gmax < gmin) {
+    stop("gmax cannot be less than gmin.")
+  }
+
+  if(class(nParameters) != "numeric") {
+    stop("nParameters should be a vector of integers indicating
+      number of parameters for each cluster size.")
+  }
+
+  if(class(logLikelihood) != "numeric") {
+    stop("logLikelihood should be a vector of numeric values.")
+  }
+
+  if(length(logLikelihood) != (gmax - gmin + 1)) {
+    stop("logLikelihood should be a vector of length (gmax - gmin + 1).")
+  }
+
+  if(class(parallel) != "logical") {
+    stop("Should be logical, TRUE or FALSE indicating if
+      MPLNClust::mplnMCMCParallel has been used.")
+  }
+
+
   AIC3 <- - 2 * logLikelihood + 3 * nParameters
   AIC3model <- seq(gmin, gmax, 1)[grep(min(AIC3,na.rm = TRUE), AIC3)]
   AIC3Message <- NA # For spurious clusters
@@ -282,15 +336,13 @@ AIC3Function <- function(logLikelihood,
 #' #                                 produceImage = "No")
 
 #' # Clustering
-#' # mplnResults <- mplnMCMCParallel(dataset = sampleData$dataset,
-#' #                                 membership = sampleData$trueMembership,
-#' #                                 gmin = 1,
-#' #                                 gmax = 2,
-#' #                                 nChains = 3,
-#' #                                 nIterations = 1000,
-#' #                                 initMethod = "kmeans",
-#' #                                 nInitIterations = 2,
-#' #                                 normalize = "Yes")
+#' # mplnResults <- mplnVariational(dataset = sampleData$dataset,
+#' #                                membership = sampleData$trueMembership,
+#' #                                gmin = 1,
+#' #                                gmax = 2,
+#' #                                initMethod = "kmeans",
+#' #                                nInitIterations = 2,
+#' #                                normalize = "Yes")
 #' #
 #' # Model selection
 #' # BICmodel <- BICFunction(logLikelihood = mplnResults$logLikelihood,
@@ -299,7 +351,7 @@ AIC3Function <- function(logLikelihood,
 #' #                         clusterRunOutput = mplnResults$allResults,
 #' #                         gmin = mplnResults$gmin,
 #' #                         gmax = mplnResults$gmax,
-#' #                         parallel = TRUE)
+#' #                         parallel = FALSE)
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
 #'
@@ -317,6 +369,36 @@ BICFunction <- function(logLikelihood,
                         gmin,
                         gmax,
                         parallel = FALSE) {
+
+  # Performing checks
+  if(class(gmin) != "numeric" || class(gmax) != "numeric") {
+    stop("Class of gmin and gmin should be numeric.")
+  }
+
+  if (gmax < gmin) {
+    stop("gmax cannot be less than gmin.")
+  }
+
+  if(class(nParameters) != "numeric") {
+    stop("nParameters should be a vector of integers indicating
+      number of parameters for each cluster size.")
+  }
+
+  if(class(logLikelihood) != "numeric") {
+    stop("logLikelihood should be a vector of numeric values.")
+  }
+
+  if(length(logLikelihood) != (gmax - gmin + 1)) {
+    stop("logLikelihood should be a vector of length (gmax - gmin + 1).")
+  }
+
+  if(class(parallel) != "logical") {
+    stop("Should be logical, TRUE or FALSE indicating if
+      MPLNClust::mplnMCMCParallel has been used.")
+  }
+
+
+
   BIC <- - 2 * logLikelihood + (nParameters * log(nObservations))
   BICmodel <- seq(gmin, gmax, 1)[grep(min(BIC, na.rm = TRUE), BIC)]
   BICMessage <- NA # For spurious clusters
@@ -356,7 +438,12 @@ BICFunction <- function(logLikelihood,
 #' Performs model selection using integrated completed likelihood (ICL) by
 #' Biernacki et al., (2000). Require the output from function MPLNClust::BICFunction.
 #'
-#' @param resultsBIC Output from BICFunction.
+#' @param logLikelihood A vector with value of final log-likelihoods for
+#'      each cluster size.
+#' @param nParameters A vector with number of parameters for each
+#'      cluster size.
+#' @param nObservations A positive integer specifying the number of observations
+#'      in the dataset analyzed.
 #' @param clusterRunOutput Output from MPLNClust::mplnVariational,
 #'    MPLNClust::mplnMCMCParallel, or MPLNClust::mplnMCMCNonParallel functions.
 #'    This is required.
@@ -382,43 +469,34 @@ BICFunction <- function(logLikelihood,
 #' # Not run
 #' # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 #' # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
-
+#'
 #' # trueSigma1 <- diag(6) * 2
 #' # trueSigma2 <- diag(6)
-
+#'
 #' # sampleData <- mplnDataGenerator(nObservations = 100,
 #' #                                 dimensionality = 6,
 #' #                                 mixingProportions = c(0.79, 0.21),
 #' #                                 mu = rbind(trueMu1, trueMu2),
 #' #                                 sigma = rbind(trueSigma1, trueSigma2),
 #' #                                 produceImage = "No")
-
+#' #
 #' # Clustering
-#' # mplnResults <- mplnMCMCParallel(dataset = sampleData$dataset,
-#' #                                 membership = sampleData$trueMembership,
-#' #                                 gmin = 1,
-#' #                                 gmax = 2,
-#' #                                 nChains = 3,
-#' #                                 nIterations = 1000,
-#' #                                 initMethod = "kmeans",
-#' #                                 nInitIterations = 2,
-#' #                                 normalize = "Yes")
+#' # mplnResults <- mplnVariational(dataset = sampleData$dataset,
+#' #                                membership = sampleData$trueMembership,
+#' #                                gmin = 1,
+#' #                                gmax = 2,
+#' #                                initMethod = "kmeans",
+#' #                                nInitIterations = 2,
+#' #                                normalize = "Yes")
 #' #
 #' # Model selection
-#' #
-#' #' # BICmodel <- BICFunction(logLikelihood = mplnResults$logLikelihood,
+#' # ICLmodel <- ICLFunction(logLikelihood = mplnResults$logLikelihood,
 #' #                         nParameters = mplnResults$numbParameters,
 #' #                         nObservations = nrow(mplnResults$dataset),
 #' #                         clusterRunOutput = mplnResults$allResults,
 #' #                         gmin = mplnResults$gmin,
 #' #                         gmax = mplnResults$gmax,
-#' #                         parallel = TRUE)
-#' #
-#' # ICLmodel <- ICLFunction(resultsBIC = BICmodel,
-#' #                         clusterRunOutput = mplnResults$allResults,
-#' #                         gmin = mplnResults$gmin,
-#' #                         gmax = mplnResults$gmax,
-#' #                         parallel = TRUE)
+#' #                         parallel = FALSE)
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
 #'
@@ -431,25 +509,53 @@ BICFunction <- function(logLikelihood,
 #' @export
 #' @importFrom mclust unmap
 #'
-ICLFunction <- function(resultsBIC,
+ICLFunction <- function(logLikelihood,
+                        nParameters,
+                        nObservations,
                         clusterRunOutput,
                         gmax,
                         gmin,
                         parallel = FALSE) {
-    ICL <- vector()
-    for (g in 1:(gmax - gmin + 1)) {
 
-      if(isTRUE(parallel) == "FALSE") {
+  # Performing checks
+  if (gmax < gmin) {
+    stop("gmax cannot be less than gmin.")
+  }
+
+  if(class(nParameters) != "numeric") {
+    stop("nParameters should be a vector of integers indicating
+      number of parameters for each cluster size.")
+  }
+
+  if(class(logLikelihood) != "numeric") {
+    stop("logLikelihood should be a vector of numeric values.")
+  }
+
+  if(length(logLikelihood) != (gmax - gmin + 1)) {
+    stop("logLikelihood should be a vector of length (gmax - gmin + 1).")
+  }
+
+  if(class(parallel) != "logical") {
+    stop("Should be logical, TRUE or FALSE indicating if
+      MPLNClust::mplnMCMCParallel has been used.")
+  }
+
+  BIC <- - 2 * logLikelihood + (nParameters * log(nObservations))
+
+  ICL <- vector()
+  for (g in 1:(gmax - gmin + 1)) {
+
+    if(isTRUE(parallel) == "FALSE") {
       # If non parallel run
       z <- clusterRunOutput[[g]]$probaPost
       mapz <- mclust::unmap(clusterRunOutput[[g]]$clusterlabels)
-      } else {
+    } else {
         # If parallel run
         z <- clusterRunOutput[[g]]$allResults$probaPost
         mapz <- mclust::unmap(clusterRunOutput[[g]]$allResults$clusterlabels)
-      }
+    }
     forICL <- function(g){sum(log(z[which(mapz[, g] == 1), g]))}
-    ICL[g] <- resultsBIC$allBICvalues[g] + sum(sapply(1:ncol(mapz), forICL))
+    ICL[g] <- BIC[g] + sum(sapply(1:ncol(mapz), forICL))
   }
   ICLmodel <- seq(gmin, gmax, 1)[grep(min(ICL, na.rm = TRUE), ICL)]
 

@@ -258,7 +258,9 @@ mplnVariational <- function(dataset,
         gmax = gmax,
         parallel = FALSE)
 
-      icl <- ICLFunction(resultsBIC = bic,
+      icl <- ICLFunction(logLikelihood = logLikelihood,
+        nParameters = nParameters,
+        nObservations = nObservations,
         gmin = gmin,
         gmax = gmax,
         clusterRunOutput = clusterResults,

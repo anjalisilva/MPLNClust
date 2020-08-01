@@ -4,10 +4,25 @@
 \alias{ICLFunction}
 \title{Model Selection Via Integrated Completed Likelihood}
 \usage{
-ICLFunction(resultsBIC, clusterRunOutput, gmax, gmin, parallel = FALSE)
+ICLFunction(
+  logLikelihood,
+  nParameters,
+  nObservations,
+  clusterRunOutput,
+  gmax,
+  gmin,
+  parallel = FALSE
+)
 }
 \arguments{
-\item{resultsBIC}{Output from BICFunction.}
+\item{logLikelihood}{A vector with value of final log-likelihoods for
+each cluster size.}
+
+\item{nParameters}{A vector with number of parameters for each
+cluster size.}
+
+\item{nObservations}{A positive integer specifying the number of observations
+in the dataset analyzed.}
 
 \item{clusterRunOutput}{Output from MPLNClust::mplnVariational,
 MPLNClust::mplnMCMCParallel, or MPLNClust::mplnMCMCNonParallel functions.
@@ -42,40 +57,34 @@ Biernacki et al., (2000). Require the output from function MPLNClust::BICFunctio
 # Not run
 # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+
 # trueSigma1 <- diag(6) * 2
 # trueSigma2 <- diag(6)
+
 # sampleData <- mplnDataGenerator(nObservations = 100,
 #                                 dimensionality = 6,
 #                                 mixingProportions = c(0.79, 0.21),
 #                                 mu = rbind(trueMu1, trueMu2),
 #                                 sigma = rbind(trueSigma1, trueSigma2),
 #                                 produceImage = "No")
+#
 # Clustering
-# mplnResults <- mplnMCMCParallel(dataset = sampleData$dataset,
-#                                 membership = sampleData$trueMembership,
-#                                 gmin = 1,
-#                                 gmax = 2,
-#                                 nChains = 3,
-#                                 nIterations = 1000,
-#                                 initMethod = "kmeans",
-#                                 nInitIterations = 2,
-#                                 normalize = "Yes")
+# mplnResults <- mplnVariational(dataset = sampleData$dataset,
+#                                membership = sampleData$trueMembership,
+#                                gmin = 1,
+#                                gmax = 2,
+#                                initMethod = "kmeans",
+#                                nInitIterations = 2,
+#                                normalize = "Yes")
 #
 # Model selection
-#
-#' # BICmodel <- BICFunction(logLikelihood = mplnResults$logLikelihood,
+# ICLmodel <- ICLFunction(logLikelihood = mplnResults$logLikelihood,
 #                         nParameters = mplnResults$numbParameters,
 #                         nObservations = nrow(mplnResults$dataset),
 #                         clusterRunOutput = mplnResults$allResults,
 #                         gmin = mplnResults$gmin,
 #                         gmax = mplnResults$gmax,
-#                         parallel = TRUE)
-#
-# ICLmodel <- ICLFunction(resultsBIC = BICmodel,
-#                         clusterRunOutput = mplnResults$allResults,
-#                         gmin = mplnResults$gmin,
-#                         gmax = mplnResults$gmax,
-#                         parallel = TRUE)
+#                         parallel = FALSE)
 
 }
 \references{

@@ -67,15 +67,13 @@ Schwarz (1978). Formula: - 2 * logLikelihood + (nParameters * log(nObservations)
 #                                 sigma = rbind(trueSigma1, trueSigma2),
 #                                 produceImage = "No")
 # Clustering
-# mplnResults <- mplnMCMCParallel(dataset = sampleData$dataset,
-#                                 membership = sampleData$trueMembership,
-#                                 gmin = 1,
-#                                 gmax = 2,
-#                                 nChains = 3,
-#                                 nIterations = 1000,
-#                                 initMethod = "kmeans",
-#                                 nInitIterations = 2,
-#                                 normalize = "Yes")
+# mplnResults <- mplnVariational(dataset = sampleData$dataset,
+#                                membership = sampleData$trueMembership,
+#                                gmin = 1,
+#                                gmax = 2,
+#                                initMethod = "kmeans",
+#                                nInitIterations = 2,
+#                                normalize = "Yes")
 #
 # Model selection
 # BICmodel <- BICFunction(logLikelihood = mplnResults$logLikelihood,
@@ -84,7 +82,7 @@ Schwarz (1978). Formula: - 2 * logLikelihood + (nParameters * log(nObservations)
 #                         clusterRunOutput = mplnResults$allResults,
 #                         gmin = mplnResults$gmin,
 #                         gmax = mplnResults$gmax,
-#                         parallel = TRUE)
+#                         parallel = FALSE)
 
 }
 \references{
