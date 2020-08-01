@@ -16,7 +16,7 @@ output:
     toc: true
     number_sections: false
 vignette: >
-  %\VignetteIndexEntry{Introduction MPLNClust variational-EM}
+  %\VignetteIndexEntry{A tour of MPLNClust with variational-EM}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
