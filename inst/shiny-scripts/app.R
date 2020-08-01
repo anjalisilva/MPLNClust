@@ -164,36 +164,30 @@ server <- function(input, output, clientData, session) {
 
   startclustering <- shiny::eventReactive(eventExpr = input$button2, {
     if (class(input$membership) == "character") {
-      MPLNClust::mplnParallel(
-        dataset = matrixInput(),
-        membership = "none",
-        gmin = as.numeric(input$ngmin),
-        gmax = as.numeric(input$ngmax),
-        nChains = as.numeric(input$nChains),
-        nIterations = as.numeric(input$nIterations),
-        initMethod = "kmeans",
-        nInitIterations = as.numeric(input$nInitIterations),
-        normalize = "Yes",
-        numNodes = NA)
+      MPLNClust::mplnVariational(
+                dataset = matrixInput(),
+                membership = "none",
+                gmin = as.numeric(input$ngmin),
+                gmax = as.numeric(input$ngmax),
+                initMethod = "kmeans",
+                nInitIterations = as.numeric(input$nInitIterations),
+                normalize = "Yes")
     } else {
-      MPLNClust::mplnParallel(
-        dataset = matrixInput(),
-        membership = as.numeric(input$membership),
-        gmin = as.numeric(input$ngmin),
-        gmax = as.numeric(input$ngmax),
-        nChains = as.numeric(input$nChains),
-        nIterations = as.numeric(input$nIterations),
-        initMethod = "kmeans",
-        nInitIterations = as.numeric(input$nInitIterations),
-        normalize = "Yes",
-        numNodes = NA)
+      MPLNClust::mplnVariational(
+                dataset = matrixInput(),
+                membership = as.numeric(input$membership),
+                gmin = as.numeric(input$ngmin),
+                gmax = as.numeric(input$ngmax),
+                initMethod = "kmeans",
+                nInitIterations = as.numeric(input$nInitIterations),
+                normalize = "Yes")
     }})
 
   # Step II - printing  mplnParallel output
   output$clustering <- shiny::renderText({
     if (!is.null(input$file1))
 
-      aa <- paste("BIC model selected is:", startclustering()[[12]][[2]], ";")
+    aa <- paste("BIC model selected is:", startclustering()[[12]][[2]], ";")
     bb <- paste("ICL model selected is:", startclustering()[[11]][[2]], ";")
     cc <- paste("AIC model selected is:", startclustering()[[13]][[2]], ";")
     dd <- paste("AIC3 model selected is:", startclustering()[[14]][[2]])
