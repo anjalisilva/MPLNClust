@@ -150,4 +150,4 @@ test_that("Data clustering error upon invalid user input", {
               nInitIterations = 3,
               normalize = "Other"))
 })
-
+# [END]
