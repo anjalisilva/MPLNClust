@@ -8,7 +8,7 @@
 
 
 ---
-title: "A tour of MPLNClust with variational EM"
+title: "A tour of MPLNClust with variational-EM"
 author: "Anjali Silva"
 date: "`r format(Sys.time(), '%d %b %Y')`"
 output: 
@@ -16,7 +16,7 @@ output:
     toc: true
     number_sections: false
 vignette: >
-  %\VignetteIndexEntry{Introduction MPLNClust variational EM}
+  %\VignetteIndexEntry{Introduction MPLNClust variational-EM}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -122,7 +122,7 @@ pairs(sampleData$dataset, col = sampleData$trueMembership + 1,
 <div style="text-align:left">
 
 
-## Clustering via variational EM
+## Clustering via variational-EM
 <div style="text-align:left">
 Once the count data is available, clustering can be performed using the *mplnVariational* function. See *?mplnVariational* for more information, an example, and references. The variational Gaussian approximation proposed by [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857) alleviates challenges of MCMC-EM algorithm, originally used in [Silva et al., 2019](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0). Therefore, *mplnVariational* may perform better for large datasets compared to *mplnMCMCParallel* or *mplnMCMCNonParallel*.
 

@@ -79,7 +79,7 @@ Coarse grain parallelization is employed in *mplnMCMCParallel*, such that when a
 
 To check the convergence of MCMC chains, the potential scale reduction factor and the effective number of samples are used. The Heidelberger and Welch’s convergence diagnostic (Heidelberger and Welch, 1983) is used to check the convergence of the MCMC-EM algorithm. The AIC, BIC, AIC3 and ICL are used for model selection. Starting values (argument: initMethod) and the number of iterations for each chain (argument: nIterations) play an important role for the successful operation of this algorithm. 
 
-### Variational EM Framework for Parameter Estimation 
+### Variational-EM Framework for Parameter Estimation 
 [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857) proposed a variational Gaussian approximation that alleviates challenges of MCMC-EM algorithm. Here the posterior distribution is approximated by minimizing the Kullback-Leibler (KL) divergence between the true and the approximating densities. A variational-EM based framework is used for parameter estimation. This algorithm is implemented in the function __*mplnVariational*__. 
 
 
