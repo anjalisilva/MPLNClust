@@ -27,4 +27,7 @@ vignettes/*.pdf
 
 inst/doc
 
+.DS_Store
+
 # Reference: Michael Chirico, R.gitignore, Accessed July 2020, https://github.com/github/gitignore/blob/master/R.gitignore
+
