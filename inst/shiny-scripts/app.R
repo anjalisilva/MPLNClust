@@ -34,10 +34,6 @@ ui <- fluidPage(
                            label = "Enter gmin:", "1"),
                  textInput(inputId = "ngmax",
                            label = "Enter gmax:", "2"),
-                 textInput(inputId = "nChains",
-                           label = "Enter nChains:", "3"),
-                 textInput(inputId = "nIterations",
-                           label = "Enter nIterations:", "500"),
                  selectInput(inputId = 'typeinitMethod',
                              label = 'Select initMethod:',
                              choices = c("'kmeans' ",
@@ -51,9 +47,6 @@ ui <- fluidPage(
                              label = 'Select normalize:',
                              choices = c("'Yes' ",
                                          "'No' ")),
-                 textInput(inputId = "nNodes",
-                           label = "Enter numNodes:", "NA"),
-
 
 
                  # output

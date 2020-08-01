@@ -1,7 +1,7 @@
 # `MPLNClust`
 
 ## Description
-`MPLNClust` is an R package for performing clustering using mixtures of multivariate Poisson-log normal (MPLN) distribution by [Silva et al., 2019](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0). It was developed for count data, with clustering of RNA sequencing data as a motivation. However, the vector of normalization factors can be relaxed and clustering method may be applied to other types of count data. 
+`MPLNClust` is an R package for performing clustering using mixtures of multivariate Poisson-log normal (MPLN) distribution proposed by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). It was developed for count data, with clustering of RNA sequencing data as a motivation. However, the vector of normalization factors can be relaxed and clustering method may be applied to other types of count data. 
 
 Main functions include __*mplnVariational*__, __*mplnMCMCParallel*__ or __*mplnMCMCNonParallel*__ to carry out model-based clustering using mixtures of MPLN model. Information criteria (AIC, BIC, AIC3 and ICL) are offered for model selection. Function __*mplnVisualize*__ permit to visualize clustering results. Function __*mplnDataGenerator*__ is available to generate simlulation data. 
 
@@ -69,11 +69,11 @@ Figure: Observations divided by cluster. The yellow line represents the mean val
 
 The MPLN distribution ([Aitchison and Ho, 1989](https://www.jstor.org/stable/2336624?seq=1)) is a multivariate log normal mixture of independent Poisson distributions. The hidden layer of the MPLN distribution is a multivariate Gaussian distribution, which allows for the specification of a covariance structure. Further, the MPLN distribution can account for overdispersion in count data. Additionally, the MPLN distribution supports negative and positive correlations.
 
-A mixture of MPLN distributions is introduced for clustering count data by [Silva et al., 2019](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0). Here, applicability is illustrated using RNA sequencing data. To this date, two frameworks have been proposed for parameter estimation: 1) an MCMC-EM framework by [Silva et al., 2019](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0) and 2) a Variational Gaussian approximation with EM algorithm by [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857). 
+A mixture of MPLN distributions is introduced for clustering count data by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). Here, applicability is illustrated using RNA sequencing data. To this date, two frameworks have been proposed for parameter estimation: 1) an MCMC-EM framework by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a variational Gaussian approximation with EM algorithm by [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857). 
 
 ### MCMC-EM Framework for Parameter Estimation 
 
-[Silva et al., 2019](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0) used an MCMC-EM framework via Stan for parameter estimation. This method is employed in functions __*mplnMCMCParallel*__ and __*mplnMCMCNonParallel*__. 
+[Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) used an MCMC-EM framework via Stan for parameter estimation. This method is employed in functions __*mplnMCMCParallel*__ and __*mplnMCMCNonParallel*__. 
 
 Coarse grain parallelization is employed in *mplnMCMCParallel*, such that when a range of components/clusters (g = 1,...,G) are considered, each component/cluster size is run on a different processor. This can be performed because each component/cluster size is independent from another. All components/clusters in the range to be tested have been parallelized to run on a separate core using the *parallel* R package. The number of cores used for clustering is calculated using *parallel::detectCores() - 1*. No internal parallelization is performed for *mplnMCMCNonParallel*. 
 
@@ -85,7 +85,7 @@ To check the convergence of MCMC chains, the potential scale reduction factor an
 
 ## References for Package
 
-* [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data. *BMC Bioinformatics.*](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0)
+* [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data. *BMC Bioinformatics.*](https://pubmed.ncbi.nlm.nih.gov/31311497/)
 
 * [Subedi, S., and R. Browne (2020). A parsimonious family of multivariate Poisson-lognormal distributions for clustering multivariate count data. arXiv preprint arXiv:2004.06857.](https://arxiv.org/abs/2004.06857)
 
