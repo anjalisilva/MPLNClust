@@ -232,11 +232,11 @@ mplnVariational <- function(dataset,
     }
     cat("\n Running for g =", clustersize)
     clusterResults[[gmodel]] <- varMPLNClustering(dataset = dataset,
-      initMethod = initMethod,
-      nInitIterations = nInitIterations,
-      G = clustersize,
-      maxIterations = 1000,
-      normFactors = normFactors)
+                                                  initMethod = initMethod,
+                                                  nInitIterations = nInitIterations,
+                                                  G = clustersize,
+                                                  maxIterations = 1000,
+                                                  normFactors = normFactors)
   }
 
   names(clusterResults) <- paste0(rep("G=", length(seq(gmin, gmax, 1))), seq(gmin, gmax, 1))
@@ -391,10 +391,10 @@ varMPLNClustering <- function(dataset,
     # if initialization is requested by user
 
     initializationResults <- varMPLNInitialization(dataset = dataset,
-      numbG = G,
-      initMethod = initMethod,
-      nInitIterations = nInitIterations,
-      normFactors = normFactors)
+                                                   numbG = G,
+                                                   initMethod = initMethod,
+                                                   nInitIterations = nInitIterations,
+                                                   normFactors = normFactors)
 
     mu <- initializationResults$mu
     sigma <- initializationResults$sigma
@@ -482,11 +482,24 @@ varMPLNClustering <- function(dataset,
             five + six - 0.5 * log(det(sigma[[g]])) - dimensionality / 2)
     }
 
+
+    # Calculate zValue value
+    # check which forz == 0 and rowSums(forz)==0 and which of these
+    # have both equalling to 0 (because 0/0 =NaN)
+    if (G == 1) {
+      errorpossible <- Reduce(intersect,
+        list(which(forz == 0),
+          which(rowSums(forz) == 0)))
+      forz[errorpossible] <- 1e-100
+      zvalue <- forz / rowSums(forz)
+    } else {
+      zvalue <- forz / rowSums(forz)
+    }
+
+
     # Calculate log-likelihood
     logLikelihood[itOuter] <- sum(log(rowSums(forz)))
 
-    # Calculate zValue value
-    zValue <- forz / rowSums(forz)
 
     # Stopping criterion
     if (itOuter > 2) {
@@ -550,19 +563,19 @@ varMPLNInitialization <- function(dataset,
     set.seed(iterations)
     if (initMethod == "kmeans" | is.na(initMethod)) {
       zValue[[iterations]] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
-        centers = numbG, nstart = 100)$cluster )
+                              centers = numbG, nstart = 100)$cluster )
     } else if (initMethod == "random") {
       if(numbG == 1) { # generating zValue if g=1
         zValue[[iterations]] <- as.matrix(rep.int(1, times = nObservations),
-          ncol = numbG,
-          nrow = nObservations)
+                                          ncol = numbG,
+                                          nrow = nObservations)
       } else { # generating zValue if g>1
         zValueConv <- 0
         while(! zValueConv) {
           # ensure that dimension of zValue is same as G (i.e.,
           # if one column contains all 0s, then generate zValue again)
           zValue[[iterations]] <- t(stats::rmultinom(nObservations, size = 1,
-            prob = rep(1 / numbG, numbG)))
+                                   prob = rep(1 / numbG, numbG)))
           if(length(which(colSums(zValue[[iterations]]) > 0)) == numbG) {
             zValueConv <- 1
           }
@@ -570,21 +583,21 @@ varMPLNInitialization <- function(dataset,
       }
     } else if (initMethod == "medoids") {
       zValue[[iterations]] <- mclust::unmap(cluster::pam(log(dataset + 1 / 3),
-        k = numbG,  cluster.only = TRUE))
+                              k = numbG,  cluster.only = TRUE))
     } else if (initMethod == "clara") {
       zValue[[iterations]] <- mclust::unmap(cluster::clara(log(dataset + 1 / 3),
-        k = numbG)$cluster)
+                              k = numbG)$cluster)
     } else if (initMethod == "fanny") {
       zValue[[iterations]] <- mclust::unmap(cluster::fanny(log(dataset + 1 / 3),
-        k = numbG, cluster.only = TRUE)$clustering)
+                              k = numbG, cluster.only = TRUE)$clustering)
     }
 
 
     initRuns[[iterations]] <- varMPLNInitClustering(dataset = dataset,
-      G = numbG,
-      zValue = zValue[[iterations]],
-      normFactors = normFactors,
-      maxIterations = 10)
+                                                    G = numbG,
+                                                    zValue = zValue[[iterations]],
+                                                    normFactors = normFactors,
+                                                    maxIterations = 10)
     # maxIterations set to 10 for initialization
 
     logLinit[iterations] <-
@@ -625,7 +638,7 @@ varMPLNInitClustering <- function(dataset,
     obs <- which(zValue[ , g] == 1)
     mu[[g]] <- colMeans(log(dataset[obs, ] + 1 / 6)) # starting value for mu
     # starting value for sample covariance matrix
-    sigma[[g]] <- var(log(dataset[obs, ] + 1 / 6))
+    sigma[[g]] <- cov(log(dataset[obs, ] + 1 / 6))
     isigma[[g]] <- solve(sigma[[g]])
   }
 
@@ -708,11 +721,24 @@ varMPLNInitClustering <- function(dataset,
             five + six - 0.5 * log(det(sigma[[g]])) - dimensionality / 2)
     }
 
+    # Calculate zValue value
+    # check which forz == 0 and rowSums(forz)==0 and which of these
+    # have both equalling to 0 (because 0/0 =NaN)
+    if (G == 1) {
+      errorpossible <- Reduce(intersect,
+        list(which(forz == 0),
+          which(rowSums(forz) == 0)))
+      forz[errorpossible] <- 1e-100
+      zvalue <- forz / rowSums(forz)
+    } else {
+      zvalue <- forz / rowSums(forz)
+    }
+
+
+
     # Calculate log-likelihood
     logLikelihood[itOuter] <- sum(log(rowSums(forz)))
 
-    # Calculate zValue value
-    zValue <- forz / rowSums(forz)
 
     # Stopping criterion
     if (itOuter > 2) {

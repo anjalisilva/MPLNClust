@@ -1012,17 +1012,6 @@ calcZvalue <- function(thetaStan,
     }
   }
 
-  # check which forz == 0 and rowSums(forz)==0 and which of these
-  # have both equalling to 0 (because 0/0 =NaN)
-  if (G == 1) {
-    errorpossible <- Reduce(intersect,
-      list(which(forz == 0),
-        which(rowSums(forz) == 0)))
-    zvalue <- forz / rowSums(forz)
-    zvalue[errorpossible, ] <- 1
-  } else {
-    zvalue <- forz / rowSums(forz)
-  }
   return(zvalue)
   # Developed by Anjali Silva
 }
