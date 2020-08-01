@@ -24,7 +24,7 @@
 #' @return Returns an S3 object of class mplnDataGenerator with results.
 #' \itemize{
 #'   \item dataset - Simulated dataset.
-#'   \item truemembership -A numeric vector indicating the membership of
+#'   \item trueMembership -A numeric vector indicating the membership of
 #'      each observation.
 #'   \item probaPost - A matrix indicating the posterior probability that
 #'      each observation belong to the component/cluster.
@@ -167,7 +167,7 @@ mplnDataGenerator <- function(nObservations,
     # Obtaining path to save images
     pathNow <- getwd()
     grDevices::png(paste0(pathNow, "/PairsPlot_", ImageName,".png"))
-    graphics::pairs(log(y2), col = mclust::map(z) + 1,
+    graphics::pairs(log(y2 + 1 / 100), col = mclust::map(z) + 1,
           main = "Pairs plot of log-transformed data")
     grDevices::dev.off()
   }

@@ -44,7 +44,7 @@ produceImage is set to "Yes". Default is "TwoComponents".}
 Returns an S3 object of class mplnDataGenerator with results.
 \itemize{
 \item dataset - Simulated dataset.
-\item truemembership -A numeric vector indicating the membership of
+\item trueMembership -A numeric vector indicating the membership of
 each observation.
 \item probaPost - A matrix indicating the posterior probability that
 each observation belong to the component/cluster.

@@ -1,0 +1,225 @@
+---
+# This document was created based on the format used in mclust.rmd 
+# Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5:
+#   clustering, classification and density estimation using Gaussian finite
+#   mixture models The R Journal 8/1, pp. 205-233
+# https://cran.r-project.org/web/packages/mclust/vignettes/mclust.html
+--- 
+
+
+---
+title: "A tour of MPLNClust with variational EM"
+author: "Anjali Silva"
+date: "`r format(Sys.time(), '%d %b %Y')`"
+output: 
+  rmarkdown::html_vignette:
+    toc: true
+    number_sections: false
+vignette: >
+  %\VignetteIndexEntry{Introduction MPLNClust variational EM}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(fig.align = "center", 
+               out.width = "90%",
+               fig.width = 6, fig.height = 5.5,
+               dev.args=list(pointsize=10),
+               par = TRUE, # needed for setting hook 
+               collapse = TRUE, # collapse input & ouput code in chunks
+               warning = FALSE)
+
+knit_hooks$set(par = function(before, options, envir)
+  { if(before && options$fig.show != "none") 
+       par(family = "sans", mar=c(4.1,4.1,1.1,1.1), mgp=c(3,1,0), tcl=-0.5)
+})
+set.seed(1) # for exact reproducibility
+```
+       
+## Introduction
+
+**MPLNClust** is an R package for model-based clustering based on finite multivariate Poisson-log normal mixture modelling. It provides functions for parameter estimation via  1) an MCMC-EM framework by [Silva et al., 2019](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0) and 2) a Variational Gaussian approximation with EM algorithm by [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857). Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE, if more than 10 models are considered) are offered for model selection. Also included is a function for simulating data from this model. An additional functionality is available for displaying and visualizing clustering results. **This document gives a quick tour of MPLNClust (version 0.1.0) functionalities, here looking at methods of parameter estimation via 2) a variational Gaussian approximation with EM algorithm by [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857)**. It was written in R Markdown, using the [knitr](https://cran.r-project.org/package=knitr) package for production. For MPLNClust (version 0.1.0) functionalities via 1) an MCMC-EM framework, see the other vignette: A tour of MPLNClust with MCMC-EM. 
+
+
+See `help(package = "MPLNClust")` for further details and references provided by `citation("MPLNClust")`. To download **MPLNClust**, use the following commands:
+
+``` r
+require("devtools")
+install_github("anjalisilva/MPLNClust", build_vignettes = TRUE)
+library("MPLNClust")
+```
+To list all functions available in the package:
+``` r
+lsf.str("package:MPLNClust")
+```
+
+<br>
+
+
+## Data Simulation
+
+The function *mplnDataGenerator* permits to simulate data from a mixture of MPLN distributions. See *?mplnDataGenerator* for more information, an example, and references. To simulate a dataset from a mixture of MPLN with 200 observations and a dimensionality of 6, with three components, each with a mixing proportion of 0.6, 0.3 and 0.1, respectively, let us use *mplnDataGenerator*. This also requires the mean and covariance matrix for each component, respectively. 
+
+``` r
+nObservations <- 200 # Biological samples e.g., genes
+dimensionality <- 6 # Dimensionality e.g., conditions * replicates = total samples 
+pig <- c(0.6, 0.3, 0.1) # Mixing proportions for two components
+
+# Generate means
+trueMu1 <- c(7.5, 7, 7, 6, 6, 6) # Mean for component 1  
+trueMu2 <- c(0, 0.5, 0, 0, 0, 0) # Mean for component 2
+trueMu3 <- c(4, 4.5, 4, 4, 4, 4) # Mean for component 2
+trueMus <- rbind(trueMu1, trueMu2, trueMu3)
+
+# Generate covariances
+library(clusterGeneration)
+set.seed(1)
+# Covariance for component 1  
+trueSigma1 <- clusterGeneration::genPositiveDefMat("unifcorrmat", 
+                                            dim = dimensionality, 
+                                            rangeVar = c(1, 1))$Sigma
+# Covariance for component 2                                  
+trueSigma2 <- clusterGeneration::genPositiveDefMat("unifcorrmat", 
+                                            dim = dimensionality, 
+                                            rangeVar = c(0.7, 0.7))$Sigma
+# Covariance for component 3                                
+trueSigma3 <- clusterGeneration::genPositiveDefMat("unifcorrmat", 
+                                            dim = dimensionality, 
+                                            rangeVar = c(0.1, 0.1))$Sigma
+trueSigma <- rbind(trueSigma1, trueSigma2, trueSigma3)
+
+# Generate data 
+sampleData <- MPLNClust::mplnDataGenerator(nObservations = nObservations,
+                                          dimensionality = dimensionality,
+                                          mixingProportions = pig,
+                                          mu = trueMus,
+                                          sigma = trueSigma,
+                                          produceImage = "Yes")
+
+```
+<br>
+
+The user has the option to produce the plot of log-transformed count data. 
+<div style="text-align:center"><img src="varEM_PairsPlot_LogCounts.png" alt="varEM_PairsPlot_LogCounts" width="450"/>
+<div style="text-align:left">
+
+The generated dataset can be checked:
+``` r
+dim(sampleData$dataset) # 200 x 6 dataset
+class(sampleData$dataset) # matrix
+typeof(sampleData$dataset) # integer
+summary(sampleData$dataset) # summary of data
+pairs(sampleData$dataset, col = sampleData$trueMembership + 1,
+      main = "Pairs plot of counts") # visualize counts
+```
+<div style="text-align:center"><img src="varEM_PairsPlot_Counts.png" alt="varEM_PairsPlot_Counts" width="450"/>
+<div style="text-align:left">
+
+<br>
+
+<div style="text-align:left">
+
+
+## Clustering via variational EM
+<div style="text-align:left">
+Once the count data is available, clustering can be performed using the *mplnVariational* function. See *?mplnVariational* for more information, an example, and references. The variational Gaussian approximation proposed by [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857) alleviates challenges of MCMC-EM algorithm, originally used in [Silva et al., 2019](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0). Therefore, *mplnVariational* may perform better for large datasets compared to *mplnMCMCParallel* or *mplnMCMCNonParallel*.
+
+Here, clustering will be performed using the above generated dataset. 
+
+``` r
+ mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
+                                           membership = sampleData$trueMembership,
+                                           gmin = 1,
+                                           gmax = 4,
+                                           initMethod = "kmeans",
+                                           nInitIterations = 1,
+                                           normalize = "Yes")
+```
+
+The model selected by BIC for this dataset can be viewed as follows.
+
+``` r
+mplnResults$BICresults$BICmodelselected
+```
+
+Tabulation of labels for the model selected by BIC:
+
+``` r
+table(mplnResults$BICresults$BICmodelSelectedLabels)
+```
+  1   2   3 <br>
+130  14  56 <br>
+
+Labels from BIC compared with true labels:
+``` r
+# Cross tabulation of BIC selected model labels with true lables
+table(mplnResults$BICresults$BICmodelSelectedLabels, sampleData$trueMembership)
+```
+1   2   3 <br>
+1 130   0   0 <br>
+2   0   0  14 <br>
+3   0  56   0 <br>
+
+
+If a range of components/clusters > 10 is considered (e.g., gmin = 1; gmax = 12), Djump and DDSE will be available in addition to AIC, BIC, AIC3 and ICL for model selection.
+
+<br>
+
+
+## Results Visualization
+
+Clustering results can be viewed as heatmaps and line plots. If a matrix of probabilities for the observations belonging to each cluster is provided, the option to produce a barplot of probabilities is also available.
+
+``` r
+ #  Visualizing line plots for model with 3 components provided probabilities
+ MPLNVisuals <- MPLNClust::mplnVisualize(dataset = sampleData$dataset,
+                                         plots = 'all',
+                                         probabilities = mplnResults$allResults[[3]]$probaPost,
+                                         clusterMembershipVector =
+                                         mplnResults$allResults[[3]]$clusterlabels,
+                                         LinePlotColours = "multicolour",
+                                         fileName = 'AllPlotsWithProbability',
+                                         format = 'png')
+```
+
+
+<img src="varEM_heatmap1_AllPlotsWithProbability.png" alt="varEM_heatmap1_AllPlotsWithProbability" width="250"/>
+<img src="varEM_heatmap2_AllPlotsWithProbability.png" alt="varEM_heatmap2_AllPlotsWithProbability" width="190"/>
+<img src="varEM_LinePlot_Cluster1_AllPlotsWithProbability.png" alt="varEM_LinePlot_Cluster1_AllPlotsWithProbability" width="150"/>
+<img src="varEM_LinePlot_Cluster2_AllPlotsWithProbability.png" alt="varEM_LinePlot_Cluster2_AllPlotsWithProbability" width="150"/>
+<img src="varEM_LinePlot_Cluster3_AllPlotsWithProbability.png" alt="varEM_LinePlot_Cluster3_AllPlotsWithProbability" width="150"/>
+
+The two images (above, left) show heatmaps of counts in the input dataset, with observations (e.g., genes) along rows and samples along the columns. The group membership based on clusters are shown to the left of heatmap. The last three images (above, right) show line plots of each cluster. Values for each sample are connected by dashed lines to illustrate the trends of expression (log counts). The yellow line shows the mean value (log counts) for each cluster. 
+
+<br>
+
+
+<div style="text-align:center"><img src="varEM_barplot_AllPlotsWithProbability.png" alt="varEM_barplot_AllPlotsWithProbability" width="500"/>
+
+<div style="text-align:left">
+The above plot illustrates, for each observation, the probability of belonging to component/cluster 1 (P1), to component/cluster 2 (P2) or to component/cluster 3 (P3). In this example, there were 200 observations in the dataset. The bar for each observation look monotone, indicating high confidence in belonging to the indicated component/cluster. 
+
+<br>
+
+In an alternative case (not tested here), which resulted in the below bar plot, indicates variability in probability of belonging to a component/cluster for a given observation. Here there are 2 clusters/components. As an example, for the first observation there is about 0.41 probability (P1) of belonging to component/cluster 1 and about a 0.59 probability (P2) of belonging to component/cluster 2. Therefore, it is assigned to component/cluster 2. Alternatively, for the 25th observation there is about 0.99 probability (P1) of belonging to component/cluster 1 and about 0.01 probability (P2) of belonging to component/cluster 2.  Therefore, it is assigned to component/cluster 1. 
+
+<div style="text-align:center"><img src="MCMCEM_barplot_AllPlotsWithProbability_LowConf.png" alt="MCMCEM_barplot_AllPlotsWithProbability_LowConf" width="500"/>
+<div style="text-align:left">
+
+<br>
+
+<div style="text-align:left">
+## References
+
+[Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data. *BMC Bioinformatics* 20. ](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0)
+
+
+[Subedi, S., and R. Browne (2020). A parsimonious family of multivariate Poisson-lognormal distributions for clustering multivariate count data. arXiv preprint arXiv:2004.06857.](https://arxiv.org/abs/2004.06857)
+
+----
+
+```{r}
+sessionInfo()
+```
