@@ -1108,6 +1108,28 @@ initializationRun <- function(gmodel,
   nObservations <- nrow(dataset)
   dimensionality <- ncol(dataset)
 
+  # Internal function for random initialization
+  randomInitfunction <- function(gmodel, nObservations) {
+    if(gmodel == 1) { # generating z if g=1
+      z <- as.matrix(rep.int(1, times = nObservations),
+                          ncol = gmodel,
+                          nrow = nObservations)
+    } else { # generating z if g>1
+      zValueConv <- 0
+      while(! zValueConv) {
+        # ensure that dimension of z is same as G (i.e.,
+        # if one column contains all 0s, then generate z again)
+        z <- t(stats::rmultinom(nObservations, size = 1,
+                                     prob = rep(1 / gmodel, gmodel)))
+        if(length(which(colSums(z) > 0)) == gmodel) {
+          zValueConv <- 1
+        }
+      }
+    }
+    return(z)
+  }
+
+
   for(iterations in seq_along(1:initIterations)) {
     # setting seed, to ensure if multiple iterations are selected by
     # user, then each run will give a different result.
@@ -1116,31 +1138,31 @@ initializationRun <- function(gmodel,
       z[[iterations]] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 3),
         gmodel)$cluster)
     } else if (initMethod == "random") {
-      if(gmodel == 1) { # generating z if g=1
-        z[[iterations]] <- as.matrix(rep.int(1, times = nObservations),
-          ncol = gmodel,
-          nrow = nObservations)
-      } else { # generating z if g>1
-        z_conv <- 0
-        while(! z_conv) {
-          # ensure that dimension of z is same as G (i.e.,
-          # if one column contains all 0s, then generate z again)
-          z[[iterations]] <- t(stats::rmultinom(nObservations, size = 1,
-            prob = rep(1 / gmodel, gmodel)))
-          if(length(which(colSums(z[[iterations]]) > 0)) == gmodel) {
-            z_conv <- 1
-          }
-        }
-      }
+      z[[iterations]] <- randomInitfunction(gmodel = gmodel, nObservations = nObservations)
+
     } else if (initMethod == "medoids") {
       z[[iterations]] <- mclust::unmap(cluster::pam(log(dataset + 1 / 3),
         k = gmodel)$cluster)
+      # if z generated has less columns than gmodel, then use random initialization
+      if(ncol(z[[iterations]]) < gmodel) {
+        z[[iterations]] <- randomInitfunction(gmodel = gmodel, nObservations = nObservations)
+      }
+
     } else if (initMethod == "clara") {
       z[[iterations]] <- mclust::unmap(cluster::clara(log(dataset + 1 / 3),
         k = gmodel)$cluster)
+      # if z generated has less columns than gmodel, then use random initialization
+      if(ncol(z[[iterations]]) < gmodel) {
+        z[[iterations]] <- randomInitfunction(gmodel = gmodel, nObservations = nObservations)
+      }
+
     } else if (initMethod == "fanny") {
       z[[iterations]] <- mclust::unmap(cluster::fanny(log(dataset + 1 / 3),
         k = gmodel)$cluster)
+      # if z generated has less columns than gmodel, then use random initialization
+      if(ncol(z[[iterations]]) < gmodel) {
+        z[[iterations]] <- randomInitfunction(gmodel = gmodel, nObservations = nObservations)
+      }
     }
 
     initRuns[[iterations]] <- mplnCluster(dataset = dataset,

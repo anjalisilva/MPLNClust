@@ -42,11 +42,11 @@
 #' # trueSigma2 <- diag(6)
 #'
 #' # simulatedCounts <- mplnDataGenerator(nObservations = 70,
-#' #                                       dimensionality = 6,
-#' #                                       mixingProportions = c(0.79, 0.21),
-#' #                                       mu = rbind(trueMu1, trueMu2),
-#' #                                       sigma = rbind(trueSigma1, trueSigma2),
-#' #                                       produceImage = "No")
+#' #                                      dimensionality = 6,
+#' #                                      mixingProportions = c(0.79, 0.21),
+#' #                                      mu = rbind(trueMu1, trueMu2),
+#' #                                      sigma = rbind(trueSigma1, trueSigma2),
+#' #                                      produceImage = "No")
 #'
 #' # MPLNClustResults <- mplnParallel(dataset = simulatedCounts$dataset,
 #' #                                  membership = "none",

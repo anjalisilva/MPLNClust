@@ -169,7 +169,7 @@ mplnVariational <- function(dataset,
   }
 
   if(all(membership != "none") &&
-      all((diff(sort(unique(membership))) == 1) != TRUE) ) {
+     all((diff(sort(unique(membership))) == 1) != TRUE) ) {
     stop("Cluster memberships in the membership vector
       are missing a cluster, e.g. 1, 3, 4, 5, 6 is missing cluster 2.")
   }
@@ -192,8 +192,8 @@ mplnVariational <- function(dataset,
       stop("initMethod should of class character, specifying
         either: kmeans, random, medoids, clara, or fanny.")
     }
-    } else if ((class(initMethod)) != "character") {
-      stop("initMethod should of class character, specifying
+  } else if ((class(initMethod)) != "character") {
+    stop("initMethod should of class character, specifying
         either: kmeans, random, medoids, clara, or fanny.")
   }
 
@@ -215,7 +215,7 @@ mplnVariational <- function(dataset,
 
   if(normalize == "Yes") {
     normFactors <- as.vector(edgeR::calcNormFactors(as.matrix(dataset),
-      method = "TMM"))
+                                                    method = "TMM"))
   } else if(normalize == "No") {
     normFactors <- rep(1, dimensionality)
   } else{
@@ -251,34 +251,34 @@ mplnVariational <- function(dataset,
 
     if (g == max(1:(gmax - gmin + 1))) { # starting model selection
       bic <- BICFunction(logLikelihood = logLikelihood,
-        nParameters = nParameters,
-        nObservations = nObservations,
-        clusterRunOutput = clusterResults,
-        gmin = gmin,
-        gmax = gmax,
-        parallel = FALSE)
+                         nParameters = nParameters,
+                         nObservations = nObservations,
+                         clusterRunOutput = clusterResults,
+                         gmin = gmin,
+                         gmax = gmax,
+                         parallel = FALSE)
 
       icl <- ICLFunction(logLikelihood = logLikelihood,
-        nParameters = nParameters,
-        nObservations = nObservations,
-        gmin = gmin,
-        gmax = gmax,
-        clusterRunOutput = clusterResults,
-        parallel = FALSE)
+                         nParameters = nParameters,
+                         nObservations = nObservations,
+                         gmin = gmin,
+                         gmax = gmax,
+                         clusterRunOutput = clusterResults,
+                         parallel = FALSE)
 
       aic <- AICFunction(logLikelihood = logLikelihood,
-        nParameters = nParameters,
-        clusterRunOutput = clusterResults,
-        gmin = gmin,
-        gmax = gmax,
-        parallel = FALSE)
+                         nParameters = nParameters,
+                         clusterRunOutput = clusterResults,
+                         gmin = gmin,
+                         gmax = gmax,
+                         parallel = FALSE)
 
       aic3 <- AIC3Function(logLikelihood = logLikelihood,
-        nParameters = nParameters,
-        clusterRunOutput = clusterResults,
-        gmin = gmin,
-        gmax = gmax,
-        parallel = FALSE)
+                           nParameters = nParameters,
+                           clusterRunOutput = clusterResults,
+                           gmin = gmin,
+                           gmax = gmax,
+                           parallel = FALSE)
     }
 
   }
@@ -300,43 +300,43 @@ mplnVariational <- function(dataset,
     finalTime <- proc.time() - initialTime
 
     RESULTS <- list(dataset = dataset,
-      dimensionality = dimensionality,
-      normalizationFactors = normFactors,
-      gmin = gmin,
-      gmax = gmax,
-      initalizationMethod = initMethod,
-      allResults = clusterResults,
-      logLikelihood = logLikelihood,
-      numbParameters = nParameters,
-      trueLabels = membership,
-      ICLresults = icl,
-      BICresults = bic,
-      AICresults = aic,
-      AIC3results = aic3,
-      slopeHeuristics = ResCapushe,
-      DjumpModelSelected = ResCapushe@Djump@model,
-      DDSEModelSelected = ResCapushe@DDSE@model,
-      totalTime = finalTime)
+                    dimensionality = dimensionality,
+                    normalizationFactors = normFactors,
+                    gmin = gmin,
+                    gmax = gmax,
+                    initalizationMethod = initMethod,
+                    allResults = clusterResults,
+                    logLikelihood = logLikelihood,
+                    numbParameters = nParameters,
+                    trueLabels = membership,
+                    ICLresults = icl,
+                    BICresults = bic,
+                    AICresults = aic,
+                    AIC3results = aic3,
+                    slopeHeuristics = ResCapushe,
+                    DjumpModelSelected = ResCapushe@Djump@model,
+                    DDSEModelSelected = ResCapushe@DDSE@model,
+                    totalTime = finalTime)
 
   } else {
     finalTime <- proc.time() - initialTime
 
     RESULTS <- list(dataset = dataset,
-      dimensionality = dimensionality,
-      normalizationFactors = normFactors,
-      gmin = gmin,
-      gmax = gmax,
-      initalizationMethod = initMethod,
-      allResults = clusterResults,
-      logLikelihood = logLikelihood,
-      numbParameters = nParameters,
-      trueLabels = membership,
-      ICLresults = icl,
-      BICresults = bic,
-      AICresults = aic,
-      AIC3results = aic3,
-      slopeHeuristics = "Not used",
-      totalTime = finalTime)
+                    dimensionality = dimensionality,
+                    normalizationFactors = normFactors,
+                    gmin = gmin,
+                    gmax = gmax,
+                    initalizationMethod = initMethod,
+                    allResults = clusterResults,
+                    logLikelihood = logLikelihood,
+                    numbParameters = nParameters,
+                    trueLabels = membership,
+                    ICLresults = icl,
+                    BICresults = bic,
+                    AICresults = aic,
+                    AIC3results = aic3,
+                    slopeHeuristics = "Not used",
+                    totalTime = finalTime)
   }
 
   class(RESULTS) <- "mplnVariational"
@@ -368,7 +368,7 @@ varMPLNClustering <- function(dataset,
 
 
     zValue <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
-      centers = G, nstart = 100)$cluster )
+                                          centers = G, nstart = 100)$cluster )
 
     piG <- colSums(zValue) / nObservations
 
@@ -430,11 +430,11 @@ varMPLNClustering <- function(dataset,
       zSValue[[g]] <- list()
       for (i in 1:nObservations) {
         dGX[[g]][[i]] <- diag(exp((log(normFactors) + mPreviousValue[[g]][i, ]) +
-            0.5 * diag(S[[g]][[i]])), dimensionality) + isigma[[g]]
+                                    0.5 * diag(S[[g]][[i]])), dimensionality) + isigma[[g]]
         S[[g]][[i]] <- solve(dGX[[g]][[i]]) # update S
         zSValue[[g]][[i]] <- zValue[i, g] * S[[g]][[i]] # will be used for updating sample covariance matrix
         GX[[g]][[i]] <- dataset[i, ] - exp(mPreviousValue[[g]][i, ] +
-            log(normFactors) + 0.5 * diag(S[[g]][[i]])) -
+                                             log(normFactors) + 0.5 * diag(S[[g]][[i]])) -
           (isigma[[g]]) %*% (mPreviousValue[[g]][i, ] - mu[[g]])
         m[[g]][i , ] <- mPreviousValue[[g]][i , ] + S[[g]][[i]] %*% GX[[g]][[i]] # update m
       }
@@ -470,16 +470,16 @@ varMPLNClustering <- function(dataset,
     for (g in 1:G) {
       # exp(m_igj + 0.5 S_ig,jj)
       two <- rowSums(exp(m[[g]] + log(normFactorsAsMatrix) +
-          0.5 * matrix(unlist(lapply(S[[g]], diag)), ncol = dimensionality, byrow = TRUE)))
+                           0.5 * matrix(unlist(lapply(S[[g]], diag)), ncol = dimensionality, byrow = TRUE)))
       five <- 0.5 * unlist(lapply(S[[g]], zvalueFuncTerm)) # trace(isigma x S_ig)
       six <- 0.5 * log(unlist(lapply(S[[g]], det))) # 0.5 * log|S_ig|
 
       # For zig calculation (the numerator part)
       forz[ , g] <- piG[g] *
         exp(rowSums(m[[g]] * dataset) - two - rowSums(lfactorial(dataset)) +
-            rowSums(log(normFactorsAsMatrix) * dataset) -
-            0.5 * mahalanobis(m[[g]], center = mu[[g]], cov = sigma[[g]]) -
-            five + six - 0.5 * log(det(sigma[[g]])) - dimensionality / 2)
+              rowSums(log(normFactorsAsMatrix) * dataset) -
+              0.5 * mahalanobis(m[[g]], center = mu[[g]], cov = sigma[[g]]) -
+              five + six - 0.5 * log(det(sigma[[g]])) - dimensionality / 2)
     }
 
 
@@ -488,8 +488,8 @@ varMPLNClustering <- function(dataset,
     # have both equalling to 0 (because 0/0 =NaN)
     if (G == 1) {
       errorpossible <- Reduce(intersect,
-        list(which(forz == 0),
-          which(rowSums(forz) == 0)))
+                              list(which(forz == 0),
+                                   which(rowSums(forz) == 0)))
       forz[errorpossible] <- 1e-100
       zvalue <- forz / rowSums(forz)
     } else {
@@ -510,8 +510,8 @@ varMPLNClustering <- function(dataset,
         # Aitken stopping criterion
         termAitkens <- (logLikelihood[itOuter]- logLikelihood[itOuter - 1]) /
           (logLikelihood[itOuter - 1] - logLikelihood[itOuter - 2])
-          term2Aitkens <- (1 / (1 - termAitkens) * (logLikelihood[itOuter] -
-              logLikelihood[itOuter - 1]))
+        term2Aitkens <- (1 / (1 - termAitkens) * (logLikelihood[itOuter] -
+                                                    logLikelihood[itOuter - 1]))
         aloglik[itOuter] <- logLikelihood[itOuter - 1] + term2Aitkens
         if (abs(aloglik[itOuter] - logLikelihood[itOuter - 1]) < 0.01) {
           # If this critera, as per Böhning et al., 1994 is achieved
@@ -557,39 +557,65 @@ varMPLNInitialization <- function(dataset,
   zValue <- initRuns <- list()
   logLinit <- vector()
 
+  # Internal function for random initialization
+  randomInitfunction <- function(numbG, nObservations) {
+    if(numbG == 1) { # generating zValue if g=1
+      zValue <- as.matrix(rep.int(1, times = nObservations),
+                          ncol = numbG,
+                          nrow = nObservations)
+    } else { # generating zValue if g>1
+      zValueConv <- 0
+      while(! zValueConv) {
+        # ensure that dimension of zValue is same as G (i.e.,
+        # if one column contains all 0s, then generate zValue again)
+        zValue <- t(stats::rmultinom(nObservations, size = 1,
+                                     prob = rep(1 / numbG, numbG)))
+        if(length(which(colSums(zValue) > 0)) == numbG) {
+          zValueConv <- 1
+        }
+      }
+    }
+    return(zValue)
+  }
+
   for(iterations in seq_along(1:nInitIterations)) {
     # setting seed, to ensure if multiple iterations are selected by
     # user, then each run will give a different result.
     set.seed(iterations)
     if (initMethod == "kmeans" | is.na(initMethod)) {
       zValue[[iterations]] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
-                              centers = numbG, nstart = 100)$cluster )
-    } else if (initMethod == "random") {
-      if(numbG == 1) { # generating zValue if g=1
-        zValue[[iterations]] <- as.matrix(rep.int(1, times = nObservations),
-                                          ncol = numbG,
-                                          nrow = nObservations)
-      } else { # generating zValue if g>1
-        zValueConv <- 0
-        while(! zValueConv) {
-          # ensure that dimension of zValue is same as G (i.e.,
-          # if one column contains all 0s, then generate zValue again)
-          zValue[[iterations]] <- t(stats::rmultinom(nObservations, size = 1,
-                                   prob = rep(1 / numbG, numbG)))
-          if(length(which(colSums(zValue[[iterations]]) > 0)) == numbG) {
-            zValueConv <- 1
-          }
-        }
+                                                          centers = numbG, nstart = 100)$cluster )
+      # if z generated has less columns than numbG, then use random initialization
+      if(ncol(zValue[[iterations]]) < numbG) {
+        zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
       }
+
+    } else if (initMethod == "random") {
+      zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+
     } else if (initMethod == "medoids") {
       zValue[[iterations]] <- mclust::unmap(cluster::pam(log(dataset + 1 / 3),
-                              k = numbG,  cluster.only = TRUE))
+                                                         k = numbG,  cluster.only = TRUE))
+      # if z generated has less columns than numbG, then use random initialization
+      if(ncol(zValue[[iterations]]) < numbG) {
+        zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+      }
+
     } else if (initMethod == "clara") {
       zValue[[iterations]] <- mclust::unmap(cluster::clara(log(dataset + 1 / 3),
-                              k = numbG)$cluster)
+                                                           k = numbG)$cluster)
+      # if z generated has less columns than numbG, then use random initialization
+      if(ncol(zValue[[iterations]]) < numbG) {
+        zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+      }
+
     } else if (initMethod == "fanny") {
       zValue[[iterations]] <- mclust::unmap(cluster::fanny(log(dataset + 1 / 3),
-                              k = numbG, cluster.only = TRUE)$clustering)
+                                                           k = numbG, memb.exp = numbG, cluster.only = TRUE)$clustering)
+      # if z generated has less columns than numbG, then use random initialization
+      if(ncol(zValue[[iterations]]) < numbG) {
+        zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+      }
     }
 
 
@@ -666,12 +692,12 @@ varMPLNInitClustering <- function(dataset,
       zSValue[[g]] <- list()
       for (i in 1:nObservations) {
         dGX[[g]][[i]] <- diag(exp((log(normFactors) + mPreviousValue[[g]][i, ]) +
-            0.5 * diag(S[[g]][[i]])), dimensionality) + isigma[[g]]
+                                    0.5 * diag(S[[g]][[i]])), dimensionality) + isigma[[g]]
         S[[g]][[i]] <- solve(dGX[[g]][[i]]) # update S
         # will be used for updating sample covariance matrix
         zSValue[[g]][[i]] <- zValue[i, g] * S[[g]][[i]]
         GX[[g]][[i]] <- dataset[i, ] - exp(mPreviousValue[[g]][i, ] +
-            log(normFactors) + 0.5 * diag(S[[g]][[i]])) -
+                                             log(normFactors) + 0.5 * diag(S[[g]][[i]])) -
           (isigma[[g]]) %*% (mPreviousValue[[g]][i, ] - mu[[g]])
         m[[g]][i , ] <- mPreviousValue[[g]][i , ] + S[[g]][[i]] %*% GX[[g]][[i]] # update m
       }
@@ -709,16 +735,16 @@ varMPLNInitClustering <- function(dataset,
     for (g in 1:G) {
       # exp(m_igj + 0.5 S_ig,jj)
       two <- rowSums(exp(m[[g]] + log(normFactorsAsMatrix) +
-          0.5 * matrix(unlist(lapply(S[[g]], diag)), ncol = dimensionality, byrow = TRUE)))
+                           0.5 * matrix(unlist(lapply(S[[g]], diag)), ncol = dimensionality, byrow = TRUE)))
       five <- 0.5 * unlist(lapply(S[[g]], zvalueFuncTerm)) # trace(isigma x S_ig)
       six <- 0.5 * log(unlist(lapply(S[[g]], det))) # 0.5 * log|S_ig|
 
       # For zig calculation (the numerator part)
       forz[ , g] <- piG[g] *
         exp(rowSums(m[[g]] * dataset) - two - rowSums(lfactorial(dataset)) +
-            rowSums(log(normFactorsAsMatrix) * dataset) -
-            0.5 * mahalanobis(m[[g]], center = mu[[g]], cov = sigma[[g]]) -
-            five + six - 0.5 * log(det(sigma[[g]])) - dimensionality / 2)
+              rowSums(log(normFactorsAsMatrix) * dataset) -
+              0.5 * mahalanobis(m[[g]], center = mu[[g]], cov = sigma[[g]]) -
+              five + six - 0.5 * log(det(sigma[[g]])) - dimensionality / 2)
     }
 
     # Calculate zValue value
@@ -726,8 +752,8 @@ varMPLNInitClustering <- function(dataset,
     # have both equalling to 0 (because 0/0 =NaN)
     if (G == 1) {
       errorpossible <- Reduce(intersect,
-        list(which(forz == 0),
-          which(rowSums(forz) == 0)))
+                              list(which(forz == 0),
+                                   which(rowSums(forz) == 0)))
       forz[errorpossible] <- 1e-100
       zvalue <- forz / rowSums(forz)
     } else {
@@ -771,14 +797,14 @@ varMPLNInitClustering <- function(dataset,
 
   # Saving results for output
   Results <- list(piG = piG,
-    mu = mu,
-    sigma = sigma,
-    isigma = isigma,
-    zValue = zValue,
-    m = m,
-    S = S,
-    clusterlabels = mclust::map(zValue),
-    logLikelihood = logLikelihood)
+                  mu = mu,
+                  sigma = sigma,
+                  isigma = isigma,
+                  zValue = zValue,
+                  m = m,
+                  S = S,
+                  clusterlabels = mclust::map(zValue),
+                  logLikelihood = logLikelihood)
 
   class(Results) <- "varMPLNInitClustering"
   return(Results)
