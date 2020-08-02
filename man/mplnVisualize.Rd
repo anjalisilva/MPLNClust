@@ -11,6 +11,7 @@ mplnVisualize(
   clusterMembershipVector = NA,
   fileName = paste0("Plot_", date()),
   LinePlotColours = "black",
+  printPlot = TRUE,
   format = "pdf"
 )
 }

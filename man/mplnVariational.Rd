@@ -27,7 +27,7 @@ leave as "none".}
 \item{gmin}{A positive integer specifying the minimum number of components
 to be considered in the clustering run.}
 
-\item{gmax}{A positive integer, > gmin, specifying the maximum number of
+\item{gmax}{A positive integer, >= gmin, specifying the maximum number of
 components to be considered in the clustering run.}
 
 \item{initMethod}{An algorithm for initialization. Current options are
