@@ -90,7 +90,7 @@ server <- function(input, output) {
   })
 
 
-  startclustering <- shiny::eventReactive(eventExpr = input$button2, {
+  startclustering <- eventReactive(eventExpr = input$button2, {
     withProgress(message = 'Clustering', value = 0, {
       # Number of times we'll go through the loop
 
@@ -107,20 +107,20 @@ server <- function(input, output) {
   })
 
   # Textoutput
-  output$textOut <- shiny::renderPrint({
+  output$textOut <- renderPrint({
     if (! is.null(startclustering))
       summary(startclustering()$dataset)
   })
 
   # Pairsplot
-  output$pairsplot <- shiny::renderPlot({
+  output$pairsplot <- renderPlot({
     if (! is.null(startclustering))
       pairs(startclustering()$dataset)
   })
 
 
   # Step II: clustering
-  output$clustering <- shiny::renderText({
+  output$clustering <- renderText({
     if (! is.null(startclustering))
 
       aa <- paste("BIC model selected is:", startclustering()$BICresults$BICmodelselected, "\n")
@@ -144,7 +144,7 @@ server <- function(input, output) {
   })
 
 
-  startplotting <- shiny::eventReactive(eventExpr = input$button2, {
+  startplotting <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
       mplnVisualize(
         dataset = matrixInput()[ , 2:ncol(matrixInput())],
@@ -160,7 +160,7 @@ server <- function(input, output) {
   })
 
 
-  startplotting2 <- shiny::eventReactive(eventExpr = input$button2, {
+  startplotting2 <- eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
       mplnVisualize(
         dataset = matrixInput()[ , 2:ncol(matrixInput())],
@@ -177,7 +177,7 @@ server <- function(input, output) {
 
 
 
-  startplotting3 <- shiny::eventReactive(eventExpr = input$button2, {
+  startplotting3 <- eventReactive(eventExpr = input$button2, {
     if (! is.null(startclustering))
       mplnVisualize(
         dataset = matrixInput()[ , 2:ncol(matrixInput())],
