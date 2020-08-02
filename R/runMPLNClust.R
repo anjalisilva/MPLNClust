@@ -1,7 +1,9 @@
 #' Launch the shiny app for package MPLNClust
 #'
 #' A function that launches the shiny app for this package.
-#' The code has been placed in \code{./inst/shiny-scripts}.
+#' The shiny app permit to perform clustering using mixtures
+#' of MPLN via variational-EM. The code has been placed in
+#' \code{./inst/shiny-scripts}.
 #'
 #' @return No return value but open up a shiny page.
 #'
@@ -11,12 +13,11 @@
 #' }
 #'
 #' @export
-#'
+#' @importFrom shiny runApp
 
 runMPLNClust <- function() {
-  # @importFrom shiny runApp
-  #appDir <- system.file("shiny-scripts",
-  #                      package = "MPLNClust")
-  #shiny::runApp(appDir, display.mode = "normal")
-  #return()
+  appDir <- system.file("shiny-scripts",
+                        package = "MPLNClust")
+  shiny::runApp(appDir, display.mode = "normal")
+  return()
 }
