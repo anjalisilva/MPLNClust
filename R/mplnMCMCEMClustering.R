@@ -15,8 +15,9 @@
 #'
 #' @param dataset A dataset of class matrix and type integer such that
 #'    rows correspond to observations and columns correspond to variables.
-#'    If rowSums are zero, these rows will be removed prior to cluster
-#'    analysis.
+#'    The dataset have dimensions n x d, where n is the total number of
+#'    observations and d is the dimensionality. If rowSums are zero,
+#'    these rows will be removed prior to cluster analysis.
 #' @param membership A numeric vector of length nrow(dataset) containing the
 #'    cluster membership of each observation. If not available,
 #'    leave as "none".
@@ -486,8 +487,9 @@ mplnMCMCParallel <- function(dataset,
 #'
 #' @param dataset A dataset of class matrix and type integer such that
 #'    rows correspond to observations and columns correspond to variables.
-#'    If rowSums are zero, these rows will be removed prior to cluster
-#'    analysis.
+#'    The dataset have dimensions n x d, where n is the total number of
+#'    observations and d is the dimensionality. If rowSums are zero,
+#'    these rows will be removed prior to cluster analysis.
 #' @param membership A numeric vector of length nrow(dataset) containing the
 #'    cluster membership of each observation. If not available,
 #'    leave as "none".
