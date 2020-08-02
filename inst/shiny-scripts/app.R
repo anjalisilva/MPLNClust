@@ -12,9 +12,12 @@ ui <- fluidPage(
     # Sidebar panel for inputs ----
     sidebarPanel(
 
+      tags$p("Provided a dataset of counts, perform clustering and show
+              plots for model selected by BIC."),
       tags$p("Import a dataset of counts, such that rows should
                          correspond to observations and columns correspond to
-                         variables in .csv format."),
+                         variables in .csv format. Dataset must contain row
+                         names (in first column) and column names."),
       tags$p("A simulation dataset maybe created using mplnDataGenerator()
                         function of MPLNClust R package and saved into .csv format using
                         write.csv() function."),
@@ -58,10 +61,11 @@ ui <- fluidPage(
 
       # Output: Tabet
       tabsetPanel(type = "tabs",
-                  tabPanel("Input", plotOutput("pairsplot")),
+                  tabPanel("Input PairsPlot", plotOutput("pairsplot")),
+                  tabPanel("Input Summary", verbatimTextOutput("textOut")),
                   tabPanel("Cluster Results",
                            fluidRow(column(6, verbatimTextOutput('clustering')),
-                                    column(6, plotOutput('pairsplot2')))),
+                                    column(6, plotOutput('logL')))),
                   tabPanel("Heatmap", plotOutput("heatmap")),
                   tabPanel("Barplot", plotOutput("barPlot")),
                   tabPanel("Lineplot", plotOutput("linePlot"))
@@ -86,44 +90,64 @@ server <- function(input, output) {
   })
 
 
-  # Pairsplot
-  output$pairsplot2 <- output$pairsplot <- shiny::renderPlot({
-    if (! is.null(input$file1))
-      pairs(matrixInput())
+  startclustering <- shiny::eventReactive(eventExpr = input$button2, {
+    withProgress(message = 'Clustering', value = 0, {
+      # Number of times we'll go through the loop
+
+      MPLNClust::mplnVariational(
+        dataset = matrixInput()[ , 2:ncol(matrixInput())],
+        membership = "none",
+        gmin = as.numeric(input$ngmin),
+        gmax = as.numeric(input$ngmax),
+        initMethod = "kmeans",
+        nInitIterations = as.numeric(input$nInitIterations),
+        normalize = "Yes")
+
+    })
   })
 
-  startclustering <- shiny::eventReactive(eventExpr = input$button2, {
-    MPLNClust::mplnVariational(
-      dataset = matrixInput(),
-      membership = "none",
-      gmin = as.numeric(input$ngmin),
-      gmax = as.numeric(input$ngmax),
-      initMethod = "kmeans",
-      nInitIterations = as.numeric(input$nInitIterations),
-      normalize = "Yes")
+  # Textoutput
+  output$textOut <- shiny::renderPrint({
+    if (! is.null(startclustering))
+      summary(startclustering()$dataset)
+  })
+
+  # Pairsplot
+  output$pairsplot <- shiny::renderPlot({
+    if (! is.null(startclustering))
+      pairs(startclustering()$dataset)
   })
 
 
   # Step II: clustering
   output$clustering <- shiny::renderText({
-    if (!is.null(startclustering))
+    if (! is.null(startclustering))
 
-      aa <- paste("BIC model selected is:", startclustering()[[12]][[2]], "\n")
+      aa <- paste("BIC model selected is:", startclustering()$BICresults$BICmodelselected, "\n")
 
-    bb <- paste("ICL model selected is:", startclustering()[[11]][[2]], "\n")
+    bb <- paste("ICL model selected is:", startclustering()$ICLresults$ICLmodelselected, "\n")
 
-    cc <- paste("AIC model selected is:", startclustering()[[13]][[2]], "\n")
+    cc <- paste("AIC model selected is:", startclustering()$AICresults$AICmodelselected, "\n")
 
-    dd <- paste("AIC3 model selected is:", startclustering()[[14]][[2]], "\n")
+    dd <- paste("AIC3 model selected is:", startclustering()$AIC3results$AIC3modelselected, "\n")
     paste(aa, bb, cc, dd, sep = "\n")
   })
 
   # Step III: visualize
 
+  output$logL <- renderPlot({
+    if (! is.null(startclustering))
+
+      plot(startclustering()$logLikelihood, type = "l",
+           lty = 2, xlab = "G", ylab = "logL",
+           main = paste("G vs log-likelihood"))
+  })
+
+
   startplotting <- shiny::eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
       mplnVisualize(
-        dataset = matrixInput(),
+        dataset = matrixInput()[ , 2:ncol(matrixInput())],
         plots = "heatmaps",
         probabilities = as.matrix(startclustering()$allResults$`G=2`$probaPost),
         clusterMembershipVector = as.numeric(startclustering()$allResults$`G=2`$clusterlabels),
@@ -139,7 +163,7 @@ server <- function(input, output) {
   startplotting2 <- shiny::eventReactive(eventExpr = input$button2, {
     if (!is.null(startclustering))
       mplnVisualize(
-        dataset = matrixInput(),
+        dataset = matrixInput()[ , 2:ncol(matrixInput())],
         plots = "bar",
         probabilities = as.matrix(startclustering()$allResults$`G=2`$probaPost),
         clusterMembershipVector = as.numeric(startclustering()$allResults$`G=2`$clusterlabels),
@@ -156,7 +180,7 @@ server <- function(input, output) {
   startplotting3 <- shiny::eventReactive(eventExpr = input$button2, {
     if (! is.null(startclustering))
       mplnVisualize(
-        dataset = matrixInput(),
+        dataset = matrixInput()[ , 2:ncol(matrixInput())],
         plots = "lines",
         LinePlotColours = "multicolour",
         probabilities = as.matrix(startclustering()$allResults$`G=2`$probaPost),
