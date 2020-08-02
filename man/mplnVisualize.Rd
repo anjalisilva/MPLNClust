@@ -38,6 +38,9 @@ date().}
 should be multicoloured or monotone, in black. Options are
 'multicolour' or 'black'. Default is 'black'.}
 
+\item{printPlot}{Logical indicating if plot(s) should be saved in local
+directory. Default TRUE. Options TRUE or FALSE.}
+
 \item{format}{Character string indicating the format of the image to
 be produced. Default 'pdf'. Options 'pdf' or 'png'.}
 }
@@ -71,20 +74,20 @@ is also available.
 #                                      sigma = rbind(trueSigma1, trueSigma2),
 #                                      produceImage = "No")
 
-# MPLNClustResults <- mplnParallel(dataset = simulatedCounts$dataset,
-#                                  membership = "none",
-#                                  gmin = 2,
-#                                  gmax = 2,
-#                                  nChains = 3,
-#                                  nIterations = 200,
-#                                  initMethod = "kmeans",
-#                                  nInitIterations = 0,
-#                                  normalize = "Yes")
+# MPLNClustResults <- MPLNClust::mplnVariational(
+#                              dataset = as.matrix(simulatedCounts$dataset),
+#                              membership = "none",
+#                              gmin = 1,
+#                              gmax = 2,
+#                              initMethod = "kmeans",
+#                              nInitIterations = 1,
+#                              normalize = "Yes")
 
 # MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
 #                              plots = 'all',
+#                              probabilities = MPLNClustResults$allResults$`G=2`$probaPost,
 #                              clusterMembershipVector =
-#                              MPLNClustResults$all_results[[1]]$all_results$clusterlabels,
+#                              MPLNClustResults$allResults$`G=2`$clusterlabels,
 #                              fileName = 'TwoClusterModel',
 #                              format = 'png')
 
