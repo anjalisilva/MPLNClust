@@ -31,7 +31,8 @@ Imports:
     reshape, 
     rstan,
     parallel,
-    pheatmap
+    pheatmap,
+    shiny
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Suggests: 
