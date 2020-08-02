@@ -16,7 +16,7 @@
 #'    leave as "none".
 #' @param gmin A positive integer specifying the minimum number of components
 #'    to be considered in the clustering run.
-#' @param gmax A positive integer, > gmin, specifying the maximum number of
+#' @param gmax A positive integer, >= gmin, specifying the maximum number of
 #'    components to be considered in the clustering run.
 #' @param initMethod An algorithm for initialization. Current options are
 #'    "kmeans", "random", "medoids", "clara", or "fanny". Default is "kmeans".

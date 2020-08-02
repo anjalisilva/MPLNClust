@@ -22,7 +22,7 @@
 #'    leave as "none".
 #' @param gmin A positive integer specifying the minimum number of components
 #'    to be considered in the clustering run.
-#' @param gmax A positive integer, > gmin, specifying the maximum number of
+#' @param gmax A positive integer, >= gmin, specifying the maximum number of
 #'    components to be considered in the clustering run.
 #' @param nChains A positive integer specifying the number of Markov chains.
 #'    Default is 3, the recommended minimum number.
@@ -493,7 +493,7 @@ mplnMCMCParallel <- function(dataset,
 #'    leave as "none".
 #' @param gmin A positive integer specifying the minimum number of components
 #'    to be considered in the clustering run.
-#' @param gmax A positive integer, > gmin, specifying the maximum number of
+#' @param gmax A positive integer, >= gmin, specifying the maximum number of
 #'    components to be considered in the clustering run.
 #' @param nChains A positive integer specifying the number of Markov chains.
 #'    Default is 3, the recommended minimum number.

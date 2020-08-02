@@ -84,6 +84,7 @@ mplnVisualize <- function(dataset, plots = 'all',
                           clusterMembershipVector = NA,
                           fileName = paste0('Plot_',date()),
                           LinePlotColours = "black",
+                          printPlot = TRUE,
                           format = 'pdf') {
 
   # Checking user input
@@ -156,102 +157,119 @@ mplnVisualize <- function(dataset, plots = 'all',
   }
 
 
+  # empty plots
+  heatmapOne <- heatmapTwo <- linePlots <- barPlot <- NULL
 
   if (plots == 'all' || plots == 'heatmaps') {
-  # Heatmap 1
 
-    if (format == 'png') {
-      grDevices::png(paste0(pathNow, "/heatmap1_", fileName, ".png"))
-    } else {
-      grDevices::pdf(paste0(pathNow, "/heatmap1_", fileName, ".pdf"))
-    }
-
-    gplots::heatmap.2(as.matrix(dataset[vec, ]),
-                      dendrogram = "column",
-                      trace = "none",
-                      scale = "row",
-                      Rowv = FALSE, col = rev(gplots::redgreen(75)),
-                      RowSideColor = coloursBarPlot[colorsvector],
-                      labRow = FALSE,
-                      main = paste("Clustering results, G =",
-                             max(clusterMembershipVector)))
-    graphics::par(xpd = TRUE)
-    graphics::legend( xpd = TRUE, x = -0.1, y= 0,
-      legend = paste0("Cluster ", unique(colorsvector)),
-      col = unique(coloursBarPlot[colorsvector]),
-      lty = 1,
-      lwd = 5,
-      cex =.8, horiz = FALSE)
-    grDevices::dev.off()
-
-
-
-    # Heatmap 2 - only produced if less than 17 clusters
-    if(max(clusterMembershipVector) < 18) {
-      # Defining annotation row
-      annotation_row = data.frame(Cluster = factor(clusterMembershipVector[vec]))
-      if(is.null(rownames(dataset)) == TRUE) {
-        rownames(dataset)  = paste("Gene", c(1:nrow(dataset[vec, ])))
-        rownames(annotation_row) = rownames(dataset[vec, ])
-      } else {
-        rownames(annotation_row) = rownames(dataset[vec, ])
-      }
-
-      # Define row annotation colours
-      heatMap2RowAnnotation <- c("1" = coloursBarPlot[1], "2" = coloursBarPlot[2],
-                                 "3" = coloursBarPlot[3], "4" = coloursBarPlot[4],
-                                 "5" = coloursBarPlot[5], "6" = coloursBarPlot[6],
-                                 "7" = coloursBarPlot[7], "8" = coloursBarPlot[8],
-                                 "9" = coloursBarPlot[9], "10" = coloursBarPlot[10],
-                                 "11" = coloursBarPlot[11], "12" = coloursBarPlot[12],
-                                 "13" = coloursBarPlot[13], "14" = coloursBarPlot[14],
-                                 "15" = coloursBarPlot[15], "16" = coloursBarPlot[16],
-                                 "17" = coloursBarPlot[17])
+    # Heatmap 1
+    if (printPlot == TRUE) {
 
       if (format == 'png') {
-        grDevices::png(paste0(pathNow, "/heatmap2_", fileName, ".png"))
+        grDevices::png(paste0(pathNow, "/heatmap1_", fileName, ".png"))
       } else {
-        grDevices::pdf(paste0(pathNow, "/heatmap2_", fileName, ".pdf"))
+        grDevices::pdf(paste0(pathNow, "/heatmap1_", fileName, ".pdf"))
       }
 
-      # Show row names or not based on dataset size
-      if(nrow(dataset) < 50){
-        showLabels = TRUE
-      } else {
-        showLabels = FALSE
-      }
-      pheatmap::pheatmap(as.matrix(dataset[vec, ]), show_colnames = TRUE,
-                         show_rownames = showLabels,
-                         labels_col = colnames(dataset),
-                         annotation_row = annotation_row,
-                         annotation_colors = list(Cluster = heatMap2RowAnnotation[
-                           sort(unique(clusterMembershipVector))]),
-                         fontface = "italic", legend = TRUE, scale ="row",
-                         border_color = "black", cluster_row = FALSE,
-                         cluster_col = FALSE,
-                         color =  rev(gplots::redgreen(1000)) )
+      gplots::heatmap.2(as.matrix(dataset[vec, ]),
+                        dendrogram = "column",
+                        trace = "none",
+                        scale = "row",
+                        Rowv = FALSE, col = rev(gplots::redgreen(75)),
+                        RowSideColor = coloursBarPlot[colorsvector],
+                        labRow = FALSE,
+                        main = paste("Clustering results, G =",
+                                     max(clusterMembershipVector)))
+      graphics::par(xpd = TRUE)
+      graphics::legend(xpd = TRUE, x = -0.1, y= 0,
+                       legend = paste0("Cluster ", unique(colorsvector)),
+                       col = unique(coloursBarPlot[colorsvector]),
+                       lty = 1,
+                       lwd = 5,
+                       cex =.8, horiz = FALSE)
+
       grDevices::dev.off()
     }
+
+
+    # Heatmap 2
+    # Only produced if less than 17 clusters
+    if(max(clusterMembershipVector) < 18) {
+          # Defining annotation row
+          annotation_row = data.frame(Cluster = factor(clusterMembershipVector[vec]))
+          if(is.null(rownames(dataset)) == TRUE) {
+            rownames(dataset)  = paste("Gene", c(1:nrow(dataset[vec, ])))
+            rownames(annotation_row) = rownames(dataset[vec, ])
+          } else {
+            rownames(annotation_row) = rownames(dataset[vec, ])
+          }
+
+          # Define row annotation colours
+          heatMap2RowAnnotation <- c("1" = coloursBarPlot[1], "2" = coloursBarPlot[2],
+                                     "3" = coloursBarPlot[3], "4" = coloursBarPlot[4],
+                                     "5" = coloursBarPlot[5], "6" = coloursBarPlot[6],
+                                     "7" = coloursBarPlot[7], "8" = coloursBarPlot[8],
+                                     "9" = coloursBarPlot[9], "10" = coloursBarPlot[10],
+                                     "11" = coloursBarPlot[11], "12" = coloursBarPlot[12],
+                                     "13" = coloursBarPlot[13], "14" = coloursBarPlot[14],
+                                     "15" = coloursBarPlot[15], "16" = coloursBarPlot[16],
+                                     "17" = coloursBarPlot[17])
+
+          # Show row names or not based on dataset size
+          if(nrow(dataset) < 50){
+            showLabels = TRUE
+          } else {
+            showLabels = FALSE
+          }
+
+          heatmapFunctionTwo <- function(dataset, vec, heatMap2RowAnnotation,
+                                         annotation_row, clusterMembershipVector) {
+            pheatmapPlot <- pheatmap::pheatmap(as.matrix(dataset[vec, ]), show_colnames = TRUE,
+                               show_rownames = showLabels,
+                               labels_col = colnames(dataset),
+                               annotation_row = annotation_row,
+                               annotation_colors = list(Cluster = heatMap2RowAnnotation[
+                                 sort(unique(clusterMembershipVector))]),
+                               fontface = "italic", legend = TRUE, scale ="row",
+                               border_color = "black", cluster_row = FALSE,
+                               cluster_col = FALSE,
+                               color =  rev(gplots::redgreen(1000)) )
+            return(pheatmapPlot)
+        }
+
+      if (printPlot == TRUE) {
+        if (format == 'png') {
+          grDevices::png(paste0(pathNow, "/heatmap2_", fileName, ".png"))
+        } else {
+          grDevices::pdf(paste0(pathNow, "/heatmap2_", fileName, ".pdf"))
+        }
+
+        heatmapFunctionTwo(dataset = dataset,
+                           vec = vec,
+                           heatMap2RowAnnotation = heatMap2RowAnnotation,
+                           annotation_row = annotation_row,
+                           clusterMembershipVector = clusterMembershipVector)
+        grDevices::dev.off()
+      }
+
+
+      heatmapTwo <- heatmapFunctionTwo(dataset = dataset,
+                                           vec = vec,
+                                           heatMap2RowAnnotation = heatMap2RowAnnotation,
+                                           annotation_row = annotation_row,
+                                           clusterMembershipVector = clusterMembershipVector)
+    }
   }
-
-
 
   if (plots == 'all' || plots == 'lines') {
   # Line Plots
 
     if (LinePlotColours == "multicolour") {
+      linePlots <- list()
       for(cluster in unique(clusterMembershipVector)) {
-        if (format == 'png') {
-          grDevices::png(paste0(pathNow, "/LinePlot_Cluster", cluster,
-            "_", fileName, ".png"))
-        } else {
-          grDevices::pdf(paste0(pathNow, "/LinePlot_Cluster", cluster,
-            "_", fileName, ".pdf"))
-        }
 
         # Save how many observations below to each cluster size,
         # given by 'cluster'
-
         if (length(which(DataPlusLabs[, ncol(dataset) + 1] == cluster)) == 1) {
           toplot_1 <- as.matrix(DataPlusLabs[which(DataPlusLabs[,
                                  ncol(dataset) + 1] == cluster), c(1:ncol(dataset))],
@@ -269,26 +287,43 @@ mplnVisualize <- function(dataset, plots = 'all',
         # toplot1_space=cbind(toplot1[,c(1:3)],rep(NA,nrow(toplot_1)+1),
         # toplot1[,c(4:6)])
 
-        graphics::matplot(t(toplot1), type = "l", pch = 1,
-                          col = c(rep(coloursBarPlot[cluster], nrow(toplot_1)), 7),
-                          xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
-                          lty = c(rep(2, nrow(toplot_1)), 1),
-                          lwd = c(rep(3, nrow(toplot_1)), 4),
-                          xaxt = "n", xlim = c(1, ncol(toplot1)),
-                          main = paste("Cluster ", cluster))
-        axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
-        grDevices::dev.off()
+        linePlot <- function(dataset, toplot1, toplot_1, coloursBarPlot, cluster) {
+          linePlotMultiCol <- graphics::matplot(t(toplot1), type = "l", pch = 1,
+                                      col = c(rep(coloursBarPlot[cluster], nrow(toplot_1)), 7),
+                                      xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
+                                      lty = c(rep(2, nrow(toplot_1)), 1),
+                                      lwd = c(rep(3, nrow(toplot_1)), 4),
+                                      xaxt = "n", xlim = c(1, ncol(toplot1)),
+                                      main = paste("Cluster ", cluster))
+          linePlotMultiCol <- linePlotMultiCol + axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
+          return(linePlotMultiCol)
+        }
+
+        if (printPlot == TRUE) {
+          if (format == 'png') {
+            grDevices::png(paste0(pathNow, "/LinePlot_Cluster", cluster,
+                                  "_", fileName, ".png"))
+          } else {
+            grDevices::pdf(paste0(pathNow, "/LinePlot_Cluster", cluster,
+                                  "_", fileName, ".pdf"))
+          }
+
+          linePlot(dataset = dataset, toplot1 = toplot1, toplot_1 = toplot_1,
+                   coloursBarPlot = coloursBarPlot, cluster = cluster)
+          grDevices::dev.off()
+        }
+
+        linePlots[[cluster]] <- linePlot(dataset = dataset,
+                                         toplot1 = toplot1,
+                                         toplot_1 = toplot_1,
+                                         coloursBarPlot = coloursBarPlot,
+                                         cluster = cluster)
       }
     } else if (LinePlotColours == "black") {
+      linePlots <- list()
       for(cluster in unique(clusterMembershipVector)) {
 
-        if (format == 'png') {
-          grDevices::png(paste0(pathNow, "/LinePlot_Cluster", cluster,
-            "_", fileName, ".png"))
-        } else {
-          grDevices::pdf(paste0(pathNow, "/LinePlot_Cluster", cluster,
-            "_", fileName, ".pdf"))
-        }
+
         # Save how many observations below to each cluster size,
         # given by 'cluster'
         if (length(which(DataPlusLabs[, ncol(dataset) + 1] == cluster)) == 1) {
@@ -308,24 +343,45 @@ mplnVisualize <- function(dataset, plots = 'all',
         # toplot1_space=cbind(toplot1[,c(1:3)],rep(NA,nrow(toplot_1)+1),
         # toplot1[,c(4:6)])
 
-        graphics::matplot(t(toplot1), type = "l", pch = 1,
-                          col = c(rep(1, nrow(toplot_1)), 7),
-                          xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
-                          lty = c(rep(2, nrow(toplot_1)), 1),
-                          lwd = c(rep(3, nrow(toplot_1)), 4),
-                          xaxt = "n", xlim = c(1, ncol(toplot1)),
-                          main = paste("Cluster ", cluster))
-        axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
-        grDevices::dev.off()
+        linePlot <- function(dataset, toplot1, cluster) {
+          linePlotMonoCol <- graphics::matplot(t(toplot1), type = "l", pch = 1,
+                              col = c(rep(1, nrow(toplot_1)), 7),
+                              xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
+                              lty = c(rep(2, nrow(toplot_1)), 1),
+                              lwd = c(rep(3, nrow(toplot_1)), 4),
+                              xaxt = "n", xlim = c(1, ncol(toplot1)),
+                              main = paste("Cluster ", cluster))
+          linePlotMonoCol <- linePlotMonoCol + axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
+          return(linePlotMonoCol)
+        }
+
+        if (printPlot == TRUE) {
+          if (format == 'png') {
+            grDevices::png(paste0(pathNow, "/LinePlot_Cluster", cluster,
+                                  "_", fileName, ".png"))
+          } else {
+            grDevices::pdf(paste0(pathNow, "/LinePlot_Cluster", cluster,
+                                  "_", fileName, ".pdf"))
+          }
+          linePlot(dataset = dataset, toplot1 = toplot1, cluster = cluster)
+          grDevices::dev.off()
+        }
+
+        linePlots[[cluster]] <- linePlot(dataset = dataset,
+                                         toplot1 = toplot1,
+                                         cluster = cluster)
       }
     }
+
+
+
   }
 
 
 
   if ((plots == 'all' || plots == 'bar') && !is.na(probabilities)) {
-    # Bar plot
 
+    # Bar plot
     tableProbabilities <- as.data.frame(cbind(Sample = c(1:nrow(probabilities)),
                                         Cluster = mclust::map(probabilities),
                                         probabilities))
@@ -336,22 +392,36 @@ mplnVisualize <- function(dataset, plots = 'all',
     tableProbabilitiesMelt <- reshape::melt(tableProbabilities,
                                             id.vars = c("Sample","Cluster"))
 
-
-    ggplot2::ggplot(data = tableProbabilitiesMelt,
-        ggplot2::aes(fill = variable, y = value, x = Sample)) +
+    barPlotFunction <- function(tableProbabilitiesMelt, coloursBarPlot) {
+      barPlot <- ggplot2::ggplot(data = tableProbabilitiesMelt,
+                                 ggplot2::aes(fill = variable, y = value, x = Sample)) +
         geom_bar(position = "fill", stat = "identity") +
         scale_fill_manual(values = coloursBarPlot,
-          name = "Cluster") + theme_bw() +
+                          name = "Cluster") + theme_bw() +
         theme(text = element_text(size = 10),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          axis.text.x = element_text(face = "bold", angle = 90),
-          axis.text.y = element_text(face="bold")) +
+              panel.grid.major = element_blank(),
+              panel.grid.minor = element_blank(),
+              axis.text.x = element_text(face = "bold", angle = 90),
+              axis.text.y = element_text(face="bold")) +
         coord_cartesian(ylim = c(0, 1), xlim = c(1, nrow(probabilities))) +
         labs(x = "Observation") +
         scale_y_continuous(name = "Posterior probability", limits = c(0: 1))
-    ggplot2::ggsave(paste0(pathNow,"/barplot_", fileName,".",format))
+      return(barPlot)
+    }
+
+    if (printPlot == TRUE) {
+      barPlot <- barPlotFunction(tableProbabilitiesMelt = tableProbabilitiesMelt,
+                      coloursBarPlot = coloursBarPlot)
+      ggplot2::ggsave(paste0(pathNow,"/barplot_", fileName,".",format))
+    }
+
+    barPlot <- barPlotFunction(tableProbabilitiesMelt = tableProbabilitiesMelt,
+                               coloursBarPlot = coloursBarPlot)
   }
 
-  return(NULL)
+
+  return(list(heatmapOne,
+              heatmapTwo,
+              linePlots,
+              barPlot))
 }
