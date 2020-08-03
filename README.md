@@ -20,7 +20,7 @@ library("MPLNClust")
 
 ## Overview
 
-`MPLNClust` contains 9 functions. 
+`MPLNClust` contains 10 functions. 
 
 For carrying out clustering of count data using mixtures of MPLN via variational expectation-maximization (EM): __*mplnVariational*__. Functions __*mplnMCMCParallel*__ or __*mplnMCMCNonParallel*__ uses a Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM) for parameter estimation. Function *mplnMCMCParallel* uses MCMC-EM with parallelization while *mplnMCMCNonParallel* uses MCMC-EM with no parallelization.
 
@@ -28,7 +28,9 @@ For the purpose of generating simlulation data via mixtures of MPLN: __*mplnData
 
 For visualizing clustering results: __*mplnVisualize*__. 
 
-Information criteria are offered for model selection: __*AICFunction*__, __*BICFunction*__, __*AIC3Function*__, __*ICLFunction*__. To list all functions available in the package: 
+Information criteria are offered for model selection: __*AICFunction*__, __*BICFunction*__, __*AIC3Function*__, __*ICLFunction*__. 
+
+The shiny implementation of *mplnVariational*: __*runMPLNClust*__. To list all functions available in the package: 
 
 ``` r
 lsf.str("package:MPLNClust")

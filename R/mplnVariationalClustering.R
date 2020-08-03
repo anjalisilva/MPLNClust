@@ -246,9 +246,16 @@ mplnVariational <- function(dataset,
 
   for(g in seq_along(1:(gmax - gmin + 1))) {
     # save the final log-likelihood
+
+    if(length(1:(gmax - gmin + 1)) == gmax) {
+      clustersize <- g
+    } else if(length(1:(gmax - gmin + 1)) < gmax) {
+      clustersize <- seq(gmin, gmax, 1)[g]
+    }
+
     logLikelihood[g] <- unlist(utils::tail(clusterResults[[g]]$logLikelihood, n = 1))
 
-    nParameters[g] <- calcParameters(numberG = g, dimensionality = dimensionality)
+    nParameters[g] <- calcParameters(numberG = clustersize, dimensionality = dimensionality)
 
     if (g == max(1:(gmax - gmin + 1))) { # starting model selection
       bic <- BICFunction(logLikelihood = logLikelihood,

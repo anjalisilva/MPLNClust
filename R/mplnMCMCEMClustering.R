@@ -381,7 +381,13 @@ mplnMCMCParallel <- function(dataset,
     logLikelihood[g] <- unlist(tail(parallelRun[[g]]$allResults$logLikelihood,
       n = 1))
 
-    nParameters[g] <- calcParameters(numberG = g,
+    if(length(1:(gmax - gmin + 1)) == gmax) {
+      clustersize <- g
+    } else if(length(1:(gmax - gmin + 1)) < gmax) {
+      clustersize <- seq(gmin, gmax, 1)[g]
+    }
+
+    nParameters[g] <- calcParameters(numberG = clustersize,
       dimensionality = dimensionality)
 
     if (g == max(1:(gmax - gmin + 1))) { # starting model selection
@@ -820,7 +826,13 @@ mplnMCMCNonParallel <- function(dataset,
     # save the final log-likelihood
     logLikelihood[g] <- unlist(utils::tail(nonParallelRun[[g]]$logLikelihood, n = 1))
 
-    nParameters[g] <- calcParameters(numberG = g, dimensionality = dimensionality)
+    if(length(1:(gmax - gmin + 1)) == gmax) {
+      clustersize <- g
+    } else if(length(1:(gmax - gmin + 1)) < gmax) {
+      clustersize <- seq(gmin, gmax, 1)[g]
+    }
+
+    nParameters[g] <- calcParameters(numberG = clustersize, dimensionality = dimensionality)
 
     if (g == max(1:(gmax - gmin + 1))) { # starting model selection
       bic <- BICFunction(logLikelihood = logLikelihood,
