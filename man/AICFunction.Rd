@@ -58,7 +58,7 @@ Formula: - 2 * logLikelihood + 2 * nParameters.
 # trueSigma1 <- diag(6) * 2
 # trueSigma2 <- diag(6)
 #
-# sampleData <- mplnDataGenerator(nObservations = 100,
+# sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
 #                                 dimensionality = 6,
 #                                 mixingProportions = c(0.79, 0.21),
 #                                 mu = rbind(trueMu1, trueMu2),
@@ -66,7 +66,7 @@ Formula: - 2 * logLikelihood + 2 * nParameters.
 #                                 produceImage = "No")
 #
 # Clustering
-# mplnResults <- mplnVariational(dataset = sampleData$dataset,
+# mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
 #                                membership = sampleData$trueMembership,
 #                                gmin = 1,
 #                                gmax = 2,
@@ -75,7 +75,7 @@ Formula: - 2 * logLikelihood + 2 * nParameters.
 #                                normalize = "Yes")
 #
 # Model selection
-# AICmodel <- AICFunction(logLikelihood = mplnResults$logLikelihood,
+# AICmodel <- MPLNClust::AICFunction(logLikelihood = mplnResults$logLikelihood,
 #                         nParameters = mplnResults$numbParameters,
 #                         clusterRunOutput = mplnResults$allResults,
 #                         gmin = mplnResults$gmin,

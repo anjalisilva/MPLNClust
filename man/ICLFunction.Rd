@@ -61,7 +61,7 @@ Biernacki et al., (2000). Require the output from function MPLNClust::BICFunctio
 # trueSigma1 <- diag(6) * 2
 # trueSigma2 <- diag(6)
 
-# sampleData <- mplnDataGenerator(nObservations = 100,
+# sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
 #                                 dimensionality = 6,
 #                                 mixingProportions = c(0.79, 0.21),
 #                                 mu = rbind(trueMu1, trueMu2),
@@ -69,7 +69,7 @@ Biernacki et al., (2000). Require the output from function MPLNClust::BICFunctio
 #                                 produceImage = "No")
 #
 # Clustering
-# mplnResults <- mplnVariational(dataset = sampleData$dataset,
+# mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
 #                                membership = sampleData$trueMembership,
 #                                gmin = 1,
 #                                gmax = 2,
@@ -78,7 +78,7 @@ Biernacki et al., (2000). Require the output from function MPLNClust::BICFunctio
 #                                normalize = "Yes")
 #
 # Model selection
-# ICLmodel <- ICLFunction(logLikelihood = mplnResults$logLikelihood,
+# ICLmodel <- MPLNClust::ICLFunction(logLikelihood = mplnResults$logLikelihood,
 #                         nParameters = mplnResults$numbParameters,
 #                         nObservations = nrow(mplnResults$dataset),
 #                         clusterRunOutput = mplnResults$allResults,

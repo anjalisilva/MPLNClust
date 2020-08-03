@@ -37,7 +37,7 @@
 #' # trueSigma1 <- diag(6) * 2
 #' # trueSigma2 <- diag(6)
 #' #
-#' # sampleData <- mplnDataGenerator(nObservations = 100,
+#' # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
 #' #                                 dimensionality = 6,
 #' #                                 mixingProportions = c(0.79, 0.21),
 #' #                                 mu = rbind(trueMu1, trueMu2),
@@ -45,7 +45,7 @@
 #' #                                 produceImage = "No")
 #' #
 #' # Clustering
-#' # mplnResults <- mplnVariational(dataset = sampleData$dataset,
+#' # mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
 #' #                                membership = sampleData$trueMembership,
 #' #                                gmin = 1,
 #' #                                gmax = 2,
@@ -54,7 +54,7 @@
 #' #                                normalize = "Yes")
 #' #
 #' # Model selection
-#' # AICmodel <- AICFunction(logLikelihood = mplnResults$logLikelihood,
+#' # AICmodel <- MPLNClust::AICFunction(logLikelihood = mplnResults$logLikelihood,
 #' #                         nParameters = mplnResults$numbParameters,
 #' #                         clusterRunOutput = mplnResults$allResults,
 #' #                         gmin = mplnResults$gmin,
@@ -180,7 +180,7 @@ AICFunction <- function(logLikelihood,
 #' # trueSigma1 <- diag(6) * 2
 #' # trueSigma2 <- diag(6)
 
-#' # sampleData <- mplnDataGenerator(nObservations = 100,
+#' # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
 #' #                                 dimensionality = 6,
 #' #                                 mixingProportions = c(0.79, 0.21),
 #' #                                 mu = rbind(trueMu1, trueMu2),
@@ -188,7 +188,7 @@ AICFunction <- function(logLikelihood,
 #' #                                 produceImage = "No")
 
 #' # Clustering
-#' # mplnResults <- mplnVariational(dataset = sampleData$dataset,
+#' # mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
 #' #                                membership = sampleData$trueMembership,
 #' #                                gmin = 1,
 #' #                                gmax = 2,
@@ -197,7 +197,7 @@ AICFunction <- function(logLikelihood,
 #' #                                normalize = "Yes")
 #' #
 #' # Model selection
-#' # AIC3model <- AIC3Function(logLikelihood = mplnResults$logLikelihood,
+#' # AIC3model <- MPLNClust::AIC3Function(logLikelihood = mplnResults$logLikelihood,
 #' #                           nParameters = mplnResults$numbParameters,
 #' #                           clusterRunOutput = mplnResults$allResults,
 #' #                           gmin = mplnResults$gmin,
@@ -328,7 +328,7 @@ AIC3Function <- function(logLikelihood,
 #' # trueSigma1 <- diag(6) * 2
 #' # trueSigma2 <- diag(6)
 
-#' # sampleData <- mplnDataGenerator(nObservations = 100,
+#' # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
 #' #                                 dimensionality = 6,
 #' #                                 mixingProportions = c(0.79, 0.21),
 #' #                                 mu = rbind(trueMu1, trueMu2),
@@ -336,7 +336,7 @@ AIC3Function <- function(logLikelihood,
 #' #                                 produceImage = "No")
 
 #' # Clustering
-#' # mplnResults <- mplnVariational(dataset = sampleData$dataset,
+#' # mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
 #' #                                membership = sampleData$trueMembership,
 #' #                                gmin = 1,
 #' #                                gmax = 2,
@@ -345,7 +345,7 @@ AIC3Function <- function(logLikelihood,
 #' #                                normalize = "Yes")
 #' #
 #' # Model selection
-#' # BICmodel <- BICFunction(logLikelihood = mplnResults$logLikelihood,
+#' # BICmodel <- MPLNClust::BICFunction(logLikelihood = mplnResults$logLikelihood,
 #' #                         nParameters = mplnResults$numbParameters,
 #' #                         nObservations = nrow(mplnResults$dataset),
 #' #                         clusterRunOutput = mplnResults$allResults,
@@ -473,7 +473,7 @@ BICFunction <- function(logLikelihood,
 #' # trueSigma1 <- diag(6) * 2
 #' # trueSigma2 <- diag(6)
 #'
-#' # sampleData <- mplnDataGenerator(nObservations = 100,
+#' # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
 #' #                                 dimensionality = 6,
 #' #                                 mixingProportions = c(0.79, 0.21),
 #' #                                 mu = rbind(trueMu1, trueMu2),
@@ -481,7 +481,7 @@ BICFunction <- function(logLikelihood,
 #' #                                 produceImage = "No")
 #' #
 #' # Clustering
-#' # mplnResults <- mplnVariational(dataset = sampleData$dataset,
+#' # mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
 #' #                                membership = sampleData$trueMembership,
 #' #                                gmin = 1,
 #' #                                gmax = 2,
@@ -490,7 +490,7 @@ BICFunction <- function(logLikelihood,
 #' #                                normalize = "Yes")
 #' #
 #' # Model selection
-#' # ICLmodel <- ICLFunction(logLikelihood = mplnResults$logLikelihood,
+#' # ICLmodel <- MPLNClust::ICLFunction(logLikelihood = mplnResults$logLikelihood,
 #' #                         nParameters = mplnResults$numbParameters,
 #' #                         nObservations = nrow(mplnResults$dataset),
 #' #                         clusterRunOutput = mplnResults$allResults,

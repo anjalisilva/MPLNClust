@@ -43,7 +43,7 @@
 #' # trueSigma1 <- diag(6) * 2
 #' # trueSigma2 <- diag(6)
 #'
-#' # simulatedCounts <- mplnDataGenerator(nObservations = 70,
+#' # simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
 #' #                                      dimensionality = 6,
 #' #                                      mixingProportions = c(0.79, 0.21),
 #' #                                      mu = rbind(trueMu1, trueMu2),
@@ -59,7 +59,7 @@
 #' #                              nInitIterations = 1,
 #' #                              normalize = "Yes")
 #'
-#' # MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
+#' # MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
 #' #                              plots = 'all',
 #' #                              probabilities = MPLNClustResults$allResults$`G=2`$probaPost,
 #' #                              clusterMembershipVector =
@@ -81,7 +81,8 @@
 #' @importFrom pheatmap pheatmap
 #' @importFrom gplots heatmap.2
 #' @importFrom gplots redgreen
-mplnVisualize <- function(dataset, plots = 'all',
+mplnVisualize <- function(dataset,
+                          plots = 'all',
                           probabilities = NA,
                           clusterMembershipVector = NA,
                           fileName = paste0('Plot_',date()),
@@ -98,6 +99,17 @@ mplnVisualize <- function(dataset, plots = 'all',
     stop("\n Dataset needs to be a matrix")
   }
 
+  if (class(plots) == "character") {
+    plotsMethodsPossible<- c("all", "bar", "lines", "heatmaps")
+      if(all((plots == plotsMethodsPossible) == FALSE)) {
+        stop("initMethod should of class character, specifying
+             either: all, bar, lines, heatmaps.")
+    }
+  } else if ((class(plots)) != "character") {
+    stop("initMethod should of class character, specifying
+             either: all, bar, lines, heatmaps.")
+  }
+
   if (class(clusterMembershipVector) == "logical") {
     cat("\n clusterMembershipVector is not provided.")
     clusterMembershipVector <- rep(1, nrow(dataset))
@@ -108,6 +120,8 @@ mplnVisualize <- function(dataset, plots = 'all',
           nrow(dataset)")
       }
   }
+
+
 
   if (class(probabilities) == "logical") {
     cat("\n Probabilities are not provided. Barplot of probabilities will not be produced.")
@@ -124,6 +138,9 @@ mplnVisualize <- function(dataset, plots = 'all',
           one observation has probability != 1.")
       }
   }
+
+
+
 
   # Obtaining path to save images
   pathNow <- getwd()

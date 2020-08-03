@@ -67,7 +67,7 @@ is also available.
 # trueSigma1 <- diag(6) * 2
 # trueSigma2 <- diag(6)
 
-# simulatedCounts <- mplnDataGenerator(nObservations = 70,
+# simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
 #                                      dimensionality = 6,
 #                                      mixingProportions = c(0.79, 0.21),
 #                                      mu = rbind(trueMu1, trueMu2),
@@ -83,7 +83,7 @@ is also available.
 #                              nInitIterations = 1,
 #                              normalize = "Yes")
 
-# MPLNVisuals <- mplnVisualize(dataset = simulatedCounts$dataset,
+# MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
 #                              plots = 'all',
 #                              probabilities = MPLNClustResults$allResults$`G=2`$probaPost,
 #                              clusterMembershipVector =

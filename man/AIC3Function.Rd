@@ -56,14 +56,14 @@ Bozdogan (1994), called AIC3. Formula: - 2 * logLikelihood + 3 * nParameters.
 # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 # trueSigma1 <- diag(6) * 2
 # trueSigma2 <- diag(6)
-# sampleData <- mplnDataGenerator(nObservations = 100,
+# sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
 #                                 dimensionality = 6,
 #                                 mixingProportions = c(0.79, 0.21),
 #                                 mu = rbind(trueMu1, trueMu2),
 #                                 sigma = rbind(trueSigma1, trueSigma2),
 #                                 produceImage = "No")
 # Clustering
-# mplnResults <- mplnVariational(dataset = sampleData$dataset,
+# mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
 #                                membership = sampleData$trueMembership,
 #                                gmin = 1,
 #                                gmax = 2,
@@ -72,7 +72,7 @@ Bozdogan (1994), called AIC3. Formula: - 2 * logLikelihood + 3 * nParameters.
 #                                normalize = "Yes")
 #
 # Model selection
-# AIC3model <- AIC3Function(logLikelihood = mplnResults$logLikelihood,
+# AIC3model <- MPLNClust::AIC3Function(logLikelihood = mplnResults$logLikelihood,
 #                           nParameters = mplnResults$numbParameters,
 #                           clusterRunOutput = mplnResults$allResults,
 #                           gmin = mplnResults$gmin,

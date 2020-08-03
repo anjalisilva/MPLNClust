@@ -60,14 +60,14 @@ Schwarz (1978). Formula: - 2 * logLikelihood + (nParameters * log(nObservations)
 # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 # trueSigma1 <- diag(6) * 2
 # trueSigma2 <- diag(6)
-# sampleData <- mplnDataGenerator(nObservations = 100,
+# sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
 #                                 dimensionality = 6,
 #                                 mixingProportions = c(0.79, 0.21),
 #                                 mu = rbind(trueMu1, trueMu2),
 #                                 sigma = rbind(trueSigma1, trueSigma2),
 #                                 produceImage = "No")
 # Clustering
-# mplnResults <- mplnVariational(dataset = sampleData$dataset,
+# mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
 #                                membership = sampleData$trueMembership,
 #                                gmin = 1,
 #                                gmax = 2,
@@ -76,7 +76,7 @@ Schwarz (1978). Formula: - 2 * logLikelihood + (nParameters * log(nObservations)
 #                                normalize = "Yes")
 #
 # Model selection
-# BICmodel <- BICFunction(logLikelihood = mplnResults$logLikelihood,
+# BICmodel <- MPLNClust::BICFunction(logLikelihood = mplnResults$logLikelihood,
 #                         nParameters = mplnResults$numbParameters,
 #                         nObservations = nrow(mplnResults$dataset),
 #                         clusterRunOutput = mplnResults$allResults,

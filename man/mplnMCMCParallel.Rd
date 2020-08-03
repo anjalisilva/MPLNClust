@@ -112,7 +112,7 @@ AIC, AIC3, BIC and ICL.
 # trueSigma1 <- diag(6) * 2
 # trueSigma2 <- diag(6)
 
-# sampleData <- mplnDataGenerator(nObservations = 100,
+# sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
 #                                 dimensionality = 6,
 #                                 mixingProportions = c(0.79, 0.21),
 #                                 mu = rbind(trueMu1, trueMu2),
@@ -120,7 +120,7 @@ AIC, AIC3, BIC and ICL.
 #                                 produceImage = "No")
 
 # Clustering
-# mplnResults <- mplnMCMCParallel(dataset = sampleData$dataset,
+# mplnResults <- MPLNClust::mplnMCMCParallel(dataset = sampleData$dataset,
 #                                 membership = sampleData$trueMembership,
 #                                 gmin = 1,
 #                                 gmax = 2,
