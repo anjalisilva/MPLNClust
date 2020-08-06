@@ -46,13 +46,13 @@
 #' trueSigma1 <- diag(6) * 2
 #' trueSigma2 <- diag(6)
 #'
-#' sampleData <- mplnDataGenerator(nObservations = 100,
-#'                                 dimensionality = 6,
-#'                                 mixingProportions = c(0.79, 0.21),
-#'                                 mu = rbind(trueMu1, trueMu2),
-#'                                 sigma = rbind(trueSigma1, trueSigma2),
-#'                                 produceImage = "Yes",
-#'                                 ImageName = "TwoComponents")
+#' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
+#'                                            dimensionality = 6,
+#'                                            mixingProportions = c(0.79, 0.21),
+#'                                            mu = rbind(trueMu1, trueMu2),
+#'                                            sigma = rbind(trueSigma1, trueSigma2),
+#'                                            produceImage = "No",
+#'                                            ImageName = "TwoComponents")
 #'
 #' @author Anjali Silva, \email{anjali.silva@uhnresearch.ca}
 #'
@@ -80,15 +80,15 @@ mplnDataGenerator <- function(nObservations,
                               ImageName = "sampleName") {
 
   # Checking user input
-  if(class(nObservations) != "numeric") {
+  if(is.numeric(nObservations) != TRUE) {
     stop("nObservations argument should be of class numeric.")
   }
 
-  if(class(dimensionality) != "numeric") {
+  if(is.numeric(dimensionality) != TRUE) {
     stop("dimensionality argument should be of class numeric.")
   }
 
-  if(class(mixingProportions) != "numeric") {
+  if(is.numeric(mixingProportions) != TRUE) {
     stop("mixingProportions argument should be a vector of class numeric.")
   }
 
@@ -96,7 +96,7 @@ mplnDataGenerator <- function(nObservations,
     stop("mixingProportions argument should be a vector that sum to 1.")
   }
 
-  if(class(mu) != "matrix") {
+  if(is.matrix(mu) != TRUE) {
     stop("mu argument should be of class matrix.")
   }
 
@@ -108,7 +108,7 @@ mplnDataGenerator <- function(nObservations,
     stop("mu should be a matrix, which has number of rows equalling number of components.")
   }
 
-  if(class(sigma) != "matrix") {
+  if(is.matrix(sigma) != TRUE) {
     stop("sigma argument should be of class matrix.")
   }
 
@@ -122,7 +122,7 @@ mplnDataGenerator <- function(nObservations,
       (dimensionality * number of components).")
   }
 
-  if (produceImage == "Yes" && class(ImageName) != "character") {
+  if (produceImage == "Yes" && is.character(ImageName) != TRUE) {
     stop("ImageName should be a character string of class character.")
   }
 

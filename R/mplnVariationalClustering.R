@@ -61,28 +61,28 @@
 #'
 #' @examples
 #' # Generating simulated data
-#' # Not run
-#' # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
-#' # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
-#' # trueSigma1 <- diag(6) * 2
-#' # trueSigma2 <- diag(6)
+#'  trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#'  trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
-#' # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 1000,
-#' #                                 dimensionality = 6,
-#' #                                 mixingProportions = c(0.79, 0.21),
-#' #                                 mu = rbind(trueMu1, trueMu2),
-#' #                                 sigma = rbind(trueSigma1, trueSigma2),
-#' #                                 produceImage = "No")
+#'  trueSigma1 <- diag(6) * 2
+#'  trueSigma2 <- diag(6)
+#'
+#'  sampleData <- MPLNClust::mplnDataGenerator(nObservations = 1000,
+#'                                             dimensionality = 6,
+#'                                             mixingProportions = c(0.79, 0.21),
+#'                                             mu = rbind(trueMu1, trueMu2),
+#'                                             sigma = rbind(trueSigma1, trueSigma2),
+#'                                             produceImage = "No")
 #'
 #' # Clustering
-#' # mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
-#' #                                 membership = sampleData$trueMembership,
-#' #                                 gmin = 1,
-#' #                                 gmax = 2,
-#' #                                 initMethod = "kmeans",
-#' #                                 nInitIterations = 2,
-#' #                                 normalize = "Yes")
+#' mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
+#'                                           membership = sampleData$trueMembership,
+#'                                           gmin = 1,
+#'                                           gmax = 2,
+#'                                           initMethod = "kmeans",
+#'                                           nInitIterations = 2,
+#'                                           normalize = "Yes")
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
 #'          \email{sdang@math.binghamton.edu}. }
@@ -141,7 +141,7 @@ mplnVariational <- function(dataset,
     stop("Dataset should be a matrix of counts.")
   }
 
-  if (class(dataset) != "matrix") {
+  if (is.matrix(dataset) != TRUE) {
     stop("Dataset needs to be a matrix.")
   }
 
@@ -152,7 +152,7 @@ mplnVariational <- function(dataset,
   dimensionality <- ncol(dataset)
   nObservations <- nrow(dataset)
 
-  if(class(gmin) != "numeric" || class(gmax) != "numeric") {
+  if(is.numeric(gmin) != TRUE || is.numeric(gmax) != TRUE) {
     stop("Class of gmin and gmin should be numeric.")
   }
 
@@ -164,7 +164,7 @@ mplnVariational <- function(dataset,
     stop("gmax cannot be larger than nrow(dataset).")
   }
 
-  if(all(membership != "none") && class(membership) != "numeric") {
+  if(all(membership != "none") && is.numeric(membership) != TRUE) {
     stop("membership should be a numeric vector containing the
       cluster membership. Otherwise, leave as 'none'.")
   }
@@ -187,23 +187,23 @@ mplnVariational <- function(dataset,
   dimensionality <- ncol(dataset)
   nObservations <- nrow(dataset)
 
-  if (class(initMethod) == "character") {
+  if (is.character(initMethod) == TRUE) {
     initMethodsUsed <- c("kmeans", "random", "medoids", "clara", "fanny")
     if(all((initMethod == initMethodsUsed) == FALSE)) {
       stop("initMethod should of class character, specifying
         either: kmeans, random, medoids, clara, or fanny.")
     }
-  } else if ((class(initMethod)) != "character") {
+  } else if (is.character(initMethod) != TRUE) {
     stop("initMethod should of class character, specifying
         either: kmeans, random, medoids, clara, or fanny.")
   }
 
-  if (class(nInitIterations) != "numeric") {
+  if (is.numeric(nInitIterations) != TRUE) {
     stop("nInitIterations should be positive integer or zero, specifying
       the number of initialization runs to be considered.")
   }
 
-  if (class(normalize) != "character") {
+  if (is.character(normalize) != TRUE) {
     stop("normalize should be a string of class character specifying
       if normalization should be performed.")
   }

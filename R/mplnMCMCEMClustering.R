@@ -76,30 +76,31 @@
 #'
 #' @examples
 #' # Generating simulated data
-#'
+#' # Not run
 #' # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 #' # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
 #' # trueSigma1 <- diag(6) * 2
 #' # trueSigma2 <- diag(6)
 #'
-#' # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
-#' #                                            dimensionality = 6,
-#' #                                            mixingProportions = c(0.79, 0.21),
-#' #                                            mu = rbind(trueMu1, trueMu2),
-#' #                                            sigma = rbind(trueSigma1, trueSigma2),
-#' #                                            produceImage = "No")
+#' # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 40,
+#' #                                             dimensionality = 6,
+#' #                                             mixingProportions = c(0.79, 0.21),
+#' #                                             mu = rbind(trueMu1, trueMu2),
+#' #                                             sigma = rbind(trueSigma1, trueSigma2),
+#' #                                             produceImage = "No")
 #'
 #' # Clustering
 #' # mplnResults <- MPLNClust::mplnMCMCParallel(dataset = sampleData$dataset,
-#' #                                            membership = sampleData$trueMembership,
-#' #                                            gmin = 1,
-#' #                                            gmax = 2,
-#' #                                            nChains = 3,
-#' #                                            nIterations = 1000,
-#' #                                            initMethod = "kmeans",
-#' #                                            nInitIterations = 2,
-#' #                                            normalize = "Yes")
+#' #                                             membership = sampleData$trueMembership,
+#' #                                             gmin = 1,
+#' #                                             gmax = 1,
+#' #                                             nChains = 3,
+#' #                                             nIterations = 400,
+#' #                                             initMethod = "kmeans",
+#' #                                             nInitIterations = 0,
+#' #                                             normalize = "Yes",
+#' #                                             numNodes = 2)
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
 #'          \email{sdang@math.binghamton.edu}. }
@@ -169,7 +170,7 @@ mplnMCMCParallel <- function(dataset,
     stop("Dataset should be a matrix of counts.")
   }
 
-  if (class(dataset) != "matrix") {
+  if (is.matrix(dataset) != TRUE) {
     stop("Dataset needs to be a matrix.")
   }
 
@@ -180,7 +181,7 @@ mplnMCMCParallel <- function(dataset,
   dimensionality <- ncol(dataset)
   nObservations <- nrow(dataset)
 
-  if(class(gmin) != "numeric" || class(gmax) != "numeric") {
+  if(is.numeric(gmin) != TRUE || is.numeric(gmax) != TRUE) {
     stop("Class of gmin and gmin should be numeric.")
   }
 
@@ -192,7 +193,7 @@ mplnMCMCParallel <- function(dataset,
     stop("gmax cannot be larger than nrow(dataset).")
   }
 
-  if (class(nChains) != "numeric") {
+  if (is.numeric(nChains) != TRUE) {
     stop("nChains should be a positive integer of class numeric specifying
       the number of Markov chains.")
   }
@@ -202,17 +203,17 @@ mplnMCMCParallel <- function(dataset,
       chains is 3.")
   }
 
-  if(class(nIterations) != "numeric") {
+  if(is.numeric(nIterations) != TRUE) {
     stop("nIterations should be a positive integer of class numeric,
       specifying the number of iterations for each Markov chain
       (including warmup).")
   }
 
-  if(class(nIterations) == "numeric" && nIterations < 40) {
+  if(is.numeric(nIterations) == TRUE && nIterations < 40) {
     stop("nIterations argument should be greater than 40.")
   }
 
-  if(all(membership != "none") && class(membership) != "numeric") {
+  if(all(membership != "none") && is.numeric(membership) != TRUE) {
     stop("membership should be a numeric vector containing the
       cluster membership. Otherwise, leave as 'none'.")
   }
@@ -235,23 +236,23 @@ mplnMCMCParallel <- function(dataset,
   dimensionality <- ncol(dataset)
   nObservations <- nrow(dataset)
 
-  if (class(initMethod) == "character"){
+  if (is.character(initMethod) == TRUE) {
     initMethodsUsed <- c("kmeans", "random", "medoids", "clara", "fanny")
     if(all((initMethod == initMethodsUsed) == FALSE)) {
       stop("initMethod should of class character, specifying
         either: kmeans, random, medoids, clara, or fanny.")
     }
-    } else if (class(initMethod) != "character") {
+    } else if (is.character(initMethod) != TRUE) {
       stop("initMethod should of class character, specifying
         either: kmeans, random, medoids, clara, or fanny.")
   }
 
-  if (class(nInitIterations) != "numeric") {
+  if (is.numeric(nInitIterations) != TRUE) {
     stop("nInitIterations should be positive integer or zero, specifying
       the number of initialization runs to be considered.")
   }
 
-  if (class(normalize) != "character") {
+  if (is.character(normalize) != TRUE) {
     stop("normalize should be a string of class character specifying
       if normalization should be performed.")
   }
@@ -264,7 +265,7 @@ mplnMCMCParallel <- function(dataset,
   # Check numNodes and calculate the number of cores and initiate cluster
   if(is.na(numNodes) == TRUE) {
     cl <- parallel::makeCluster(parallel::detectCores() - 1)
-  } else if (class(numNodes) == "numeric") {
+  } else if (is.numeric(numNodes) == TRUE) {
     cl <- parallel::makeCluster(numNodes)
   } else {
     stop("numNodes should be a positive integer indicating the number of
@@ -549,15 +550,16 @@ mplnMCMCParallel <- function(dataset,
 #' }
 #'
 #' @examples
-#' # Generating simulated data
 #' # Not run
+#' # Generating simulated data
+#'
 #' # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 #' # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
 #' # trueSigma1 <- diag(6) * 2
 #' # trueSigma2 <- diag(6)
 #'
-#' # sampleData <- mplnDataGenerator(nObservations = 100,
+#' # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 40,
 #' #                                 dimensionality = 6,
 #' #                                 mixingProportions = c(0.79, 0.21),
 #' #                                 mu = rbind(trueMu1, trueMu2),
@@ -565,15 +567,15 @@ mplnMCMCParallel <- function(dataset,
 #' #                                 produceImage = "No")
 #'
 #' # Clustering
-#' # mplnResults <- mplnMCMCNonParallel(dataset = sampleData$dataset,
-#' #                                    membership = sampleData$trueMembership,
-#' #                                    gmin = 1,
-#' #                                    gmax = 2,
-#' #                                    nChains = 3,
-#' #                                    nIterations = 1000,
-#' #                                    initMethod = "kmeans",
-#' #                                    nInitIterations = 2,
-#' #                                    normalize = "Yes")
+#' # mplnResults <- MPLNClust::mplnMCMCNonParallel(dataset = sampleData$dataset,
+#' #                                               membership = sampleData$trueMembership,
+#' #                                               gmin = 1,
+#' #                                               gmax = 1,
+#' #                                               nChains = 3,
+#' #                                               nIterations = 700,
+#' #                                               initMethod = "kmeans",
+#' #                                               nInitIterations = 0,
+#' #                                               normalize = "Yes")
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
 #'          \email{sdang@math.binghamton.edu}. }
@@ -638,7 +640,7 @@ mplnMCMCNonParallel <- function(dataset,
     stop("Dataset should be a matrix of counts.")
   }
 
-  if (class(dataset) != "matrix") {
+  if (is.matrix(dataset) != TRUE) {
     stop("Dataset needs to be a matrix.")
   }
 
@@ -649,7 +651,7 @@ mplnMCMCNonParallel <- function(dataset,
   dimensionality <- ncol(dataset)
   nObservations <- nrow(dataset)
 
-  if(class(gmin) != "numeric" || class(gmax) != "numeric") {
+  if(is.numeric(gmin) != TRUE || is.numeric(gmax) != TRUE) {
     stop("Class of gmin and gmin should be numeric.")
   }
 
@@ -661,7 +663,7 @@ mplnMCMCNonParallel <- function(dataset,
     stop("gmax cannot be larger than nrow(dataset).")
   }
 
-  if (class(nChains) != "numeric") {
+  if (is.numeric(nChains) != TRUE) {
     stop("nChains should be a positive integer of class numeric specifying
       the number of Markov chains.")
   }
@@ -671,17 +673,17 @@ mplnMCMCNonParallel <- function(dataset,
       chains is 3.")
   }
 
-  if(class(nIterations) != "numeric") {
+  if(is.numeric(nIterations) != TRUE) {
     stop("nIterations should be a positive integer of class numeric,
       specifying the number of iterations for each Markov chain
       (including warmup).")
   }
 
-  if(class(nIterations) == "numeric" && nIterations < 40) {
+  if(is.numeric(nIterations) == TRUE && nIterations < 40) {
     stop("nIterations argument should be greater than 40.")
   }
 
-  if(all(membership != "none") && class(membership) != "numeric") {
+  if(all(membership != "none") && is.numeric(membership) != TRUE) {
     stop("membership should be a numeric vector containing the
       cluster membership. Otherwise, leave as 'none'.")
   }
@@ -705,24 +707,24 @@ mplnMCMCNonParallel <- function(dataset,
   dimensionality <- ncol(dataset)
   nObservations <- nrow(dataset)
 
-  if (class(initMethod) == "character"){
+  if (is.character(initMethod) == TRUE) {
     initMethodsUsed <- c("kmeans", "random", "medoids", "clara", "fanny")
     if(all((initMethod == initMethodsUsed) == FALSE)) {
       stop("initMethod should of class character, specifying
         either: kmeans, random, medoids, clara, or fanny.")
     }
-    } else if (class(initMethod) != "character") {
+    } else if (is.character(initMethod) != TRUE) {
       stop("initMethod should of class character, specifying
         either: kmeans, random, medoids, clara, or fanny.")
   }
 
 
-  if (class(nInitIterations) != "numeric") {
+  if (is.numeric(nInitIterations) != TRUE) {
     stop("nInitIterations should be positive integer or zero, specifying
       the number of initialization runs to be considered.")
   }
 
-  if (class(normalize) != "character") {
+  if (is.character(normalize) != TRUE) {
     stop("normalize should be a string of class character specifying
       if normalization should be performed.")
   }
@@ -1393,7 +1395,7 @@ removeZeroCounts <- function(dataset,
 
   zeroSUMrows <- which(rowSums(dataset) == 0)
 
-  if (length(zeroSUMrows) > 0 && class(membership) == "numeric") {
+  if (length(zeroSUMrows) > 0 && is.numeric(membership) == TRUE) {
     dataset <- dataset[- zeroSUMrows, ]
     membership <- membership[- zeroSUMrows]
   } else if(length(zeroSUMrows) > 0 && all(membership == "none")) {

@@ -60,36 +60,38 @@ is also available.
 }
 \examples{
 # Generating simulated data
-# Not run
-# trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
-# trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 
-# trueSigma1 <- diag(6) * 2
-# trueSigma2 <- diag(6)
+trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 
-# simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
-#                                      dimensionality = 6,
-#                                      mixingProportions = c(0.79, 0.21),
-#                                      mu = rbind(trueMu1, trueMu2),
-#                                      sigma = rbind(trueSigma1, trueSigma2),
-#                                      produceImage = "No")
+trueSigma1 <- diag(6) * 2
+trueSigma2 <- diag(6)
 
-# MPLNClustResults <- MPLNClust::mplnVariational(
-#                              dataset = as.matrix(simulatedCounts$dataset),
-#                              membership = "none",
-#                              gmin = 1,
-#                              gmax = 2,
-#                              initMethod = "kmeans",
-#                              nInitIterations = 1,
-#                              normalize = "Yes")
+ simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
+                                      dimensionality = 6,
+                                      mixingProportions = c(0.79, 0.21),
+                                      mu = rbind(trueMu1, trueMu2),
+                                      sigma = rbind(trueSigma1, trueSigma2),
+                                      produceImage = "No")
 
-# MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
-#                              plots = 'all',
-#                              probabilities = MPLNClustResults$allResults$`G=2`$probaPost,
-#                              clusterMembershipVector =
-#                              MPLNClustResults$allResults$`G=2`$clusterlabels,
-#                              fileName = 'TwoClusterModel',
-#                              format = 'png')
+ MPLNClustResults <- MPLNClust::mplnVariational(
+                              dataset = as.matrix(simulatedCounts$dataset),
+                              membership = "none",
+                              gmin = 1,
+                              gmax = 2,
+                              initMethod = "kmeans",
+                              nInitIterations = 1,
+                              normalize = "Yes")
+
+ MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
+                                         plots = 'all',
+                                         probabilities =
+                                         MPLNClustResults$allResults$`G=2`$probaPost,
+                                         clusterMembershipVector =
+                                         MPLNClustResults$allResults$`G=2`$clusterlabels,
+                                         fileName = 'TwoClusterModel',
+                                         printPlot = FALSE,
+                                         format = 'png')
 
 }
 \author{

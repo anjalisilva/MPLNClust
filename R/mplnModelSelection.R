@@ -79,7 +79,7 @@ AICFunction <- function(logLikelihood,
                         parallel = FALSE) {
 
   # Performing checks
-  if(class(gmin) != "numeric" || class(gmax) != "numeric") {
+  if(is.numeric(gmin) != TRUE || is.numeric(gmax) != TRUE) {
     stop("Class of gmin and gmin should be numeric.")
   }
 
@@ -87,12 +87,12 @@ AICFunction <- function(logLikelihood,
     stop("gmax cannot be less than gmin.")
   }
 
-  if(class(nParameters) != "numeric") {
+  if(is.numeric(nParameters) != TRUE) {
     stop("nParameters should be a vector of integers indicating
       number of parameters for each cluster size.")
   }
 
-  if(class(logLikelihood) != "numeric") {
+  if(is.numeric(logLikelihood) != TRUE) {
     stop("logLikelihood should be a vector of numeric values.")
   }
 
@@ -100,7 +100,7 @@ AICFunction <- function(logLikelihood,
     stop("logLikelihood should be a vector of length (gmax - gmin + 1).")
   }
 
-  if(class(parallel) != "logical") {
+  if(is.logical(parallel) != TRUE) {
     stop("Should be logical, TRUE or FALSE indicating if
           MPLNClust::mplnMCMCParallel has been used.")
   }
@@ -227,7 +227,7 @@ AIC3Function <- function(logLikelihood,
                          parallel = FALSE) {
 
   # Performing checks
-  if(class(gmin) != "numeric" || class(gmax) != "numeric") {
+  if(is.numeric(gmin) != TRUE || is.numeric(gmax) != TRUE) {
     stop("Class of gmin and gmin should be numeric.")
   }
 
@@ -235,12 +235,12 @@ AIC3Function <- function(logLikelihood,
     stop("gmax cannot be less than gmin.")
   }
 
-  if(class(nParameters) != "numeric") {
+  if(is.numeric(nParameters) != TRUE) {
     stop("nParameters should be a vector of integers indicating
       number of parameters for each cluster size.")
   }
 
-  if(class(logLikelihood) != "numeric") {
+  if(is.numeric(logLikelihood) != TRUE) {
     stop("logLikelihood should be a vector of numeric values.")
   }
 
@@ -248,7 +248,7 @@ AIC3Function <- function(logLikelihood,
     stop("logLikelihood should be a vector of length (gmax - gmin + 1).")
   }
 
-  if(class(parallel) != "logical") {
+  if(is.logical(parallel) != TRUE) {
     stop("Should be logical, TRUE or FALSE indicating if
       MPLNClust::mplnMCMCParallel has been used.")
   }
@@ -371,7 +371,7 @@ BICFunction <- function(logLikelihood,
                         parallel = FALSE) {
 
   # Performing checks
-  if(class(gmin) != "numeric" || class(gmax) != "numeric") {
+  if(is.numeric(gmin) != TRUE || is.numeric(gmax) != TRUE) {
     stop("Class of gmin and gmin should be numeric.")
   }
 
@@ -379,12 +379,12 @@ BICFunction <- function(logLikelihood,
     stop("gmax cannot be less than gmin.")
   }
 
-  if(class(nParameters) != "numeric") {
+  if(is.numeric(nParameters) != TRUE) {
     stop("nParameters should be a vector of integers indicating
       number of parameters for each cluster size.")
   }
 
-  if(class(logLikelihood) != "numeric") {
+  if(is.numeric(logLikelihood) != TRUE) {
     stop("logLikelihood should be a vector of numeric values.")
   }
 
@@ -392,7 +392,7 @@ BICFunction <- function(logLikelihood,
     stop("logLikelihood should be a vector of length (gmax - gmin + 1).")
   }
 
-  if(class(parallel) != "logical") {
+  if(is.logical(parallel) != TRUE) {
     stop("Should be logical, TRUE or FALSE indicating if
       MPLNClust::mplnMCMCParallel has been used.")
   }
@@ -522,12 +522,12 @@ ICLFunction <- function(logLikelihood,
     stop("gmax cannot be less than gmin.")
   }
 
-  if(class(nParameters) != "numeric") {
+  if(is.numeric(nParameters) != TRUE) {
     stop("nParameters should be a vector of integers indicating
       number of parameters for each cluster size.")
   }
 
-  if(class(logLikelihood) != "numeric") {
+  if(is.numeric(logLikelihood) != TRUE) {
     stop("logLikelihood should be a vector of numeric values.")
   }
 
@@ -535,7 +535,7 @@ ICLFunction <- function(logLikelihood,
     stop("logLikelihood should be a vector of length (gmax - gmin + 1).")
   }
 
-  if(class(parallel) != "logical") {
+  if(is.logical(parallel) != TRUE) {
     stop("Should be logical, TRUE or FALSE indicating if
       MPLNClust::mplnMCMCParallel has been used.")
   }

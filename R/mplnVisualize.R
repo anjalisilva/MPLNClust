@@ -36,36 +36,38 @@
 #'
 #' @examples
 #' # Generating simulated data
-#' # Not run
-#' # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
-#' # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
-#' # trueSigma1 <- diag(6) * 2
-#' # trueSigma2 <- diag(6)
+#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
-#' # simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
-#' #                                      dimensionality = 6,
-#' #                                      mixingProportions = c(0.79, 0.21),
-#' #                                      mu = rbind(trueMu1, trueMu2),
-#' #                                      sigma = rbind(trueSigma1, trueSigma2),
-#' #                                      produceImage = "No")
+#' trueSigma1 <- diag(6) * 2
+#' trueSigma2 <- diag(6)
 #'
-#' # MPLNClustResults <- MPLNClust::mplnVariational(
-#' #                              dataset = as.matrix(simulatedCounts$dataset),
-#' #                              membership = "none",
-#' #                              gmin = 1,
-#' #                              gmax = 2,
-#' #                              initMethod = "kmeans",
-#' #                              nInitIterations = 1,
-#' #                              normalize = "Yes")
+#'  simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
+#'                                       dimensionality = 6,
+#'                                       mixingProportions = c(0.79, 0.21),
+#'                                       mu = rbind(trueMu1, trueMu2),
+#'                                       sigma = rbind(trueSigma1, trueSigma2),
+#'                                       produceImage = "No")
 #'
-#' # MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
-#' #                              plots = 'all',
-#' #                              probabilities = MPLNClustResults$allResults$`G=2`$probaPost,
-#' #                              clusterMembershipVector =
-#' #                              MPLNClustResults$allResults$`G=2`$clusterlabels,
-#' #                              fileName = 'TwoClusterModel',
-#' #                              format = 'png')
+#'  MPLNClustResults <- MPLNClust::mplnVariational(
+#'                               dataset = as.matrix(simulatedCounts$dataset),
+#'                               membership = "none",
+#'                               gmin = 1,
+#'                               gmax = 2,
+#'                               initMethod = "kmeans",
+#'                               nInitIterations = 1,
+#'                               normalize = "Yes")
+#'
+#'  MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
+#'                                          plots = 'all',
+#'                                          probabilities =
+#'                                          MPLNClustResults$allResults$`G=2`$probaPost,
+#'                                          clusterMembershipVector =
+#'                                          MPLNClustResults$allResults$`G=2`$clusterlabels,
+#'                                          fileName = 'TwoClusterModel',
+#'                                          printPlot = FALSE,
+#'                                          format = 'png')
 #'
 #' @author Anjali Silva, \email{anjali.silva@uhnresearch.ca}
 #'
@@ -95,26 +97,26 @@ mplnVisualize <- function(dataset,
     stop("\n Dataset type needs to be integer")
   }
 
-  if (class(dataset) != "matrix") {
+  if (is.matrix(dataset) != TRUE) {
     stop("\n Dataset needs to be a matrix")
   }
 
-  if (class(plots) == "character") {
+  if (is.character(plots) == TRUE) {
     plotsMethodsPossible<- c("all", "bar", "lines", "heatmaps")
       if(all((plots == plotsMethodsPossible) == FALSE)) {
         stop("initMethod should of class character, specifying
              either: all, bar, lines, heatmaps.")
     }
-  } else if ((class(plots)) != "character") {
+  } else if (is.character(plots) != TRUE) {
     stop("initMethod should of class character, specifying
              either: all, bar, lines, heatmaps.")
   }
 
-  if (class(clusterMembershipVector) == "logical") {
+  if (is.logical(clusterMembershipVector) == TRUE) {
     cat("\n clusterMembershipVector is not provided.")
     clusterMembershipVector <- rep(1, nrow(dataset))
 
-  } else if (class(clusterMembershipVector) == "numeric") {
+  } else if (is.numeric(clusterMembershipVector) == TRUE) {
       if (nrow(dataset) != length(clusterMembershipVector)) {
         stop("\n length(clusterMembershipVector) should match
           nrow(dataset)")
@@ -123,9 +125,9 @@ mplnVisualize <- function(dataset,
 
 
 
-  if (class(probabilities) == "logical") {
+  if (is.logical(probabilities) == TRUE) {
     cat("\n Probabilities are not provided. Barplot of probabilities will not be produced.")
-  } else if (class(probabilities) == "matrix") {
+  } else if (is.matrix(probabilities) == TRUE) {
       if (nrow(probabilities) != length(clusterMembershipVector)) {
         stop("\n length(probabilities) should match nrow(dataset)")
       }
@@ -363,7 +365,12 @@ mplnVisualize <- function(dataset,
     }
   }
 
-  if ((plots == 'all' || plots == 'bar') && !is.na(probabilities)) {
+  if (plots == 'all' || plots == 'bar') {
+
+    if(is.logical(probabilities) == TRUE){
+      stop("\n probabilities should be provided to make bar plot.")
+    }
+
     # Bar plot
     tableProbabilities <- as.data.frame(cbind(Sample = c(1:nrow(probabilities)),
                                         Cluster = mclust::map(probabilities),
@@ -452,18 +459,32 @@ linePlotMonoCol <- function(dataset,
 barPlotFunction <- function(tableProbabilitiesMelt,
                             coloursBarPlot,
                             probabilities) {
+
+  if(is.data.frame(tableProbabilitiesMelt) != TRUE) {
+    stop("tableProbabilitiesMelt should be a data frame")
+  }
+
+  if(is.character(coloursBarPlot) != TRUE) {
+    stop("coloursBarPlot should be character")
+  }
+
+  if(is.matrix(probabilities) != TRUE) {
+    stop("probabilities should be a matrix")
+  }
+
   barPlot <- ggplot2::ggplot(data = tableProbabilitiesMelt,
-                             ggplot2::aes(fill = variable, y = value, x = Sample)) +
-    geom_bar(position = "fill", stat = "identity") +
-    scale_fill_manual(values = coloursBarPlot,
-                      name = "Cluster") + theme_bw() +
-    theme(text = element_text(size = 10),
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          axis.text.x = element_text(face = "bold", angle = 90),
-          axis.text.y = element_text(face="bold")) +
-    coord_cartesian(ylim = c(0, 1), xlim = c(1, nrow(probabilities))) +
-    labs(x = "Observation") +
-    scale_y_continuous(name = "Posterior probability", limits = c(0: 1))
+                             ggplot2::aes(fill = variable, y = value, x = Sample))
+
+  barPlot <- barPlot + ggplot2::geom_bar(position = "fill", stat = "identity") +
+                             scale_fill_manual(values = coloursBarPlot,
+                                               name = "Cluster") + theme_bw() +
+                            theme(text = element_text(size = 10),
+                                  panel.grid.major = element_blank(),
+                                  panel.grid.minor = element_blank(),
+                                  axis.text.x = element_text(face = "bold"),
+                                  axis.text.y = element_text(face = "bold")) +
+                            coord_cartesian(ylim = c(0, 1), xlim = c(1, nrow(probabilities))) +
+                            labs(x = "Observation") +
+                            scale_y_continuous(name = "Posterior probability", limits = c(0: 1))
   return(barPlot)
 }

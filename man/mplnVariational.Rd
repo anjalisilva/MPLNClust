@@ -84,28 +84,28 @@ parallelization, thus code is run in serial.
 }
 \examples{
 # Generating simulated data
-# Not run
-# trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
-# trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 
-# trueSigma1 <- diag(6) * 2
-# trueSigma2 <- diag(6)
+ trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+ trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 
-# sampleData <- MPLNClust::mplnDataGenerator(nObservations = 1000,
-#                                 dimensionality = 6,
-#                                 mixingProportions = c(0.79, 0.21),
-#                                 mu = rbind(trueMu1, trueMu2),
-#                                 sigma = rbind(trueSigma1, trueSigma2),
-#                                 produceImage = "No")
+ trueSigma1 <- diag(6) * 2
+ trueSigma2 <- diag(6)
+
+ sampleData <- MPLNClust::mplnDataGenerator(nObservations = 1000,
+                                            dimensionality = 6,
+                                            mixingProportions = c(0.79, 0.21),
+                                            mu = rbind(trueMu1, trueMu2),
+                                            sigma = rbind(trueSigma1, trueSigma2),
+                                            produceImage = "No")
 
 # Clustering
-# mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
-#                                 membership = sampleData$trueMembership,
-#                                 gmin = 1,
-#                                 gmax = 2,
-#                                 initMethod = "kmeans",
-#                                 nInitIterations = 2,
-#                                 normalize = "Yes")
+mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
+                                          membership = sampleData$trueMembership,
+                                          gmin = 1,
+                                          gmax = 2,
+                                          initMethod = "kmeans",
+                                          nInitIterations = 2,
+                                          normalize = "Yes")
 
 }
 \references{
