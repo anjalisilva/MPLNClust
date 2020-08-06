@@ -140,8 +140,6 @@ mplnVisualize <- function(dataset,
   }
 
 
-
-
   # Obtaining path to save images
   pathNow <- getwd()
 
@@ -241,20 +239,6 @@ mplnVisualize <- function(dataset,
             showLabels = FALSE
           }
 
-          heatmapFunctionTwo <- function(dataset, vec, heatMap2RowAnnotation,
-                                         annotation_row, clusterMembershipVector) {
-            pheatmapPlot <- pheatmap::pheatmap(as.matrix(dataset[vec, ]), show_colnames = TRUE,
-                               show_rownames = showLabels,
-                               labels_col = colnames(dataset),
-                               annotation_row = annotation_row,
-                               annotation_colors = list(Cluster = heatMap2RowAnnotation[
-                                 sort(unique(clusterMembershipVector))]),
-                               fontface = "italic", legend = TRUE, scale ="row",
-                               border_color = "black", cluster_row = FALSE,
-                               cluster_col = FALSE,
-                               color =  rev(gplots::redgreen(1000)) )
-            return(pheatmapPlot)
-        }
 
       if (printPlot == TRUE) {
         if (format == 'png') {
@@ -265,6 +249,7 @@ mplnVisualize <- function(dataset,
 
         heatmapFunctionTwo(dataset = dataset,
                            vec = vec,
+                           showLabels = showLabels,
                            heatMap2RowAnnotation = heatMap2RowAnnotation,
                            annotation_row = annotation_row,
                            clusterMembershipVector = clusterMembershipVector)
@@ -274,6 +259,7 @@ mplnVisualize <- function(dataset,
 
       heatmapTwo <- heatmapFunctionTwo(dataset = dataset,
                                            vec = vec,
+                                           showLabels = showLabels,
                                            heatMap2RowAnnotation = heatMap2RowAnnotation,
                                            annotation_row = annotation_row,
                                            clusterMembershipVector = clusterMembershipVector)
@@ -306,17 +292,6 @@ mplnVisualize <- function(dataset,
         # toplot1_space=cbind(toplot1[,c(1:3)],rep(NA,nrow(toplot_1)+1),
         # toplot1[,c(4:6)])
 
-        linePlot <- function(dataset, toplot1, toplot_1, coloursBarPlot, cluster) {
-          linePlotMultiCol <- graphics::matplot(t(toplot1), type = "l", pch = 1,
-                                      col = c(rep(coloursBarPlot[cluster], nrow(toplot_1)), 7),
-                                      xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
-                                      lty = c(rep(2, nrow(toplot_1)), 1),
-                                      lwd = c(rep(3, nrow(toplot_1)), 4),
-                                      xaxt = "n", xlim = c(1, ncol(toplot1)),
-                                      main = paste("Cluster ", cluster))
-          linePlotMultiCol <- linePlotMultiCol + axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
-          return(linePlotMultiCol)
-        }
 
         if (printPlot == TRUE) {
           if (format == 'png') {
@@ -327,16 +302,19 @@ mplnVisualize <- function(dataset,
                                   "_", fileName, ".pdf"))
           }
 
-          linePlot(dataset = dataset, toplot1 = toplot1, toplot_1 = toplot_1,
-                   coloursBarPlot = coloursBarPlot, cluster = cluster)
+          linePlotMultiCol(dataset = dataset,
+                           toplot1 = toplot1,
+                           toplot_1 = toplot_1,
+                           coloursBarPlot = coloursBarPlot,
+                           cluster = cluster)
           grDevices::dev.off()
         }
 
-        linePlots[[cluster]] <- linePlot(dataset = dataset,
-                                         toplot1 = toplot1,
-                                         toplot_1 = toplot_1,
-                                         coloursBarPlot = coloursBarPlot,
-                                         cluster = cluster)
+        linePlots[[cluster]] <- linePlotMultiCol(dataset = dataset,
+                                                 toplot1 = toplot1,
+                                                 toplot_1 = toplot_1,
+                                                 coloursBarPlot = coloursBarPlot,
+                                                 cluster = cluster)
       }
     } else if (LinePlotColours == "black") {
       linePlots <- list()
@@ -362,18 +340,6 @@ mplnVisualize <- function(dataset,
         # toplot1_space=cbind(toplot1[,c(1:3)],rep(NA,nrow(toplot_1)+1),
         # toplot1[,c(4:6)])
 
-        linePlot <- function(dataset, toplot1, cluster) {
-          linePlotMonoCol <- graphics::matplot(t(toplot1), type = "l", pch = 1,
-                              col = c(rep(1, nrow(toplot_1)), 7),
-                              xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
-                              lty = c(rep(2, nrow(toplot_1)), 1),
-                              lwd = c(rep(3, nrow(toplot_1)), 4),
-                              xaxt = "n", xlim = c(1, ncol(toplot1)),
-                              main = paste("Cluster ", cluster))
-          linePlotMonoCol <- linePlotMonoCol + axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
-          return(linePlotMonoCol)
-        }
-
         if (printPlot == TRUE) {
           if (format == 'png') {
             grDevices::png(paste0(pathNow, "/LinePlot_Cluster", cluster,
@@ -382,24 +348,22 @@ mplnVisualize <- function(dataset,
             grDevices::pdf(paste0(pathNow, "/LinePlot_Cluster", cluster,
                                   "_", fileName, ".pdf"))
           }
-          linePlot(dataset = dataset, toplot1 = toplot1, cluster = cluster)
+          linePlotMonoCol(dataset = dataset,
+                          toplot1 = toplot1,
+                          toplot_1 = toplot_1,
+                          cluster = cluster)
           grDevices::dev.off()
         }
 
-        linePlots[[cluster]] <- linePlot(dataset = dataset,
-                                         toplot1 = toplot1,
-                                         cluster = cluster)
+        linePlots[[cluster]] <- linePlotMonoCol(dataset = dataset,
+                                                toplot1 = toplot1,
+                                                toplot_1 = toplot_1,
+                                                cluster = cluster)
       }
     }
-
-
-
   }
 
-
-
   if ((plots == 'all' || plots == 'bar') && !is.na(probabilities)) {
-
     # Bar plot
     tableProbabilities <- as.data.frame(cbind(Sample = c(1:nrow(probabilities)),
                                         Cluster = mclust::map(probabilities),
@@ -411,36 +375,95 @@ mplnVisualize <- function(dataset,
     tableProbabilitiesMelt <- reshape::melt(tableProbabilities,
                                             id.vars = c("Sample","Cluster"))
 
-    barPlotFunction <- function(tableProbabilitiesMelt, coloursBarPlot) {
-      barPlot <- ggplot2::ggplot(data = tableProbabilitiesMelt,
-                                 ggplot2::aes(fill = variable, y = value, x = Sample)) +
-        geom_bar(position = "fill", stat = "identity") +
-        scale_fill_manual(values = coloursBarPlot,
-                          name = "Cluster") + theme_bw() +
-        theme(text = element_text(size = 10),
-              panel.grid.major = element_blank(),
-              panel.grid.minor = element_blank(),
-              axis.text.x = element_text(face = "bold", angle = 90),
-              axis.text.y = element_text(face="bold")) +
-        coord_cartesian(ylim = c(0, 1), xlim = c(1, nrow(probabilities))) +
-        labs(x = "Observation") +
-        scale_y_continuous(name = "Posterior probability", limits = c(0: 1))
-      return(barPlot)
-    }
-
     if (printPlot == TRUE) {
       barPlot <- barPlotFunction(tableProbabilitiesMelt = tableProbabilitiesMelt,
-                      coloursBarPlot = coloursBarPlot)
+                                 coloursBarPlot = coloursBarPlot,
+                                 probabilities = probabilities)
       ggplot2::ggsave(paste0(pathNow,"/barplot_", fileName,".",format))
     }
 
     barPlot <- barPlotFunction(tableProbabilitiesMelt = tableProbabilitiesMelt,
-                               coloursBarPlot = coloursBarPlot)
+                               coloursBarPlot = coloursBarPlot,
+                               probabilities = probabilities)
   }
-
 
   return(list(heatmapOne,
               heatmapTwo,
               linePlots,
               barPlot))
+}
+
+
+
+
+heatmapFunctionTwo <- function(dataset,
+                               vec,
+                               showLabels,
+                               heatMap2RowAnnotation,
+                               annotation_row,
+                               clusterMembershipVector) {
+  pheatmapPlot <- pheatmap::pheatmap(as.matrix(dataset[vec, ]), show_colnames = TRUE,
+                                     show_rownames = showLabels,
+                                     labels_col = colnames(dataset),
+                                     annotation_row = annotation_row,
+                                     annotation_colors = list(Cluster = heatMap2RowAnnotation[
+                                       sort(unique(clusterMembershipVector))]),
+                                     fontface = "italic", legend = TRUE, scale ="row",
+                                     border_color = "black", cluster_row = FALSE,
+                                     cluster_col = FALSE,
+                                     color =  rev(gplots::redgreen(1000)) )
+  return(pheatmapPlot)
+}
+
+
+linePlotMultiCol <- function(dataset,
+                             toplot1,
+                             toplot_1,
+                             coloursBarPlot,
+                             cluster) {
+  linePlotMultiCol <- graphics::matplot(t(toplot1), type = "l", pch = 1,
+                                        col = c(rep(coloursBarPlot[cluster], nrow(toplot_1)), 7),
+                                        xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
+                                        lty = c(rep(2, nrow(toplot_1)), 1),
+                                        lwd = c(rep(3, nrow(toplot_1)), 4),
+                                        xaxt = "n", xlim = c(1, ncol(toplot1)),
+                                        main = paste("Cluster ", cluster))
+  linePlotMultiCol <- linePlotMultiCol + axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
+  return(linePlotMultiCol)
+}
+
+
+linePlotMonoCol <- function(dataset,
+                            toplot1,
+                            toplot_1,
+                            cluster) {
+  linePlotMonoCol <- graphics::matplot(t(toplot1), type = "l", pch = 1,
+                                       col = c(rep(1, nrow(toplot_1)), 7),
+                                       xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
+                                       lty = c(rep(2, nrow(toplot_1)), 1),
+                                       lwd = c(rep(3, nrow(toplot_1)), 4),
+                                       xaxt = "n", xlim = c(1, ncol(toplot1)),
+                                       main = paste("Cluster ", cluster))
+  linePlotMonoCol <- linePlotMonoCol + axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
+  return(linePlotMonoCol)
+}
+
+
+barPlotFunction <- function(tableProbabilitiesMelt,
+                            coloursBarPlot,
+                            probabilities) {
+  barPlot <- ggplot2::ggplot(data = tableProbabilitiesMelt,
+                             ggplot2::aes(fill = variable, y = value, x = Sample)) +
+    geom_bar(position = "fill", stat = "identity") +
+    scale_fill_manual(values = coloursBarPlot,
+                      name = "Cluster") + theme_bw() +
+    theme(text = element_text(size = 10),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.text.x = element_text(face = "bold", angle = 90),
+          axis.text.y = element_text(face="bold")) +
+    coord_cartesian(ylim = c(0, 1), xlim = c(1, nrow(probabilities))) +
+    labs(x = "Observation") +
+    scale_y_continuous(name = "Posterior probability", limits = c(0: 1))
+  return(barPlot)
 }

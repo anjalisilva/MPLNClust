@@ -105,7 +105,7 @@ AIC, AIC3, BIC and ICL.
 }
 \examples{
 # Generating simulated data
-# Not run
+
 # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 
@@ -113,22 +113,22 @@ AIC, AIC3, BIC and ICL.
 # trueSigma2 <- diag(6)
 
 # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
-#                                 dimensionality = 6,
-#                                 mixingProportions = c(0.79, 0.21),
-#                                 mu = rbind(trueMu1, trueMu2),
-#                                 sigma = rbind(trueSigma1, trueSigma2),
-#                                 produceImage = "No")
+#                                            dimensionality = 6,
+#                                            mixingProportions = c(0.79, 0.21),
+#                                            mu = rbind(trueMu1, trueMu2),
+#                                            sigma = rbind(trueSigma1, trueSigma2),
+#                                            produceImage = "No")
 
 # Clustering
 # mplnResults <- MPLNClust::mplnMCMCParallel(dataset = sampleData$dataset,
-#                                 membership = sampleData$trueMembership,
-#                                 gmin = 1,
-#                                 gmax = 2,
-#                                 nChains = 3,
-#                                 nIterations = 1000,
-#                                 initMethod = "kmeans",
-#                                 nInitIterations = 2,
-#                                 normalize = "Yes")
+#                                            membership = sampleData$trueMembership,
+#                                            gmin = 1,
+#                                            gmax = 2,
+#                                            nChains = 3,
+#                                            nIterations = 1000,
+#                                            initMethod = "kmeans",
+#                                            nInitIterations = 2,
+#                                            normalize = "Yes")
 
 }
 \references{
