@@ -38,7 +38,6 @@ test_that("Checking visualization", {
   expect_that(MPLNVisuals, is_a("list"))
 })
 
-
 context("Checking for invalid user input")
 test_that("Data clustering error upon invalid user input", {
 
@@ -51,11 +50,11 @@ test_that("Data clustering error upon invalid user input", {
 
   set.seed(1234)
   simulatedCounts <- mplnDataGenerator(nObservations = 500,
-                                      dimensionality = 6,
-                                      mixingProportions = c(0.79, 0.21),
-                                      mu = rbind(trueMu1, trueMu2),
-                                      sigma = rbind(trueSigma1, trueSigma2),
-                                      produceImage = "No")
+                                       dimensionality = 6,
+                                       mixingProportions = c(0.79, 0.21),
+                                       mu = rbind(trueMu1, trueMu2),
+                                       sigma = rbind(trueSigma1, trueSigma2),
+                                       produceImage = "No")
 
   set.seed(1234)
   mplnVariationalResults <- MPLNClust::mplnVariational(dataset = simulatedCounts$dataset,
