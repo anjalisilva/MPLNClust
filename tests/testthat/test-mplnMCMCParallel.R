@@ -36,7 +36,7 @@ test_that("Checking clustering results", {
   expect_that(length(mplnMCMCResults), equals(16))
   expect_that(mplnMCMCResults, is_a("mplnMCMCParallel"))
   expect_that(mplnMCMCResults$initalizationMethod, equals("kmeans"))
-  numPara <- c(27)
+  numPara <- c(55)
   expect_that(mplnMCMCResults$numbParameters, equals(numPara))
   expect_that(mplnMCMCResults$trueLabels, equals(simulatedCounts$trueMembership))
   expect_that(trunc(mplnMCMCResults$ICLresults$ICLmodelselected), equals(2))
