@@ -30,36 +30,36 @@
 #'
 #' @examples
 #' # Generating simulated data
-#' # Not run
-#' # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
-#' # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
-#' #
-#' # trueSigma1 <- diag(6) * 2
-#' # trueSigma2 <- diag(6)
-#' #
-#' # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
-#' #                                 dimensionality = 6,
-#' #                                 mixingProportions = c(0.79, 0.21),
-#' #                                 mu = rbind(trueMu1, trueMu2),
-#' #                                 sigma = rbind(trueSigma1, trueSigma2),
-#' #                                 produceImage = "No")
-#' #
+#'
+#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+#'
+#' trueSigma1 <- diag(6) * 2
+#' trueSigma2 <- diag(6)
+#'
+#' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
+#'                                  dimensionality = 6,
+#'                                  mixingProportions = c(0.79, 0.21),
+#'                                  mu = rbind(trueMu1, trueMu2),
+#'                                  sigma = rbind(trueSigma1, trueSigma2),
+#'                                  produceImage = "No")
+#'
 #' # Clustering
-#' # mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
-#' #                                membership = sampleData$trueMembership,
-#' #                                gmin = 1,
-#' #                                gmax = 2,
-#' #                                initMethod = "kmeans",
-#' #                                nInitIterations = 2,
-#' #                                normalize = "Yes")
-#' #
+#' mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
+#'                                 membership = sampleData$trueMembership,
+#'                                 gmin = 1,
+#'                                 gmax = 2,
+#'                                 initMethod = "kmeans",
+#'                                 nInitIterations = 2,
+#'                                 normalize = "Yes")
+#'
 #' # Model selection
-#' # AICmodel <- MPLNClust::AICFunction(logLikelihood = mplnResults$logLikelihood,
-#' #                         nParameters = mplnResults$numbParameters,
-#' #                         clusterRunOutput = mplnResults$allResults,
-#' #                         gmin = mplnResults$gmin,
-#' #                         gmax = mplnResults$gmax,
-#' #                         parallel = FALSE)
+#'  AICmodel <- MPLNClust::AICFunction(logLikelihood = mplnResults$logLikelihood,
+#'                          nParameters = mplnResults$numbParameters,
+#'                          clusterRunOutput = mplnResults$allResults,
+#'                          gmin = mplnResults$gmin,
+#'                          gmax = mplnResults$gmax,
+#'                          parallel = FALSE)
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
 #'
@@ -173,36 +173,36 @@ AICFunction <- function(logLikelihood,
 #'
 #' @examples
 #' # Generating simulated data
-#' # Not run
-#' # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
-#' # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+#'
+#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 
-#' # trueSigma1 <- diag(6) * 2
-#' # trueSigma2 <- diag(6)
+#' trueSigma1 <- diag(6) * 2
+#' trueSigma2 <- diag(6)
 
-#' # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
-#' #                                 dimensionality = 6,
-#' #                                 mixingProportions = c(0.79, 0.21),
-#' #                                 mu = rbind(trueMu1, trueMu2),
-#' #                                 sigma = rbind(trueSigma1, trueSigma2),
-#' #                                 produceImage = "No")
+#' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
+#'                                  dimensionality = 6,
+#'                                  mixingProportions = c(0.79, 0.21),
+#'                                  mu = rbind(trueMu1, trueMu2),
+#'                                  sigma = rbind(trueSigma1, trueSigma2),
+#'                                  produceImage = "No")
 
 #' # Clustering
-#' # mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
-#' #                                membership = sampleData$trueMembership,
-#' #                                gmin = 1,
-#' #                                gmax = 2,
-#' #                                initMethod = "kmeans",
-#' #                                nInitIterations = 2,
-#' #                                normalize = "Yes")
-#' #
+#' mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
+#'                                 membership = sampleData$trueMembership,
+#'                                 gmin = 1,
+#'                                 gmax = 2,
+#'                                 initMethod = "kmeans",
+#'                                 nInitIterations = 2,
+#'                                 normalize = "Yes")
+#'
 #' # Model selection
-#' # AIC3model <- MPLNClust::AIC3Function(logLikelihood = mplnResults$logLikelihood,
-#' #                           nParameters = mplnResults$numbParameters,
-#' #                           clusterRunOutput = mplnResults$allResults,
-#' #                           gmin = mplnResults$gmin,
-#' #                           gmax = mplnResults$gmax,
-#' #                           parallel = FALSE)
+#' AIC3model <- MPLNClust::AIC3Function(logLikelihood = mplnResults$logLikelihood,
+#'                            nParameters = mplnResults$numbParameters,
+#'                            clusterRunOutput = mplnResults$allResults,
+#'                            gmin = mplnResults$gmin,
+#'                            gmax = mplnResults$gmax,
+#'                            parallel = FALSE)
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
 #'
@@ -321,37 +321,37 @@ AIC3Function <- function(logLikelihood,
 #'
 #' @examples
 #' # Generating simulated data
-#' # Not run
-#' # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
-#' # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+#'
+#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 
-#' # trueSigma1 <- diag(6) * 2
-#' # trueSigma2 <- diag(6)
+#' trueSigma1 <- diag(6) * 2
+#' trueSigma2 <- diag(6)
 
-#' # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
-#' #                                 dimensionality = 6,
-#' #                                 mixingProportions = c(0.79, 0.21),
-#' #                                 mu = rbind(trueMu1, trueMu2),
-#' #                                 sigma = rbind(trueSigma1, trueSigma2),
-#' #                                 produceImage = "No")
+#' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
+#'                                  dimensionality = 6,
+#'                                  mixingProportions = c(0.79, 0.21),
+#'                                  mu = rbind(trueMu1, trueMu2),
+#'                                  sigma = rbind(trueSigma1, trueSigma2),
+#'                                  produceImage = "No")
 
 #' # Clustering
-#' # mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
-#' #                                membership = sampleData$trueMembership,
-#' #                                gmin = 1,
-#' #                                gmax = 2,
-#' #                                initMethod = "kmeans",
-#' #                                nInitIterations = 2,
-#' #                                normalize = "Yes")
-#' #
+#' mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
+#'                                 membership = sampleData$trueMembership,
+#'                                 gmin = 1,
+#'                                 gmax = 2,
+#'                                 initMethod = "kmeans",
+#'                                 nInitIterations = 2,
+#'                                 normalize = "Yes")
+#'
 #' # Model selection
-#' # BICmodel <- MPLNClust::BICFunction(logLikelihood = mplnResults$logLikelihood,
-#' #                         nParameters = mplnResults$numbParameters,
-#' #                         nObservations = nrow(mplnResults$dataset),
-#' #                         clusterRunOutput = mplnResults$allResults,
-#' #                         gmin = mplnResults$gmin,
-#' #                         gmax = mplnResults$gmax,
-#' #                         parallel = FALSE)
+#' BICmodel <- MPLNClust::BICFunction(logLikelihood = mplnResults$logLikelihood,
+#'                          nParameters = mplnResults$numbParameters,
+#'                          nObservations = nrow(mplnResults$dataset),
+#'                          clusterRunOutput = mplnResults$allResults,
+#'                          gmin = mplnResults$gmin,
+#'                          gmax = mplnResults$gmax,
+#'                          parallel = FALSE)
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
 #'
@@ -436,7 +436,7 @@ BICFunction <- function(logLikelihood,
 #' Model Selection Via Integrated Completed Likelihood
 #'
 #' Performs model selection using integrated completed likelihood (ICL) by
-#' Biernacki et al., (2000). Require the output from function MPLNClust::BICFunction.
+#' Biernacki et al., (2000).
 #'
 #' @param logLikelihood A vector with value of final log-likelihoods for
 #'      each cluster size.
@@ -466,37 +466,37 @@ BICFunction <- function(logLikelihood,
 #'
 #' @examples
 #' # Generating simulated data
-#' # Not run
-#' # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
-#' # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
-#' # trueSigma1 <- diag(6) * 2
-#' # trueSigma2 <- diag(6)
+#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
-#' # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
-#' #                                 dimensionality = 6,
-#' #                                 mixingProportions = c(0.79, 0.21),
-#' #                                 mu = rbind(trueMu1, trueMu2),
-#' #                                 sigma = rbind(trueSigma1, trueSigma2),
-#' #                                 produceImage = "No")
-#' #
+#' trueSigma1 <- diag(6) * 2
+#' trueSigma2 <- diag(6)
+#'
+#' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
+#'                                            dimensionality = 6,
+#'                                            mixingProportions = c(0.79, 0.21),
+#'                                            mu = rbind(trueMu1, trueMu2),
+#'                                            sigma = rbind(trueSigma1, trueSigma2),
+#'                                            produceImage = "No")
+#'
 #' # Clustering
-#' # mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
-#' #                                membership = sampleData$trueMembership,
-#' #                                gmin = 1,
-#' #                                gmax = 2,
-#' #                                initMethod = "kmeans",
-#' #                                nInitIterations = 2,
-#' #                                normalize = "Yes")
-#' #
+#' mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
+#'                                           membership = sampleData$trueMembership,
+#'                                           gmin = 1,
+#'                                           gmax = 2,
+#'                                           initMethod = "kmeans",
+#'                                           nInitIterations = 2,
+#'                                           normalize = "Yes")
+#'
 #' # Model selection
-#' # ICLmodel <- MPLNClust::ICLFunction(logLikelihood = mplnResults$logLikelihood,
-#' #                         nParameters = mplnResults$numbParameters,
-#' #                         nObservations = nrow(mplnResults$dataset),
-#' #                         clusterRunOutput = mplnResults$allResults,
-#' #                         gmin = mplnResults$gmin,
-#' #                         gmax = mplnResults$gmax,
-#' #                         parallel = FALSE)
+#' ICLmodel <- MPLNClust::ICLFunction(logLikelihood = mplnResults$logLikelihood,
+#'                                    nParameters = mplnResults$numbParameters,
+#'                                    nObservations = nrow(mplnResults$dataset),
+#'                                    clusterRunOutput = mplnResults$allResults,
+#'                                    gmin = mplnResults$gmin,
+#'                                    gmax = mplnResults$gmax,
+#'                                    parallel = FALSE)
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
 #'
