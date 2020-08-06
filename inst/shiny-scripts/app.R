@@ -160,9 +160,11 @@ server <- function(input, output) {
              main = paste("G vs log-likelihood"))
       }
     } else { # ff more than one value
-      plot(startclustering()$logLikelihood, type = "l",
+      plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
+           y = startclustering()$logLikelihood, type = "l",
            lty = 2, xlab = "G", ylab = "logL",
-           main = paste("G vs log-likelihood"))
+           main = paste("G vs log-likelihood"), xaxt="n")
+      axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
     }
   })
 
@@ -180,9 +182,11 @@ server <- function(input, output) {
              main = paste("G vs ICL value"))
       }
     } else { # ff more than one value
-      plot(startclustering()$ICLresults$allICLvalues, type = "l",
+      plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
+           y = startclustering()$ICLresults$allICLvalues, type = "l",
            lty = 2, xlab = "G", ylab = "ICL value",
-           main = paste("G vs ICL value"))
+           main = paste("G vs ICL value"), xaxt="n")
+      axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
     }
   })
 
@@ -201,9 +205,11 @@ server <- function(input, output) {
              main = paste("G vs BIC value"))
       }
     } else { # ff more than one value
-      plot(startclustering()$BICresults$allBICvalues, type = "l",
+      plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
+           y = startclustering()$BICresults$allBICvalues, type = "l",
            lty = 2, xlab = "G", ylab = "BIC value",
-           main = paste("G vs BIC value"))
+           main = paste("G vs BIC value"), xaxt="n")
+      axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
     }
   })
 
@@ -221,9 +227,11 @@ server <- function(input, output) {
              main = paste("G vs AIC value"))
       }
     } else { # ff more than one value
-      plot(startclustering()$AICresults$allAICvalues, type = "l",
+      plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
+           y = startclustering()$AICresults$allAICvalues, type = "l",
            lty = 2, xlab = "G", ylab = "AIC value",
-           main = paste("G vs AIC value"))
+           main = paste("G vs AIC value"), xaxt="n")
+      axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
     }
   })
 
@@ -241,9 +249,11 @@ server <- function(input, output) {
              main = paste("G vs AIC3 value"))
       }
     } else { # ff more than one value
-      plot(startclustering()$AIC3results$allAIC3values, type = "l",
+      plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
+           y = startclustering()$AIC3results$allAIC3values, type = "l",
            lty = 2, xlab = "G", ylab = "AIC3 value",
-           main = paste("G vs AIC3 value"))
+           main = paste("G vs AIC3 value"), xaxt="n")
+      axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
     }
   })
 
