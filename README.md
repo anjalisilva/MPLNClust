@@ -84,6 +84,25 @@ To check the convergence of MCMC chains, the potential scale reduction factor an
 ### Variational-EM Framework for Parameter Estimation 
 [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857) proposed a variational Gaussian approximation that alleviates challenges of MCMC-EM algorithm. Here the posterior distribution is approximated by minimizing the Kullback-Leibler (KL) divergence between the true and the approximating densities. A variational-EM based framework is used for parameter estimation. This algorithm is implemented in the function __*mplnVariational*__. 
 
+## Citation for Package
+``` r
+citation("MPLNClust")
+```
+Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data. *BMC Bioinformatics*. 2019;20(1):394.
+``` r
+A BibTeX entry for LaTeX users is
+
+  @Article{,
+    title = {A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data},
+    author = {A. Silva and S. J. Rothstein and P. D. McNicholas and S. Subedi},
+    journal = {BMC Bioinformatics},
+    year = {2019},
+    volume = {20},
+    number = {1},
+    pages = {394},
+    url = {https://pubmed.ncbi.nlm.nih.gov/31311497/},
+  }
+```
 
 ## References for Package
 
@@ -91,9 +110,9 @@ To check the convergence of MCMC chains, the potential scale reduction factor an
 
 * [Subedi, S., and R. Browne (2020). A parsimonious family of multivariate Poisson-lognormal distributions for clustering multivariate count data. arXiv preprint arXiv:2004.06857.](https://arxiv.org/abs/2004.06857)
 
-
-## Other References 
 * [Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution. *Biometrika.*](https://www.jstor.org/stable/2336624?seq=1)
+
+* For others, refer to help page of inidividual functions via `?function` or `help(function)`.
 
 
 ## Maintainer
@@ -103,7 +122,7 @@ To check the convergence of MCMC chains, the potential scale reduction factor an
 
 ## Contributions
 
-`MPLNClust` welcomes issues, enhancement requests, and other contributions. To submit an issue, use the [GitHub issues](https://github.com/anjalisilva/MPLNClust/issues). Otherwise, email anjali.silva@uhnresearch.ca with subject line 'MPLNClust: ...'. 
+`MPLNClust` welcomes issues, enhancement requests, and other contributions. To submit an issue, use the [GitHub issues](https://github.com/anjalisilva/MPLNClust/issues).
 
 
 ## Acknowledgments

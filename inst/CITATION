@@ -1,0 +1,16 @@
+citHeader("To cite MPLNClust in publications use:")
+
+citEntry(
+  entry    = "Article",
+  title    = "A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data",
+  author   = "A. Silva and S. J. Rothstein and P. D. McNicholas and S. Subedi",
+  journal  = "BMC Bioinformatics",
+  year     = "2019",
+  volume   = "20",
+  number   = "1",
+  pages    = "394",
+  url      = "https://pubmed.ncbi.nlm.nih.gov/31311497/",
+  textVersion = paste(
+
+  )
+)

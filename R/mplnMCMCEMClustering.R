@@ -66,11 +66,11 @@
 #'   \item AICresults - A list with all AIC model selection results.
 #'   \item AIC3results - A list with all AIC3 model selection results.
 #'   \item slopeHeuristics - If more than 10 models are considered, slope heuristic
-#'      results.
+#'      results as obtained via capushe::capushe().
 #'   \item DjumpModelSelected - If more than 10 models are considered, slope heuristic
-#'      results.
+#'      results as obtained via capushe::capushe().
 #'   \item DDSEModelSelected - If more than 10 models are considered, slope heuristic
-#'      results.
+#'      results as obtained via capushe::capushe().
 #'   \item totalTime - Total time used for clustering and model selection.
 #' }
 #'
@@ -113,6 +113,9 @@
 #' principle. In \emph{Second International Symposium on Information Theory}, New York, NY,
 #' USA, pp. 267–281. Springer Verlag.
 #'
+#' Arlot, S., Brault, V., Baudry, J., Maugis, C., and Michel, B. (2016).
+#' capushe: CAlibrating Penalities Using Slope HEuristics. R package version 1.1.1.
+#'
 #' Biernacki, C., G. Celeux, and G. Govaert (2000). Assessing a mixture model for
 #' clustering with the integrated classification likelihood. \emph{IEEE Transactions
 #' on Pattern Analysis and Machine Intelligence} 22.
@@ -121,6 +124,9 @@
 #' and a new informational measure of complexity. In \emph{Proceedings of the First US/Japan
 #' Conference on the Frontiers of Statistical Modeling: An Informational Approach:
 #' Volume 2 Multivariate Statistical Modeling}, pp. 69–113. Dordrecht: Springer Netherlands.
+#'
+#' Robinson, M.D., and Oshlack, A. (2010). A scaling normalization method for differential
+#' expression analysis of RNA-seq data. \emph{Genome Biology} 11, R25.
 #'
 #' Schwarz, G. (1978). Estimating the dimension of a model. \emph{The Annals of Statistics}
 #' 6.
@@ -541,11 +547,11 @@ mplnMCMCParallel <- function(dataset,
 #'   \item AICresults - A list with all AIC model selection results.
 #'   \item AIC3results - A list with all AIC3 model selection results.
 #'   \item slopeHeuristics - If more than 10 models are considered, slope heuristic
-#'      results.
+#'      results as obtained via capushe::capushe().
 #'   \item DjumpModelSelected - If more than 10 models are considered, slope heuristic
-#'      results.
+#'      results as obtained via capushe::capushe().
 #'   \item DDSEModelSelected - If more than 10 models are considered, slope heuristic
-#'      results.
+#'      results as obtained via capushe::capushe().
 #'   \item totalTime - Total time used for clustering and model selection.
 #' }
 #'
@@ -588,6 +594,9 @@ mplnMCMCParallel <- function(dataset,
 #' principle. In \emph{Second International Symposium on Information Theory}, New York, NY,
 #' USA, pp. 267–281. Springer Verlag.
 #'
+#' Arlot, S., Brault, V., Baudry, J., Maugis, C., and Michel, B. (2016).
+#' capushe: CAlibrating Penalities Using Slope HEuristics. R package version 1.1.1.
+#'
 #' Biernacki, C., G. Celeux, and G. Govaert (2000). Assessing a mixture model for
 #' clustering with the integrated classification likelihood. \emph{IEEE Transactions
 #' on Pattern Analysis and Machine Intelligence} 22.
@@ -596,6 +605,9 @@ mplnMCMCParallel <- function(dataset,
 #' and a new informational measure of complexity. In \emph{Proceedings of the First US/Japan
 #' Conference on the Frontiers of Statistical Modeling: An Informational Approach:
 #' Volume 2 Multivariate Statistical Modeling}, pp. 69–113. Dordrecht: Springer Netherlands.
+#'
+#' Robinson, M.D., and Oshlack, A. (2010). A scaling normalization method for differential
+#' expression analysis of RNA-seq data. \emph{Genome Biology} 11, R25.
 #'
 #' Schwarz, G. (1978). Estimating the dimension of a model. \emph{The Annals of Statistics}
 #' 6.
