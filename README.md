@@ -66,6 +66,26 @@ Figure: Observations divided by cluster. The yellow line represents the mean val
 <div style="text-align:left">
 <div style="text-align:left">
 
+Alternative, the Shiny app could be run:
+``` r
+runMPLNClust()
+```
+
+<p float="center">
+  <img src="inst/extdata/ShinyAppMPLNClust1.png" alt="ShinyApp1" width="350"/>
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  &nbsp;
+  
+  <img src="inst/extdata/ShinyAppMPLNClust2.png" alt="ShinyApp2" width="332.5"/>
+  
+ Figures: Shiny app for MPLNClust package showing cluster results.
+
+<div style="text-align:left">
+<div style="text-align:left">
 
 ## Details
 
