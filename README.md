@@ -73,7 +73,7 @@ runMPLNClust()
 
 <div style="text-align:center"><img src="inst/extdata/ShinyAppMPLNClust1.png" alt="ShinyApp1" width="600" height="400"/>
   
- Figures: Shiny app for MPLNClust package showing cluster results.
+ Figure: Shiny app for MPLNClust package showing cluster results.
 
 <div style="text-align:left">
 <div style="text-align:left">
