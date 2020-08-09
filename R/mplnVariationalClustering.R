@@ -507,13 +507,21 @@ varMPLNClustering <- function(dataset,
       forz[errorpossible] <- 1e-100
       zvalue <- forz / rowSums(forz)
     } else {
-      zvalue <- forz / rowSums(forz)
+
+      # check for error, if rowsums are zero
+      rowSumsZero <- which(rowSums(forz) == 0)
+      if(length(rowSumsZero) > 1) {
+        forz[rowSumsZero, ] <- mclust::unmap(stats::kmeans(log(dataset[rowSumsZero,] + 1 / 6),
+                                                           centers = G, nstart = 100)$cluster)
+        zvalue <- forz / rowSums(forz)
+      } else {
+        zvalue <- forz / rowSums(forz)
+      }
     }
 
 
     # Calculate log-likelihood
     logLikelihood[itOuter] <- sum(log(rowSums(forz)))
-
 
     # Stopping criterion
     if (itOuter > 2) {
@@ -771,7 +779,16 @@ varMPLNInitClustering <- function(dataset,
       forz[errorpossible] <- 1e-100
       zvalue <- forz / rowSums(forz)
     } else {
-      zvalue <- forz / rowSums(forz)
+
+      # check for error, if rowsums are zero
+      rowSumsZero <- which(rowSums(forz) == 0)
+      if(length(rowSumsZero) > 1) {
+        forz[rowSumsZero, ] <- mclust::unmap(stats::kmeans(log(dataset[rowSumsZero,] + 1 / 6),
+                                    centers = G, nstart = 100)$cluster)
+        zvalue <- forz / rowSums(forz)
+      } else {
+        zvalue <- forz / rowSums(forz)
+      }
     }
 
 
