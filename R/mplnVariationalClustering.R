@@ -509,14 +509,15 @@ varMPLNClustering <- function(dataset,
     } else {
 
       # check for error, if rowsums are zero
-      rowSumsZero <- which(rowSums(forz) == 0)
-      if(length(rowSumsZero) > 1) {
-        forz[rowSumsZero, ] <- mclust::unmap(stats::kmeans(log(dataset[rowSumsZero,] + 1 / 6),
-                                                           centers = G, nstart = 100)$cluster)
+       rowSumsZero <- which(rowSums(forz) == 0)
+       if(length(rowSumsZero) > 1) {
+         forz[rowSumsZero, ] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
+                                                            centers = G,
+                                                            nstart = 100)$cluster)[rowSumsZero, ]
+         zvalue <- forz / rowSums(forz)
+       } else {
         zvalue <- forz / rowSums(forz)
-      } else {
-        zvalue <- forz / rowSums(forz)
-      }
+       }
     }
 
 
@@ -783,8 +784,9 @@ varMPLNInitClustering <- function(dataset,
       # check for error, if rowsums are zero
       rowSumsZero <- which(rowSums(forz) == 0)
       if(length(rowSumsZero) > 1) {
-        forz[rowSumsZero, ] <- mclust::unmap(stats::kmeans(log(dataset[rowSumsZero,] + 1 / 6),
-                                    centers = G, nstart = 100)$cluster)
+        forz[rowSumsZero, ] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
+                                                           centers = G,
+                                                           nstart = 100)$cluster)[rowSumsZero, ]
         zvalue <- forz / rowSums(forz)
       } else {
         zvalue <- forz / rowSums(forz)
