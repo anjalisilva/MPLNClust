@@ -446,7 +446,12 @@ BICFunction <- function(logLikelihood,
 #'      in the dataset analyzed.
 #' @param clusterRunOutput Output from MPLNClust::mplnVariational,
 #'    MPLNClust::mplnMCMCParallel, or MPLNClust::mplnMCMCNonParallel functions.
-#'    This is required.
+#'    Either clusterRunOutput or probaPost must be provided.
+#' @param probaPost A list that is length (gmax - gmin + 1) containing posterior
+#'    probability at each g, for g = gmin:gmax. This argument is useful if
+#'    clustering output have been generated non-serially, e.g., g = 1:5 and
+#'    g = 6:10 rather than g = 1:10. Either clusterRunOutput or probaPost
+#'    must be provided.
 #' @param gmin A positive integer specifying the minimum number of components
 #'    to be considered in the clustering run.
 #' @param gmax A positive integer, > gmin, specifying the maximum number of
@@ -512,7 +517,8 @@ BICFunction <- function(logLikelihood,
 ICLFunction <- function(logLikelihood,
                         nParameters,
                         nObservations,
-                        clusterRunOutput,
+                        clusterRunOutput = NA,
+                        probaPost = NA,
                         gmax,
                         gmin,
                         parallel = FALSE) {
@@ -540,34 +546,60 @@ ICLFunction <- function(logLikelihood,
       MPLNClust::mplnMCMCParallel has been used.")
   }
 
+  if(all(is.na(probaPost)) != TRUE) {
+    if(length(probaPost) != (gmax - gmin + 1)) {
+      stop("probaPost must be a list of length (gmax - gmin + 1)
+      containing posterior probability at each g.")
+    }
+  }
+
+  if(all(is.na(clusterRunOutput)) == TRUE && all(is.na(probaPost)) == TRUE) {
+    stop("Either clusterRunOutput or probaPost must be provided.")
+  }
+
   BIC <- - 2 * logLikelihood + (nParameters * log(nObservations))
 
   ICL <- vector()
-  for (g in 1:(gmax - gmin + 1)) {
+
+  # if clusterRunOutput is provided by user
+  if(all(is.na(clusterRunOutput)) != TRUE) {
+    for (g in 1:(gmax - gmin + 1)) {
+      if(isTRUE(parallel) == "FALSE") {
+        # If non parallel run
+        z <- clusterRunOutput[[g]]$probaPost
+        mapz <- mclust::unmap(clusterRunOutput[[g]]$clusterlabels)
+      } else {
+          # If parallel run
+          z <- clusterRunOutput[[g]]$allResults$probaPost
+          mapz <- mclust::unmap(clusterRunOutput[[g]]$allResults$clusterlabels)
+      }
+      forICL <- function(g){sum(log(z[which(mapz[, g] == 1), g]))}
+      ICL[g] <- BIC[g] + sum(sapply(1:ncol(mapz), forICL))
+    }
+    ICLmodel <- seq(gmin, gmax, 1)[grep(min(ICL, na.rm = TRUE), ICL)]
 
     if(isTRUE(parallel) == "FALSE") {
-      # If non parallel run
-      z <- clusterRunOutput[[g]]$probaPost
-      mapz <- mclust::unmap(clusterRunOutput[[g]]$clusterlabels)
+      # If non parallel MCMC-EM or Variational EM run
+      ICLmodelLabels <- clusterRunOutput[[grep(min(ICL, na.rm = TRUE),
+        ICL)]]$clusterlabels
     } else {
-        # If parallel run
-        z <- clusterRunOutput[[g]]$allResults$probaPost
-        mapz <- mclust::unmap(clusterRunOutput[[g]]$allResults$clusterlabels)
+      # If parallel MCMC-EM
+      ICLmodelLabels <- clusterRunOutput[[grep(min(ICL, na.rm = TRUE),
+        ICL)]]$allResults$clusterlabels
     }
-    forICL <- function(g){sum(log(z[which(mapz[, g] == 1), g]))}
-    ICL[g] <- BIC[g] + sum(sapply(1:ncol(mapz), forICL))
   }
-  ICLmodel <- seq(gmin, gmax, 1)[grep(min(ICL, na.rm = TRUE), ICL)]
 
+  # if probaPost is provided by user
+  if(all(is.na(probaPost)) != TRUE) {
 
-  if(isTRUE(parallel) == "FALSE") {
-    # If non parallel MCMC-EM or Variational EM run
-    ICLmodelLabels <- clusterRunOutput[[grep(min(ICL, na.rm = TRUE),
-      ICL)]]$clusterlabels
-  } else {
-    # If parallel MCMC-EM
-    ICLmodelLabels <- clusterRunOutput[[grep(min(ICL, na.rm = TRUE),
-      ICL)]]$allResults$clusterlabels
+    for (g in 1:(gmax - gmin + 1)) {
+      z <- probaPost[[g]]
+      mapz <- mclust::unmap(mclust::map(probaPost[[g]]))
+      forICL <- function(g){sum(log(z[which(mapz[, g] == 1), g]))}
+      ICL[g] <- BIC[g] + sum(sapply(1:ncol(mapz), forICL))
+    }
+    ICLmodel <- seq(gmin, gmax, 1)[grep(min(ICL, na.rm = TRUE), ICL)]
+    ICLmodelLabels <- mclust::map(probaPost[[grep(min(ICL, na.rm = TRUE), ICL)]])
   }
 
   # Check for spurious clusters
@@ -584,5 +616,4 @@ ICLFunction <- function(logLikelihood,
   class(ICLresults) <- "ICL"
   return(ICLresults)
 }
-
 # [END]

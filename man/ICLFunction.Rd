@@ -8,7 +8,8 @@ ICLFunction(
   logLikelihood,
   nParameters,
   nObservations,
-  clusterRunOutput,
+  clusterRunOutput = NA,
+  probaPost = NA,
   gmax,
   gmin,
   parallel = FALSE
@@ -26,7 +27,13 @@ in the dataset analyzed.}
 
 \item{clusterRunOutput}{Output from MPLNClust::mplnVariational,
 MPLNClust::mplnMCMCParallel, or MPLNClust::mplnMCMCNonParallel functions.
-This is required.}
+Either clusterRunOutput or probaPost must be provided.}
+
+\item{probaPost}{A list that is length (gmax - gmin + 1) containing posterior
+probability at each g, for g = gmin:gmax. This argument is useful if
+clustering output have been generated non-serially, e.g., g = 1:5 and
+g = 6:10 rather than g = 1:10. Either clusterRunOutput or probaPost
+must be provided.}
 
 \item{gmax}{A positive integer, > gmin, specifying the maximum number of
 components to be considered in the clustering run.}
