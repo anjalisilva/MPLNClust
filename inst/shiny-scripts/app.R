@@ -63,9 +63,9 @@ ui <- fluidPage(
       tabsetPanel(type = "tabs",
                   tabPanel("Input PairsPlot", plotOutput("pairsplot")),
                   tabPanel("Input Summary", verbatimTextOutput("textOut")),
-                  tabPanel("Cluster Results",
+                  tabPanel("Cluster Results", verbatimTextOutput('clustering')),
+                  tabPanel("Model Selection",
                            fluidRow(
-                             splitLayout(cellWidths = c("50%", "50%"), verbatimTextOutput('clustering'), plotOutput('logL')),
                              splitLayout(cellWidths = c("50%", "50%"), plotOutput('BICvalues'), plotOutput('ICLvalues')),
                              splitLayout(cellWidths = c("50%", "50%"), plotOutput('AIC3values'), plotOutput('AICvalues')),
                            )),
@@ -136,7 +136,7 @@ server <- function(input, output) {
   output$clustering <- renderText({
     if (! is.null(startclustering))
 
-      aa <- paste("BIC model selected is:", startclustering()$BICresults$BICmodelselected, "\n")
+    aa <- paste("BIC model selected is:", startclustering()$BICresults$BICmodelselected, "\n")
 
     bb <- paste("ICL model selected is:", startclustering()$ICLresults$ICLmodelselected, "\n")
 
