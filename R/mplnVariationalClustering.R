@@ -127,6 +127,7 @@
 #' @importFrom mclust unmap
 #' @importFrom mclust map
 #' @import stats
+#' @import cluster
 #'
 mplnVariational <- function(dataset,
                             membership = "none",

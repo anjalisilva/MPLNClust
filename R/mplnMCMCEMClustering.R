@@ -618,6 +618,7 @@ mplnMCMCParallel <- function(dataset,
 #'
 #' @export
 #' @import coda
+#' @import cluster
 #' @importFrom capushe capushe
 #' @importFrom edgeR calcNormFactors
 #' @import MASS
