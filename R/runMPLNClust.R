@@ -25,7 +25,6 @@
 #'
 #' @export
 #' @importFrom shiny runApp
-
 runMPLNClust <- function() {
   appDir <- system.file("shiny-scripts",
                         package = "MPLNClust")

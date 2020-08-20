@@ -537,7 +537,7 @@ varMPLNClustering <- function(dataset,
         term2Aitkens <- (1 / (1 - termAitkens) * (logLikelihood[itOuter] -
                                                     logLikelihood[itOuter - 1]))
         aloglik[itOuter] <- logLikelihood[itOuter - 1] + term2Aitkens
-        if (abs(aloglik[itOuter] - logLikelihood[itOuter - 1]) < 0.01) {
+        if (abs(aloglik[itOuter] - logLikelihood[itOuter - 1]) < 0.001) {
           # If this critera, as per Böhning et al., 1994 is achieved
           # convergence is achieved
           checks <- 1
@@ -811,7 +811,7 @@ varMPLNInitClustering <- function(dataset,
           (logLikelihood[itOuter - 1] - logLikelihood[itOuter - 2])
         term2Aitkens <- (1 / (1 - termAitkens) * (logLikelihood[itOuter] - logLikelihood[itOuter - 1]))
         aloglik[itOuter] <- logLikelihood[itOuter - 1] + term2Aitkens
-        if (abs(aloglik[itOuter] - logLikelihood[itOuter - 1]) < 0.01) {
+        if (abs(aloglik[itOuter] - logLikelihood[itOuter - 1]) < 0.001) {
           # If this critera, as per Böhning et al., 1994 is achieved
           # convergence is achieved
           checks <- 1
