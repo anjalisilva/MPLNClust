@@ -33,7 +33,7 @@ Information criteria are offered for model selection: __*AICFunction*__, __*BICF
 The shiny implementation of *mplnVariational*: __*runMPLNClust*__. To list all functions available in the package: 
 
 ``` r
-lsf.str("package:MPLNClust")
+ls("package:MPLNClust")
 ```
 
 For tutorials and plot interpretation, refer to the vignette:
