@@ -1,12 +1,4 @@
 ---
-# This document was created based on the format used in mclust.rmd 
-# Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5:
-#   clustering, classification and density estimation using Gaussian finite
-#   mixture models The R Journal 8/1, pp. 205-233
-# https://cran.r-project.org/web/packages/mclust/vignettes/mclust.html
---- 
-
----
 title: "A tour of MPLNClust with MCMC-EM"
 author: "Anjali Silva"
 date: "`r format(Sys.time(), '%d %b %Y')`"
@@ -281,3 +273,11 @@ In an alternative case (not tested here), which resulted in the below bar plot, 
 ```{r}
 sessionInfo()
 ```
+
+---
+# This document was created based on the format used in mclust.rmd 
+# Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5:
+#   clustering, classification and density estimation using Gaussian finite
+#   mixture models The R Journal 8/1, pp. 205-233
+# https://cran.r-project.org/web/packages/mclust/vignettes/mclust.html
+--- 

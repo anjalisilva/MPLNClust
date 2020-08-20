@@ -1,11 +1,3 @@
----
-# This document was created based on the format used in mclust.rmd 
-# Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5:
-#   clustering, classification and density estimation using Gaussian finite
-#   mixture models The R Journal 8/1, pp. 205-233
-# https://cran.r-project.org/web/packages/mclust/vignettes/mclust.html
---- 
-
 
 ---
 title: "A tour of MPLNClust with variational-EM"
@@ -293,3 +285,11 @@ legend("top", inset = c(- 0.4, 0), legend = c("BIC", "ICL", "AIC", "AIC3"),
 ```{r}
 sessionInfo()
 ```
+
+---
+# This document was created based on the format used in mclust.rmd 
+# Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5:
+#   clustering, classification and density estimation using Gaussian finite
+#   mixture models The R Journal 8/1, pp. 205-233
+# https://cran.r-project.org/web/packages/mclust/vignettes/mclust.html
+--- 
