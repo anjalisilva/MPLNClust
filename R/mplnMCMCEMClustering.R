@@ -1484,4 +1484,2185 @@ stanRun <- function(model,
   # Developed by Anjali Silva
 }
 
+
+
+
+
+
+
+
+#' Clustering Using MPLN Via Variational-EM
+#'
+#' Performs clustering using mixtures of multivariate Poisson-log
+#' normal (MPLN) distribution with variational expectation-maximization
+#' (EM) for parameter estimation. Model selection is performed using
+#' AIC, AIC3, BIC and ICL. If more than 10 models are considered, Djump
+#' and DDSE is also applied for model selection. No internal
+#' parallelization, thus code is run in serial.
+#'
+#' @param dataset A dataset of class matrix and type integer such that
+#'    rows correspond to observations and columns correspond to variables.
+#'    The dataset have dimensions n x d, where n is the total number of
+#'    observations and d is the dimensionality. If rowSums are zero, these
+#'    rows will be removed prior to cluster analysis.
+#' @param membership A numeric vector of length nrow(dataset) containing the
+#'    cluster membership of each observation. If not available,
+#'    leave as "none".
+#' @param gmin A positive integer specifying the minimum number of components
+#'    to be considered in the clustering run.
+#' @param gmax A positive integer, >= gmin, specifying the maximum number of
+#'    components to be considered in the clustering run.
+#' @param initMethod An algorithm for initialization. Current options are
+#'    "kmeans", "random", "medoids", "clara", or "fanny". Default is "kmeans".
+#' @param nInitIterations A positive integer or zero, specifying the number
+#'    of initialization runs to be performed. This many runs, each with 10
+#'    iterations, will be performed via MPLNClust and values from the run with
+#'    highest log-likelihood will be used as initialization values. Default is 2.
+#' @param normalize A string with options "Yes" or "No" specifying
+#'     if normalization should be performed. Currently, normalization factors
+#'     are calculated using TMM method of edgeR package. Default is "Yes".
+#'
+#' @return Returns an S3 object of class mplnVariational with results.
+#' \itemize{
+#'   \item dataset - The input dataset on which clustering is performed.
+#'   \item dimensionality - Dimensionality of the input dataset.
+#'   \item normalizationFactors - A vector of normalization factors used
+#'      for input dataset.
+#'   \item gmin - Minimum number of components/clusters considered in the clustering
+#'      run.
+#'   \item gmax - Maximum number of components/clusters considered in the clustering
+#'      run.
+#'   \item initalizationMethod - Method used for initialization.
+#'   \item allResults - A list with all results.
+#'   \item logLikelihood - A vector with value of final log-likelihoods for
+#'      each component/cluster size.
+#'   \item numbParameters - A vector with number of parameters for each
+#'      component/cluster size.
+#'   \item trueLabels - The vector of true labels, if provided by user.
+#'   \item ICLresults - A list with all ICL model selection results.
+#'   \item BICresults - A list with all BIC model selection results.
+#'   \item AICresults - A list with all AIC model selection results.
+#'   \item AIC3results - A list with all AIC3 model selection results.
+#'   \item slopeHeuristics - If more than 10 models are considered, slope heuristic
+#'      results as obtained via capushe::capushe().
+#'   \item DjumpModelSelected - If more than 10 models are considered, slope heuristic
+#'      results as obtained via capushe::capushe().
+#'   \item DDSEModelSelected - If more than 10 models are considered, slope heuristic
+#'      results as obtained via capushe::capushe().
+#'   \item totalTime - Total time used for clustering and model selection.
+#' }
+#'
+#' @examples
+#' # Generating simulated data
+#'
+#'  trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#'  trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+#'
+#'  trueSigma1 <- diag(6) * 2
+#'  trueSigma2 <- diag(6)
+#'
+#'  sampleData <- MPLNClust::mplnDataGenerator(nObservations = 1000,
+#'                                             dimensionality = 6,
+#'                                             mixingProportions = c(0.79, 0.21),
+#'                                             mu = rbind(trueMu1, trueMu2),
+#'                                             sigma = rbind(trueSigma1, trueSigma2),
+#'                                             produceImage = "No")
+#'
+#' # Clustering
+#' mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
+#'                                           membership = sampleData$trueMembership,
+#'                                           gmin = 1,
+#'                                           gmax = 2,
+#'                                           initMethod = "kmeans",
+#'                                           nInitIterations = 2,
+#'                                           normalize = "Yes")
+#'
+#' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
+#'          \email{sdang@math.binghamton.edu}. }
+#'
+#' @references
+#' Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.
+#' \emph{Biometrika} 76.
+#'
+#' Akaike, H. (1973). Information theory and an extension of the maximum likelihood
+#' principle. In \emph{Second International Symposium on Information Theory}, New York, NY,
+#' USA, pp. 267–281. Springer Verlag.
+#'
+#' Arlot, S., Brault, V., Baudry, J., Maugis, C., and Michel, B. (2016).
+#' capushe: CAlibrating Penalities Using Slope HEuristics. R package version 1.1.1.
+#'
+#' Biernacki, C., G. Celeux, and G. Govaert (2000). Assessing a mixture model for
+#' clustering with the integrated classification likelihood. \emph{IEEE Transactions
+#' on Pattern Analysis and Machine Intelligence} 22.
+#'
+#' Bozdogan, H. (1994). Mixture-model cluster analysis using model selection criteria
+#' and a new informational measure of complexity. In \emph{Proceedings of the First US/Japan
+#' Conference on the Frontiers of Statistical Modeling: An Informational Approach:
+#' Volume 2 Multivariate Statistical Modeling}, pp. 69–113. Dordrecht: Springer Netherlands.
+#'
+#' Robinson, M.D., and Oshlack, A. (2010). A scaling normalization method for differential
+#' expression analysis of RNA-seq data. \emph{Genome Biology} 11, R25.
+#'
+#' Schwarz, G. (1978). Estimating the dimension of a model. \emph{The Annals of Statistics}
+#' 6.
+#'
+#' Silva, A. et al. (2019). A multivariate Poisson-log normal mixture model
+#' for clustering transcriptome sequencing data. \emph{BMC Bioinformatics} 20.
+#' \href{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0}{Link}
+#'
+#' Subedi, S., and R. Browne (2020). A parsimonious family of multivariate Poisson-lognormal
+#' distributions for clustering multivariate count data. arXiv preprint arXiv:2004.06857.
+#' \href{https://arxiv.org/pdf/2004.06857.pdf}{Link}
+#'
+#' @export
+#' @importFrom capushe capushe
+#' @importFrom edgeR calcNormFactors
+#' @importFrom mclust unmap
+#' @importFrom mclust map
+#' @import stats
+#' @import cluster
+#'
+mplnVariational <- function(dataset,
+                            membership = "none",
+                            gmin,
+                            gmax,
+                            initMethod = "kmeans",
+                            nInitIterations = 2,
+                            normalize = "Yes") {
+
+  initialTime <- proc.time()
+
+  # Performing checks
+  if (typeof(dataset) != "double" & typeof(dataset) != "integer") {
+    stop("Dataset type needs to be integer.")
+  }
+
+  if (any((dataset %% 1 == 0) == FALSE)) {
+    stop("Dataset should be a matrix of counts.")
+  }
+
+  if (is.matrix(dataset) != TRUE) {
+    stop("Dataset needs to be a matrix.")
+  }
+
+  if (any(colSums(dataset) <= 0)) {
+    stop("Column sums cannot be less than or equal to 0. Double check dataset.")
+  }
+
+  dimensionality <- ncol(dataset)
+  nObservations <- nrow(dataset)
+
+  if(is.numeric(gmin) != TRUE || is.numeric(gmax) != TRUE) {
+    stop("Class of gmin and gmin should be numeric.")
+  }
+
+  if (gmax < gmin) {
+    stop("gmax cannot be less than gmin.")
+  }
+
+  if (gmax > nObservations) {
+    stop("gmax cannot be larger than nrow(dataset).")
+  }
+
+  if(all(membership != "none") && is.numeric(membership) != TRUE) {
+    stop("membership should be a numeric vector containing the
+      cluster membership. Otherwise, leave as 'none'.")
+  }
+
+  if(all(membership != "none") &&
+     all((diff(sort(unique(membership))) == 1) != TRUE) ) {
+    stop("Cluster memberships in the membership vector
+      are missing a cluster, e.g. 1, 3, 4, 5, 6 is missing cluster 2.")
+  }
+
+  if(all(membership != "none") && length(membership) != nObservations) {
+    stop("membership should be a numeric vector, where length(membership)
+      should equal the number of observations. Otherwise, leave as 'none'.")
+  }
+
+  # Remove rows with only zeros, if present
+  removezeros <- removeZeroCounts(dataset = dataset, membership = membership)
+  dataset <- removezeros$dataset
+  membership <- removezeros$membership
+  dimensionality <- ncol(dataset)
+  nObservations <- nrow(dataset)
+
+  if (is.character(initMethod) == TRUE) {
+    initMethodsUsed <- c("kmeans", "random", "medoids", "clara", "fanny")
+    if(all((initMethod == initMethodsUsed) == FALSE)) {
+      stop("initMethod should of class character, specifying
+        either: kmeans, random, medoids, clara, or fanny.")
+    }
+  } else if (is.character(initMethod) != TRUE) {
+    stop("initMethod should of class character, specifying
+        either: kmeans, random, medoids, clara, or fanny.")
+  }
+
+  if (is.numeric(nInitIterations) != TRUE) {
+    stop("nInitIterations should be positive integer or zero, specifying
+      the number of initialization runs to be considered.")
+  }
+
+  if (is.character(normalize) != TRUE) {
+    stop("normalize should be a string of class character specifying
+      if normalization should be performed.")
+  }
+
+  if ((normalize != "Yes") && (normalize != "No")) {
+    stop("normalize should be a string indicating Yes or No, specifying
+      if normalization should be performed.")
+  }
+
+
+  if(normalize == "Yes") {
+    normFactors <- as.vector(edgeR::calcNormFactors(as.matrix(dataset),
+                                                    method = "TMM"))
+  } else if(normalize == "No") {
+    normFactors <- rep(1, dimensionality)
+  } else{
+    stop("normalize should be 'Yes' or 'No'.")
+  }
+
+  clusterResults <- list() # to save cluster output
+  for (gmodel in seq_along(1:(gmax - gmin + 1))) {
+
+    if(length(1:(gmax - gmin + 1)) == gmax) {
+      clustersize <- gmodel
+    } else if(length(1:(gmax - gmin + 1)) < gmax) {
+      clustersize <- seq(gmin, gmax, 1)[gmodel]
+    }
+    cat("\n Running for g =", clustersize)
+    clusterResults[[gmodel]] <- varMPLNClustering(dataset = dataset,
+                                                  initMethod = initMethod,
+                                                  nInitIterations = nInitIterations,
+                                                  G = clustersize,
+                                                  maxIterations = 1000,
+                                                  normFactors = normFactors)
+  }
+
+  names(clusterResults) <- paste0(rep("G=", length(seq(gmin, gmax, 1))), seq(gmin, gmax, 1))
+
+  BIC <- ICL <- AIC <- AIC3 <- Djump <- DDSE <- nParameters <- logLikelihood <- vector()
+
+  for(g in seq_along(1:(gmax - gmin + 1))) {
+    # save the final log-likelihood
+
+    if(length(1:(gmax - gmin + 1)) == gmax) {
+      clustersize <- g
+    } else if(length(1:(gmax - gmin + 1)) < gmax) {
+      clustersize <- seq(gmin, gmax, 1)[g]
+    }
+
+    logLikelihood[g] <- unlist(utils::tail(clusterResults[[g]]$logLikelihood, n = 1))
+
+    nParameters[g] <- calcParameters(numberG = clustersize, dimensionality = dimensionality)
+
+    if (g == max(1:(gmax - gmin + 1))) { # starting model selection
+      bic <- BICFunction(logLikelihood = logLikelihood,
+                         nParameters = nParameters,
+                         nObservations = nObservations,
+                         clusterRunOutput = clusterResults,
+                         gmin = gmin,
+                         gmax = gmax,
+                         parallel = FALSE)
+
+      icl <- ICLFunction(logLikelihood = logLikelihood,
+                         nParameters = nParameters,
+                         nObservations = nObservations,
+                         gmin = gmin,
+                         gmax = gmax,
+                         clusterRunOutput = clusterResults,
+                         parallel = FALSE)
+
+      aic <- AICFunction(logLikelihood = logLikelihood,
+                         nParameters = nParameters,
+                         clusterRunOutput = clusterResults,
+                         gmin = gmin,
+                         gmax = gmax,
+                         parallel = FALSE)
+
+      aic3 <- AIC3Function(logLikelihood = logLikelihood,
+                           nParameters = nParameters,
+                           clusterRunOutput = clusterResults,
+                           gmin = gmin,
+                           gmax = gmax,
+                           parallel = FALSE)
+    }
+
+  }
+
+
+  # for Djump and DDSE
+  if((gmax - gmin + 1) > 10 ) {
+    # adapted based on HTSCluster package 2.0.8 (25 Oct 2016)
+    Kchoice <- gmin:gmax # all the cluster/component sizes considered
+    message("Note: diagnostic plots for results corresponding
+      to model selection via slope heuristics (Djump and DDSE)
+      should be examined to ensure that sufficiently complex
+      models have been considered.")
+    mat <- cbind(Kchoice, nParameters / nObservations, nParameters / nObservations, - logLikelihood)
+    ResCapushe <- capushe::capushe(mat, nObservations)
+    DDSEmodel<- ResCapushe@DDSE@model
+    Djumpmodel<- ResCapushe@Djump@model
+
+    finalTime <- proc.time() - initialTime
+
+    RESULTS <- list(dataset = dataset,
+                    dimensionality = dimensionality,
+                    normalizationFactors = normFactors,
+                    gmin = gmin,
+                    gmax = gmax,
+                    initalizationMethod = initMethod,
+                    allResults = clusterResults,
+                    logLikelihood = logLikelihood,
+                    numbParameters = nParameters,
+                    trueLabels = membership,
+                    ICLresults = icl,
+                    BICresults = bic,
+                    AICresults = aic,
+                    AIC3results = aic3,
+                    slopeHeuristics = ResCapushe,
+                    DjumpModelSelected = ResCapushe@Djump@model,
+                    DDSEModelSelected = ResCapushe@DDSE@model,
+                    totalTime = finalTime)
+
+  } else {
+    finalTime <- proc.time() - initialTime
+
+    RESULTS <- list(dataset = dataset,
+                    dimensionality = dimensionality,
+                    normalizationFactors = normFactors,
+                    gmin = gmin,
+                    gmax = gmax,
+                    initalizationMethod = initMethod,
+                    allResults = clusterResults,
+                    logLikelihood = logLikelihood,
+                    numbParameters = nParameters,
+                    trueLabels = membership,
+                    ICLresults = icl,
+                    BICresults = bic,
+                    AICresults = aic,
+                    AIC3results = aic3,
+                    slopeHeuristics = "Not used",
+                    totalTime = finalTime)
+  }
+
+  class(RESULTS) <- "mplnVariational"
+  return(RESULTS)
+}
+
+
+
+
+
+
+varMPLNClustering <- function(dataset,
+                              initMethod,
+                              nInitIterations,
+                              G,
+                              maxIterations,
+                              normFactors) {
+
+  nObservations <- nrow(dataset)
+  dimensionality <- ncol(dataset)
+
+  # If no intialization is requested by user
+  if (nInitIterations == 0) {
+
+    # basic initialization performed for parameters
+    mu <- sigma <- isigma <- list()
+    m <- S <- list() # variational parameters
+
+    ###Other intermediate items initialized
+    Sk <- array(0, c(dimensionality, dimensionality, G))
+    mPreviousValue <- GX <- dGX <- zSValue <- list()
+
+
+    zValue <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
+                                          centers = G, nstart = 100)$cluster )
+
+    piG <- colSums(zValue) / nObservations
+
+    for (g in 1:G) {
+      obs <- which(zValue[ , g] == 1)
+      mu[[g]] <- colMeans(log(dataset[obs, ] + 1 / 6)) # starting value for mu
+      sigma[[g]] <- var(log(dataset[obs, ] + 1 / 6)) # starting value for sample covariance matrix
+      isigma[[g]] <- solve(sigma[[g]])
+    }
+
+    for (g in 1:G) {
+      mPreviousValue[[g]] <- m[[g]] <- log(dataset + 1 / 6)
+      # mPreviousValue = starting value for m
+      S[[g]] <- list() # starting value for S
+      for (i in 1:nObservations) {
+        S[[g]][[i]] <- diag(dimensionality) * 0.000000001
+      }
+    }
+  } else if (nInitIterations != 0) {
+    # if initialization is requested by user
+
+    initializationResults <- varMPLNInitialization(dataset = dataset,
+                                                   numbG = G,
+                                                   initMethod = initMethod,
+                                                   nInitIterations = nInitIterations,
+                                                   normFactors = normFactors)
+
+    mu <- initializationResults$mu
+    sigma <- initializationResults$sigma
+    isigma <- initializationResults$isigma
+    mPreviousValue <- m <- initializationResults$m # variational parameters
+    S <- initializationResults$S # variational parameters
+    zValue <- initializationResults$zValue
+    piG <- colSums(zValue) / nObservations
+
+    ###Other intermediate items initialized
+    Sk <- array(0, c(dimensionality, dimensionality, G))
+    GX <- dGX <- zSValue <- list()
+
+  }
+
+
+
+
+
+
+  # Start clustering
+  itOuter <- 1
+  aloglik <- logLikelihood <- NULL
+  checks <- aloglik[c(1, 2, 3)] <- 0
+
+
+  while (checks == 0) {
+
+
+    for (g in 1:G) {
+      GX[[g]] <- list()
+      dGX[[g]] <- list()
+      zSValue[[g]] <- list()
+      for (i in 1:nObservations) {
+        dGX[[g]][[i]] <- diag(exp((log(normFactors) + mPreviousValue[[g]][i, ]) +
+                                    0.5 * diag(S[[g]][[i]])), dimensionality) + isigma[[g]]
+        S[[g]][[i]] <- solve(dGX[[g]][[i]]) # update S
+        zSValue[[g]][[i]] <- zValue[i, g] * S[[g]][[i]] # will be used for updating sample covariance matrix
+        GX[[g]][[i]] <- dataset[i, ] - exp(mPreviousValue[[g]][i, ] +
+                                             log(normFactors) + 0.5 * diag(S[[g]][[i]])) -
+          (isigma[[g]]) %*% (mPreviousValue[[g]][i, ] - mu[[g]])
+        m[[g]][i , ] <- mPreviousValue[[g]][i , ] + S[[g]][[i]] %*% GX[[g]][[i]] # update m
+      }
+
+      mPreviousValue[[g]] <- m[[g]]
+
+      # Updating mu
+      mu[[g]] <- colSums(zValue[ , g] * m[[g]]) / sum(zValue[ , g])
+
+      # Updating sample covariance
+      muMatrix <- matrix(rep(mu[[g]], nObservations), nrow = nObservations, byrow = TRUE)
+      res <- m[[g]] - muMatrix
+      # Calculate weighted covariance
+      temp <- stats::cov.wt(res, wt = zValue[ , g], center = FALSE, method = "ML")
+      Sk[ , , g] <- temp$cov
+      sigma[[g]] <- temp$cov + Reduce("+", zSValue[[g]]) / sum(zValue[ , g])
+      isigma[[g]] <- solve(sigma[[g]])
+    }
+
+    piG <- colSums(zValue) / nObservations
+
+    # Matrix containing normaization factors
+    normFactorsAsMatrix <- matrix(rep(normFactors, nObservations), nrow = nObservations, byrow = TRUE)
+
+    # A useful function
+    zvalueFuncTerm <- function(x, y = isigma[[g]]) {
+      sum(diag(x %*% y))
+    }
+
+    # # Zvalue calculation
+    forz <- matrix(NA, ncol = G, nrow = nObservations)
+
+    for (g in 1:G) {
+      # exp(m_igj + 0.5 S_ig,jj)
+      two <- rowSums(exp(m[[g]] + log(normFactorsAsMatrix) +
+                           0.5 * matrix(unlist(lapply(S[[g]], diag)), ncol = dimensionality, byrow = TRUE)))
+      five <- 0.5 * unlist(lapply(S[[g]], zvalueFuncTerm)) # trace(isigma x S_ig)
+      six <- 0.5 * log(unlist(lapply(S[[g]], det))) # 0.5 * log|S_ig|
+
+      # For zig calculation (the numerator part)
+      forz[ , g] <- piG[g] *
+        exp(rowSums(m[[g]] * dataset) - two - rowSums(lfactorial(dataset)) +
+              rowSums(log(normFactorsAsMatrix) * dataset) -
+              0.5 * mahalanobis(m[[g]], center = mu[[g]], cov = sigma[[g]]) -
+              five + six - 0.5 * log(det(sigma[[g]])) - dimensionality / 2)
+    }
+
+
+    # Calculate zValue value
+    # check which forz == 0 and rowSums(forz)==0 and which of these
+    # have both equalling to 0 (because 0/0 =NaN)
+    if (G == 1) {
+      errorpossible <- Reduce(intersect,
+                              list(which(forz == 0),
+                                   which(rowSums(forz) == 0)))
+      forz[errorpossible] <- 1e-100
+      zvalue <- forz / rowSums(forz)
+    } else {
+
+      # check for error, if rowsums are zero
+      rowSumsZero <- which(rowSums(forz) == 0)
+      if(length(rowSumsZero) > 1) {
+        forz[rowSumsZero, ] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
+                                                           centers = G,
+                                                           nstart = 100)$cluster)[rowSumsZero, ]
+        zvalue <- forz / rowSums(forz)
+      } else {
+        zvalue <- forz / rowSums(forz)
+      }
+    }
+
+
+    # Calculate log-likelihood
+    logLikelihood[itOuter] <- sum(log(rowSums(forz)))
+
+    # Stopping criterion
+    if (itOuter > 2) {
+
+      if ((logLikelihood[itOuter - 1] - logLikelihood[itOuter - 2]) == 0) {
+        checks <-1
+      } else {
+        # Aitken stopping criterion
+        termAitkens <- (logLikelihood[itOuter]- logLikelihood[itOuter - 1]) /
+          (logLikelihood[itOuter - 1] - logLikelihood[itOuter - 2])
+        term2Aitkens <- (1 / (1 - termAitkens) * (logLikelihood[itOuter] -
+                                                    logLikelihood[itOuter - 1]))
+        aloglik[itOuter] <- logLikelihood[itOuter - 1] + term2Aitkens
+        if (abs(aloglik[itOuter] - logLikelihood[itOuter - 1]) < 0.001) {
+          # If this critera, as per Böhning et al., 1994 is achieved
+          # convergence is achieved
+          checks <- 1
+        } else {
+          checks <- checks}
+      }
+    }
+    # print(itOuter)
+    itOuter <- itOuter + 1
+    if (itOuter == maxIterations) {
+      checks <- 1
+    }
+  }
+
+  # Naming parameters
+  names(mu) <- names(sigma) <- paste0(rep("G=", G), 1:G)
+
+  # Saving results for output
+  Results <- list(piG = piG,
+                  mu = mu,
+                  sigma = sigma,
+                  probaPost = zValue,
+                  clusterlabels = mclust::map(zValue),
+                  logLikelihood = logLikelihood)
+
+  class(Results) <- "varMPLNClustering"
+  return(Results)
+}
+
+
+
+varMPLNInitialization <- function(dataset,
+                                  numbG,
+                                  initMethod,
+                                  nInitIterations,
+                                  normFactors) {
+
+  dimensionality <- ncol(dataset)
+  nObservations <- nrow(dataset)
+
+  zValue <- initRuns <- list()
+  logLinit <- vector()
+
+  # Internal function for random initialization
+  randomInitfunction <- function(numbG, nObservations) {
+    if(numbG == 1) { # generating zValue if g=1
+      zValue <- as.matrix(rep.int(1, times = nObservations),
+                          ncol = numbG,
+                          nrow = nObservations)
+    } else { # generating zValue if g>1
+      zValueConv <- 0
+      while(! zValueConv) {
+        # ensure that dimension of zValue is same as G (i.e.,
+        # if one column contains all 0s, then generate zValue again)
+        zValue <- t(stats::rmultinom(nObservations, size = 1,
+                                     prob = rep(1 / numbG, numbG)))
+        if(length(which(colSums(zValue) > 0)) == numbG) {
+          zValueConv <- 1
+        }
+      }
+    }
+    return(zValue)
+  }
+
+  for(iterations in seq_along(1:nInitIterations)) {
+    # setting seed, to ensure if multiple iterations are selected by
+    # user, then each run will give a different result.
+    set.seed(iterations)
+    if (initMethod == "kmeans" | is.na(initMethod)) {
+      zValue[[iterations]] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
+                                                          centers = numbG, nstart = 100)$cluster )
+      # if z generated has less columns than numbG, then use random initialization
+      if(ncol(zValue[[iterations]]) < numbG) {
+        zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+      }
+
+    } else if (initMethod == "random") {
+      zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+
+    } else if (initMethod == "medoids") {
+      zValue[[iterations]] <- mclust::unmap(cluster::pam(log(dataset + 1 / 3),
+                                                         k = numbG,  cluster.only = TRUE))
+      # if z generated has less columns than numbG, then use random initialization
+      if(ncol(zValue[[iterations]]) < numbG) {
+        zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+      }
+
+    } else if (initMethod == "clara") {
+      zValue[[iterations]] <- mclust::unmap(cluster::clara(log(dataset + 1 / 3),
+                                                           k = numbG)$cluster)
+      # if z generated has less columns than numbG, then use random initialization
+      if(ncol(zValue[[iterations]]) < numbG) {
+        zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+      }
+
+    } else if (initMethod == "fanny") {
+      zValue[[iterations]] <- mclust::unmap(cluster::fanny(log(dataset + 1 / 3),
+                                                           k = numbG, memb.exp = numbG, cluster.only = TRUE)$clustering)
+      # if z generated has less columns than numbG, then use random initialization
+      if(ncol(zValue[[iterations]]) < numbG) {
+        zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+      }
+    }
+
+
+    initRuns[[iterations]] <- varMPLNInitClustering(dataset = dataset,
+                                                    G = numbG,
+                                                    zValue = zValue[[iterations]],
+                                                    normFactors = normFactors,
+                                                    maxIterations = 10)
+    # maxIterations set to 10 for initialization
+
+    logLinit[iterations] <-
+      unlist(utils::tail((initRuns[[iterations]]$logLikelihood), n = 1))
+  }
+
+  # select the initialization run with highest loglikelihood
+  initializationResults <- initRuns[[which(logLinit == max(logLinit, na.rm = TRUE))[1]]]
+
+  class(initializationResults) <- "varMPLNInitialization"
+  return(initializationResults)
+}
+
+
+varMPLNInitClustering <- function(dataset,
+                                  G,
+                                  zValue,
+                                  normFactors,
+                                  maxIterations = 10) {
+  # if running for initialization, need to stop after 10 iterations
+
+  dimensionality <- ncol(dataset)
+  nObservations <- nrow(dataset)
+
+
+  # basic initialization performed for parameters
+  mu <- sigma <- isigma <- list()
+  m <- S <- list() # variational parameters
+
+  ###Other intermediate items initialized
+  Sk <- array(0, c(dimensionality, dimensionality, G))
+  mPreviousValue <- GX <- dGX <- zSValue <- list()
+
+
+  piG <- colSums(zValue) / nObservations
+
+  for (g in 1:G) {
+    obs <- which(zValue[ , g] == 1)
+    mu[[g]] <- colMeans(log(dataset[obs, ] + 1 / 6)) # starting value for mu
+    # starting value for sample covariance matrix
+    sigma[[g]] <- cov(log(dataset[obs, ] + 1 / 6))
+    isigma[[g]] <- solve(sigma[[g]])
+  }
+
+  for (g in 1:G) {
+    # mPreviousValue = starting value for m
+    mPreviousValue[[g]] <- m[[g]] <- log(dataset + 1 / 6)
+    S[[g]] <- list() # starting value for S
+    for (i in 1:nObservations) {
+      S[[g]][[i]] <- diag(dimensionality) * 0.000000001
+    }
+  }
+
+  # Start clustering
+  itOuter <- 1
+  aloglik <- logLikelihood <- NULL
+  checks <- aloglik[c(1, 2, 3)] <- 0
+
+
+  while (checks == 0) {
+
+
+    for (g in 1:G) {
+      GX[[g]] <- list()
+      dGX[[g]] <- list()
+      zSValue[[g]] <- list()
+      for (i in 1:nObservations) {
+        dGX[[g]][[i]] <- diag(exp((log(normFactors) + mPreviousValue[[g]][i, ]) +
+                                    0.5 * diag(S[[g]][[i]])), dimensionality) + isigma[[g]]
+        S[[g]][[i]] <- solve(dGX[[g]][[i]]) # update S
+        # will be used for updating sample covariance matrix
+        zSValue[[g]][[i]] <- zValue[i, g] * S[[g]][[i]]
+        GX[[g]][[i]] <- dataset[i, ] - exp(mPreviousValue[[g]][i, ] +
+                                             log(normFactors) + 0.5 * diag(S[[g]][[i]])) -
+          (isigma[[g]]) %*% (mPreviousValue[[g]][i, ] - mu[[g]])
+        m[[g]][i , ] <- mPreviousValue[[g]][i , ] + S[[g]][[i]] %*% GX[[g]][[i]] # update m
+      }
+
+      mPreviousValue[[g]] <- m[[g]]
+
+      # Updating mu
+      mu[[g]] <- colSums(zValue[ , g] * m[[g]]) / sum(zValue[ , g])
+
+      # Updating sample covariance
+      muMatrix <- matrix(rep(mu[[g]], nObservations), nrow = nObservations, byrow = TRUE)
+      res <- m[[g]] - muMatrix
+      # Calculate weighted covariance
+      temp <- stats::cov.wt(res, wt = zValue[ , g], center = FALSE, method = "ML")
+      Sk[ , , g] <- temp$cov
+      sigma[[g]] <- temp$cov + Reduce("+", zSValue[[g]]) / sum(zValue[ , g])
+      isigma[[g]] <- solve(sigma[[g]])
+    }
+
+
+    piG <- colSums(zValue) / nObservations
+
+    # Matrix containing normaization factors
+    normFactorsAsMatrix <- matrix(rep(normFactors, nObservations), nrow = nObservations, byrow = TRUE)
+
+
+    # A useful function
+    zvalueFuncTerm <- function(x, y = isigma[[g]]) {
+      sum(diag(x %*% y))
+    }
+
+    # # Zvalue calculation
+    forz <- matrix(NA, ncol = G, nrow = nObservations)
+
+    for (g in 1:G) {
+      # exp(m_igj + 0.5 S_ig,jj)
+      two <- rowSums(exp(m[[g]] + log(normFactorsAsMatrix) +
+                           0.5 * matrix(unlist(lapply(S[[g]], diag)), ncol = dimensionality, byrow = TRUE)))
+      five <- 0.5 * unlist(lapply(S[[g]], zvalueFuncTerm)) # trace(isigma x S_ig)
+      six <- 0.5 * log(unlist(lapply(S[[g]], det))) # 0.5 * log|S_ig|
+
+      # For zig calculation (the numerator part)
+      forz[ , g] <- piG[g] *
+        exp(rowSums(m[[g]] * dataset) - two - rowSums(lfactorial(dataset)) +
+              rowSums(log(normFactorsAsMatrix) * dataset) -
+              0.5 * mahalanobis(m[[g]], center = mu[[g]], cov = sigma[[g]]) -
+              five + six - 0.5 * log(det(sigma[[g]])) - dimensionality / 2)
+    }
+
+    # Calculate zValue value
+    # check which forz == 0 and rowSums(forz)==0 and which of these
+    # have both equalling to 0 (because 0/0 =NaN)
+    if (G == 1) {
+      errorpossible <- Reduce(intersect,
+                              list(which(forz == 0),
+                                   which(rowSums(forz) == 0)))
+      forz[errorpossible] <- 1e-100
+      zvalue <- forz / rowSums(forz)
+    } else {
+
+      # check for error, if rowsums are zero
+      rowSumsZero <- which(rowSums(forz) == 0)
+      if(length(rowSumsZero) > 1) {
+        forz[rowSumsZero, ] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
+                                                           centers = G,
+                                                           nstart = 100)$cluster)[rowSumsZero, ]
+        zvalue <- forz / rowSums(forz)
+      } else {
+        zvalue <- forz / rowSums(forz)
+      }
+    }
+
+
+
+    # Calculate log-likelihood
+    logLikelihood[itOuter] <- sum(log(rowSums(forz)))
+
+
+    # Stopping criterion
+    if (itOuter > 2) {
+
+      if ((logLikelihood[itOuter - 1] - logLikelihood[itOuter - 2]) == 0) {
+        checks <-1
+      } else {
+        # Aitken stopping criterion
+        termAitkens <- (logLikelihood[itOuter]- logLikelihood[itOuter - 1]) /
+          (logLikelihood[itOuter - 1] - logLikelihood[itOuter - 2])
+        term2Aitkens <- (1 / (1 - termAitkens) * (logLikelihood[itOuter] - logLikelihood[itOuter - 1]))
+        aloglik[itOuter] <- logLikelihood[itOuter - 1] + term2Aitkens
+        if (abs(aloglik[itOuter] - logLikelihood[itOuter - 1]) < 0.001) {
+          # If this critera, as per Böhning et al., 1994 is achieved
+          # convergence is achieved
+          checks <- 1
+        } else {
+          checks <- checks}
+      }
+    }
+    # print(itOuter)
+    itOuter <- itOuter + 1
+    if (itOuter == maxIterations) {
+      checks <- 1
+    }
+  }
+
+  # Naming parameters
+  names(mu) <- names(sigma) <- paste0(rep("G=", G), 1:G)
+
+  # Saving results for output
+  Results <- list(piG = piG,
+                  mu = mu,
+                  sigma = sigma,
+                  isigma = isigma,
+                  zValue = zValue,
+                  m = m,
+                  S = S,
+                  clusterlabels = mclust::map(zValue),
+                  logLikelihood = logLikelihood)
+
+  class(Results) <- "varMPLNInitClustering"
+  return(Results)
+}
+
+
+
+
+
+
+#' Model Selection Via Akaike Information Criterion
+#'
+#' Performs model selection using Akaike Information Criterion (AIC).
+#' Formula: - 2 * logLikelihood + 2 * nParameters.
+#'
+#' @param logLikelihood A vector with value of final log-likelihoods for
+#'      each cluster size.
+#' @param nParameters A vector with number of parameters for each
+#'      cluster size.
+#' @param clusterRunOutput Output from mplnVariational, mplnMCMCParallel, or
+#'    mplnMCMCNonParallel, if available. Default value is NA. If provided,
+#'    the vector of cluster labels obtained by mclust::map() for best model
+#'    will be provided in the output.
+#' @param gmin A positive integer specifying the minimum number of components
+#'    to be considered in the clustering run.
+#' @param gmax A positive integer, >gmin, specifying the maximum number of
+#'    components to be considered in the clustering run.
+#' @param parallel TRUE or FALSE indicating if MPLNClust::mplnMCMCParallel
+#'    has been used.
+#'
+#' @return Returns an S3 object of class MPLN with results.
+#' \itemize{
+#'   \item allAICvalues - A vector of AIC values for each cluster size.
+#'   \item AICmodelselected - An integer specifying model selected by AIC.
+#'   \item AICmodelSelectedLabels - A vector of integers specifying cluster labels
+#'     for the model selected. Only provided if user input clusterRunOutput.
+#'   \item AICMessage - A character vector indicating if spurious clusters are
+#'     detected. Otherwise, NA.
+#' }
+#'
+#' @examples
+#' # Generating simulated data
+#'
+#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+#'
+#' trueSigma1 <- diag(6) * 2
+#' trueSigma2 <- diag(6)
+#'
+#' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
+#'                                  dimensionality = 6,
+#'                                  mixingProportions = c(0.79, 0.21),
+#'                                  mu = rbind(trueMu1, trueMu2),
+#'                                  sigma = rbind(trueSigma1, trueSigma2),
+#'                                  produceImage = "No")
+#'
+#' # Clustering
+#' mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
+#'                                 membership = sampleData$trueMembership,
+#'                                 gmin = 1,
+#'                                 gmax = 2,
+#'                                 initMethod = "kmeans",
+#'                                 nInitIterations = 2,
+#'                                 normalize = "Yes")
+#'
+#' # Model selection
+#'  AICmodel <- MPLNClust::AICFunction(logLikelihood = mplnResults$logLikelihood,
+#'                          nParameters = mplnResults$numbParameters,
+#'                          clusterRunOutput = mplnResults$allResults,
+#'                          gmin = mplnResults$gmin,
+#'                          gmax = mplnResults$gmax,
+#'                          parallel = FALSE)
+#'
+#' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
+#'
+#' @references
+#'
+#' Akaike, H. (1973). Information theory and an extension of the maximum likelihood
+#' principle. In \emph{Second International Symposium on Information Theory}, New York, NY,
+#' USA, pp. 267–281. Springer Verlag.
+#'
+#' @export
+#'
+AICFunction <- function(logLikelihood,
+                        nParameters,
+                        clusterRunOutput = NA,
+                        gmin,
+                        gmax,
+                        parallel = FALSE) {
+
+  # Performing checks
+  if(is.numeric(gmin) != TRUE || is.numeric(gmax) != TRUE) {
+    stop("Class of gmin and gmin should be numeric.")
+  }
+
+  if (gmax < gmin) {
+    stop("gmax cannot be less than gmin.")
+  }
+
+  if(is.numeric(nParameters) != TRUE) {
+    stop("nParameters should be a vector of integers indicating
+      number of parameters for each cluster size.")
+  }
+
+  if(is.numeric(logLikelihood) != TRUE) {
+    stop("logLikelihood should be a vector of numeric values.")
+  }
+
+  if(length(logLikelihood) != (gmax - gmin + 1)) {
+    stop("logLikelihood should be a vector of length (gmax - gmin + 1).")
+  }
+
+  if(is.logical(parallel) != TRUE) {
+    stop("Should be logical, TRUE or FALSE indicating if
+          MPLNClust::mplnMCMCParallel has been used.")
+  }
+
+
+
+  AIC <- - 2 * logLikelihood + 2 * nParameters
+  AICmodel <- seq(gmin, gmax, 1)[grep(min(AIC, na.rm = TRUE), AIC)]
+  AICMessage <- NA # For spurious clusters
+
+
+  # Obtain cluster labels for best model if clusterRunOutput is provided
+  if(all(is.na(clusterRunOutput)) == FALSE) {
+    if(isTRUE(parallel) == "FALSE") {
+      # If non parallel MCMC-EM or Variational EM run
+      AICmodelLabels <- clusterRunOutput[[grep(min(AIC, na.rm = TRUE), AIC)]]$clusterlabels
+    } else {
+      # If parallel MCMC-EM run
+      AICmodelLabels <- clusterRunOutput[[grep(min(AIC, na.rm = TRUE), AIC)]]$allResults$clusterlabels
+    }
+
+    # Check for spurious clusters, only possible if cluster labels provided
+    if (max(AICmodelLabels) != AICmodel) {
+      AICmodel <- max(AICmodelLabels)
+      AICMessage <- "Spurious or empty cluster resulted."
+    }
+  } else {
+    AICmodelLabels <- "clusterRunOutput not provided"
+  }
+
+
+  AICresults<-list(allAICvalues = AIC,
+                   AICmodelselected = AICmodel,
+                   AICmodelSelectedLabels = AICmodelLabels,
+                   AICMessage = AICMessage)
+  class(AICresults) <- "AIC"
+  return(AICresults)
+}
+
+
+
+
+
+
+#' Model Selection Via Akaike Information Criterion by Bozdogan (1994)
+#'
+#' Performs model selection using Akaike Information Criterion by
+#' Bozdogan (1994), called AIC3. Formula: - 2 * logLikelihood + 3 * nParameters.
+#'
+#' @param logLikelihood A vector with value of final log-likelihoods for
+#'      each cluster size.
+#' @param nParameters A vector with number of parameters for each
+#'      cluster size.
+#' @param clusterRunOutput Output from mplnVariational, mplnMCMCParallel, or
+#'    mplnMCMCNonParallel, if available. Default value is NA. If provided,
+#'    the vector of cluster labels obtained by mclust::map() for best model
+#'    will be provided in the output.
+#' @param gmin A positive integer specifying the minimum number of components
+#'    to be considered in the clustering run.
+#' @param gmax A positive integer, >gmin, specifying the maximum number of
+#'    components to be considered in the clustering run.
+#' @param parallel TRUE or FALSE indicating if MPLNClust::mplnMCMCParallel
+#'    has been used.
+#'
+#' @return Returns an S3 object of class MPLN with results.
+#' \itemize{
+#'   \item allAIC3values - A vector of AIC3 values for each cluster size.
+#'   \item AIC3modelselected - An integer specifying model selected by AIC3.
+#'   \item AIC3modelSelectedLabels - A vector of integers specifying cluster labels
+#'     for the model selected. Only provided if user input clusterRunOutput.
+#'   \item AIC3Message - A character vector indicating if spurious clusters are
+#'     detected. Otherwise, NA.
+#' }
+#'
+#' @examples
+#' # Generating simulated data
+#'
+#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+
+#' trueSigma1 <- diag(6) * 2
+#' trueSigma2 <- diag(6)
+
+#' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
+#'                                  dimensionality = 6,
+#'                                  mixingProportions = c(0.79, 0.21),
+#'                                  mu = rbind(trueMu1, trueMu2),
+#'                                  sigma = rbind(trueSigma1, trueSigma2),
+#'                                  produceImage = "No")
+
+#' # Clustering
+#' mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
+#'                                 membership = sampleData$trueMembership,
+#'                                 gmin = 1,
+#'                                 gmax = 2,
+#'                                 initMethod = "kmeans",
+#'                                 nInitIterations = 2,
+#'                                 normalize = "Yes")
+#'
+#' # Model selection
+#' AIC3model <- MPLNClust::AIC3Function(logLikelihood = mplnResults$logLikelihood,
+#'                            nParameters = mplnResults$numbParameters,
+#'                            clusterRunOutput = mplnResults$allResults,
+#'                            gmin = mplnResults$gmin,
+#'                            gmax = mplnResults$gmax,
+#'                            parallel = FALSE)
+#'
+#' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
+#'
+#' @references
+#'
+#' Akaike, H. (1973). Information theory and an extension of the maximum likelihood
+#' principle. In \emph{Second International Symposium on Information Theory}, New York, NY,
+#' USA, pp. 267–281. Springer Verlag.
+#'
+#' #' Bozdogan, H. (1994). Mixture-model cluster analysis using model selection criteria
+#' and a new informational measure of complexity. In \emph{Proceedings of the First US/Japan
+#' Conference on the Frontiers of Statistical Modeling: An Informational Approach:
+#' Volume 2 Multivariate Statistical Modeling}, pp. 69–113. Dordrecht: Springer Netherlands.
+#'
+#' @export
+#'
+AIC3Function <- function(logLikelihood,
+                         nParameters,
+                         clusterRunOutput = NA,
+                         gmin,
+                         gmax,
+                         parallel = FALSE) {
+
+  # Performing checks
+  if(is.numeric(gmin) != TRUE || is.numeric(gmax) != TRUE) {
+    stop("Class of gmin and gmin should be numeric.")
+  }
+
+  if (gmax < gmin) {
+    stop("gmax cannot be less than gmin.")
+  }
+
+  if(is.numeric(nParameters) != TRUE) {
+    stop("nParameters should be a vector of integers indicating
+      number of parameters for each cluster size.")
+  }
+
+  if(is.numeric(logLikelihood) != TRUE) {
+    stop("logLikelihood should be a vector of numeric values.")
+  }
+
+  if(length(logLikelihood) != (gmax - gmin + 1)) {
+    stop("logLikelihood should be a vector of length (gmax - gmin + 1).")
+  }
+
+  if(is.logical(parallel) != TRUE) {
+    stop("Should be logical, TRUE or FALSE indicating if
+      MPLNClust::mplnMCMCParallel has been used.")
+  }
+
+
+  AIC3 <- - 2 * logLikelihood + 3 * nParameters
+  AIC3model <- seq(gmin, gmax, 1)[grep(min(AIC3,na.rm = TRUE), AIC3)]
+  AIC3Message <- NA # For spurious clusters
+
+  # Obtain cluster labels for best model if clusterRunOutput is provided
+  if(all(is.na(clusterRunOutput)) == FALSE) {
+    if(isTRUE(parallel) == "FALSE") {
+      # If non parallel MCMC-EM or Variational EM run
+      AIC3modelLabels <- clusterRunOutput[[grep(min(AIC3,na.rm = TRUE), AIC3)]]$clusterlabels
+    } else {
+      # If parallel MCMC-EM run
+      AIC3modelLabels <- clusterRunOutput[[grep(min(AIC3,na.rm = TRUE), AIC3)]]$allResults$clusterlabels
+    }
+    # Check for spurious clusters, only possible if cluster labels provided
+    if (max(AIC3modelLabels) != AIC3model) {
+      AIC3model <- max(AIC3modelLabels)
+      AIC3Message <- "Spurious or empty cluster resulted."
+    }
+  } else {
+    AIC3modelLabels <- "clusterRunOutput not provided"
+  }
+
+
+  AIC3results <- list(allAIC3values = AIC3,
+                      AIC3modelselected = AIC3model,
+                      AIC3modelSelectedLabels = AIC3modelLabels,
+                      AIC3Message = AIC3Message)
+  class(AIC3results) <- "AIC3"
+  return(AIC3results)
+}
+
+
+
+
+
+
+#' Model Selection Via Bayesian Information Criterion
+#'
+#' Performs model selection using Bayesian Information Criterion (BIC) by
+#' Schwarz (1978). Formula: - 2 * logLikelihood + (nParameters * log(nObservations)).
+#'
+#' @param logLikelihood A vector with value of final log-likelihoods for
+#'      each cluster size.
+#' @param nParameters A vector with number of parameters for each
+#'      cluster size.
+#' @param nObservations A positive integer specifying the number of observations
+#'      in the dataset analyzed.
+#' @param clusterRunOutput Output from mplnVariational, mplnMCMCParallel, or
+#'    mplnMCMCNonParallel, if available. Default value is NA. If provided,
+#'    the vector of cluster labels obtained by mclust::map() for best model
+#'    will be provided in the output.
+#' @param gmin A positive integer specifying the minimum number of components
+#'    to be considered in the clustering run.
+#' @param gmax A positive integer, >gmin, specifying the maximum number of
+#'    components to be considered in the clustering run.
+#' @param parallel TRUE or FALSE indicating if MPLNClust::mplnMCMCParallel
+#'    has been used.
+#'
+#' @return Returns an S3 object of class MPLN with results.
+#' \itemize{
+#'   \item allBICvalues - A vector of BIC values for each cluster size.
+#'   \item BICmodelselected - An integer specifying model selected by BIC
+#'   \item BICmodelSelectedLabels - A vector of integers specifying cluster labels
+#'     for the model selected. Only provided if user input clusterRunOutput.
+#'   \item BICMessage - A character vector indicating if spurious clusters are
+#'     detected. Otherwise, NA.
+#' }
+#'
+#' @examples
+#' # Generating simulated data
+#'
+#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+
+#' trueSigma1 <- diag(6) * 2
+#' trueSigma2 <- diag(6)
+
+#' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
+#'                                  dimensionality = 6,
+#'                                  mixingProportions = c(0.79, 0.21),
+#'                                  mu = rbind(trueMu1, trueMu2),
+#'                                  sigma = rbind(trueSigma1, trueSigma2),
+#'                                  produceImage = "No")
+
+#' # Clustering
+#' mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
+#'                                 membership = sampleData$trueMembership,
+#'                                 gmin = 1,
+#'                                 gmax = 2,
+#'                                 initMethod = "kmeans",
+#'                                 nInitIterations = 2,
+#'                                 normalize = "Yes")
+#'
+#' # Model selection
+#' BICmodel <- MPLNClust::BICFunction(logLikelihood = mplnResults$logLikelihood,
+#'                          nParameters = mplnResults$numbParameters,
+#'                          nObservations = nrow(mplnResults$dataset),
+#'                          clusterRunOutput = mplnResults$allResults,
+#'                          gmin = mplnResults$gmin,
+#'                          gmax = mplnResults$gmax,
+#'                          parallel = FALSE)
+#'
+#' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
+#'
+#' @references
+#'
+#' Schwarz, G. (1978). Estimating the dimension of a model. \emph{The Annals of Statistics}
+#' 6.
+#'
+#' @export
+#'
+BICFunction <- function(logLikelihood,
+                        nParameters,
+                        nObservations,
+                        clusterRunOutput = NA,
+                        gmin,
+                        gmax,
+                        parallel = FALSE) {
+
+  # Performing checks
+  if(is.numeric(gmin) != TRUE || is.numeric(gmax) != TRUE) {
+    stop("Class of gmin and gmin should be numeric.")
+  }
+
+  if (gmax < gmin) {
+    stop("gmax cannot be less than gmin.")
+  }
+
+  if(is.numeric(nParameters) != TRUE) {
+    stop("nParameters should be a vector of integers indicating
+      number of parameters for each cluster size.")
+  }
+
+  if(is.numeric(logLikelihood) != TRUE) {
+    stop("logLikelihood should be a vector of numeric values.")
+  }
+
+  if(length(logLikelihood) != (gmax - gmin + 1)) {
+    stop("logLikelihood should be a vector of length (gmax - gmin + 1).")
+  }
+
+  if(is.logical(parallel) != TRUE) {
+    stop("Should be logical, TRUE or FALSE indicating if
+      MPLNClust::mplnMCMCParallel has been used.")
+  }
+
+
+
+  BIC <- - 2 * logLikelihood + (nParameters * log(nObservations))
+  BICmodel <- seq(gmin, gmax, 1)[grep(min(BIC, na.rm = TRUE), BIC)]
+  BICMessage <- NA # For spurious clusters
+
+  # Obtain cluster labels for best model if clusterRunOutput is provided
+  if(all(is.na(clusterRunOutput)) == FALSE) {
+    if(isTRUE(parallel) == "FALSE") {
+      # If non parallel MCMC-EM or Variational EM run
+      BICmodelLabels <- clusterRunOutput[[grep(min(BIC, na.rm = TRUE),
+                                               BIC)]]$clusterlabels
+    } else {
+      # If parallel MCMC-EM run
+      BICmodelLabels <- clusterRunOutput[[grep(min(BIC, na.rm = TRUE),
+                                               BIC)]]$allResults$clusterlabels
+    }
+    # Check for spurious clusters, only possible if cluster labels provided
+    if (max(BICmodelLabels) != BICmodel) {
+      BICmodel <- max(BICmodelLabels)
+      BICMessage <- "Spurious or empty cluster resulted."
+    }
+  } else {
+    BICmodelLabels <- "clusterRunOutput not provided"
+  }
+
+  BICresults <- list(allBICvalues = BIC,
+                     BICmodelselected = BICmodel,
+                     BICmodelSelectedLabels = BICmodelLabels,
+                     BICMessage = BICMessage)
+  class(BICresults) <- "BIC"
+  return(BICresults)
+}
+
+
+
+
+
+
+#' Model Selection Via Integrated Completed Likelihood
+#'
+#' Performs model selection using integrated completed likelihood (ICL) by
+#' Biernacki et al., (2000).
+#'
+#' @param logLikelihood A vector with value of final log-likelihoods for
+#'      each cluster size.
+#' @param nParameters A vector with number of parameters for each
+#'      cluster size.
+#' @param nObservations A positive integer specifying the number of observations
+#'      in the dataset analyzed.
+#' @param clusterRunOutput Output from MPLNClust::mplnVariational,
+#'    MPLNClust::mplnMCMCParallel, or MPLNClust::mplnMCMCNonParallel functions.
+#'    Either clusterRunOutput or probaPost must be provided.
+#' @param probaPost A list that is length (gmax - gmin + 1) containing posterior
+#'    probability at each g, for g = gmin:gmax. This argument is useful if
+#'    clustering output have been generated non-serially, e.g., g = 1:5 and
+#'    g = 6:10 rather than g = 1:10. Either clusterRunOutput or probaPost
+#'    must be provided.
+#' @param gmin A positive integer specifying the minimum number of components
+#'    to be considered in the clustering run.
+#' @param gmax A positive integer, > gmin, specifying the maximum number of
+#'    components to be considered in the clustering run.
+#' @param parallel TRUE or FALSE indicating if MPLNClust::mplnMCMCParallel
+#'    has been used.
+#'
+#' @return Returns an S3 object of class MPLN with results.
+#' \itemize{
+#'   \item allICLvalues - A vector of ICL values for each cluster size.
+#'   \item ICLmodelselected - An integer specifying model selected by ICL.
+#'   \item ICLmodelSelectedLabels - A vector of integers specifying cluster labels
+#'     for the model selected. Only provided if user input clusterRunOutput.
+#'   \item ICLMessage - A character vector indicating if spurious clusters are
+#'     detected. Otherwise, NA.
+#' }
+#'
+#' @examples
+#' # Generating simulated data
+#'
+#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+#'
+#' trueSigma1 <- diag(6) * 2
+#' trueSigma2 <- diag(6)
+#'
+#' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
+#'                                            dimensionality = 6,
+#'                                            mixingProportions = c(0.79, 0.21),
+#'                                            mu = rbind(trueMu1, trueMu2),
+#'                                            sigma = rbind(trueSigma1, trueSigma2),
+#'                                            produceImage = "No")
+#'
+#' # Clustering
+#' mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
+#'                                           membership = sampleData$trueMembership,
+#'                                           gmin = 1,
+#'                                           gmax = 2,
+#'                                           initMethod = "kmeans",
+#'                                           nInitIterations = 2,
+#'                                           normalize = "Yes")
+#'
+#' # Model selection
+#' ICLmodel <- MPLNClust::ICLFunction(logLikelihood = mplnResults$logLikelihood,
+#'                                    nParameters = mplnResults$numbParameters,
+#'                                    nObservations = nrow(mplnResults$dataset),
+#'                                    clusterRunOutput = mplnResults$allResults,
+#'                                    gmin = mplnResults$gmin,
+#'                                    gmax = mplnResults$gmax,
+#'                                    parallel = FALSE)
+#'
+#' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
+#'
+#' @references
+#'
+#' Biernacki, C., G. Celeux, and G. Govaert (2000). Assessing a mixture model for
+#' clustering with the integrated classification likelihood. \emph{IEEE Transactions
+#' on Pattern Analysis and Machine Intelligence} 22.
+#'
+#' @export
+#' @importFrom mclust unmap
+#'
+ICLFunction <- function(logLikelihood,
+                        nParameters,
+                        nObservations,
+                        clusterRunOutput = NA,
+                        probaPost = NA,
+                        gmax,
+                        gmin,
+                        parallel = FALSE) {
+
+  # Performing checks
+  if (gmax < gmin) {
+    stop("gmax cannot be less than gmin.")
+  }
+
+  if(is.numeric(nParameters) != TRUE) {
+    stop("nParameters should be a vector of integers indicating
+      number of parameters for each cluster size.")
+  }
+
+  if(is.numeric(logLikelihood) != TRUE) {
+    stop("logLikelihood should be a vector of numeric values.")
+  }
+
+  if(length(logLikelihood) != (gmax - gmin + 1)) {
+    stop("logLikelihood should be a vector of length (gmax - gmin + 1).")
+  }
+
+  if(is.logical(parallel) != TRUE) {
+    stop("Should be logical, TRUE or FALSE indicating if
+      MPLNClust::mplnMCMCParallel has been used.")
+  }
+
+  if(all(is.na(probaPost)) != TRUE) {
+    if(length(probaPost) != (gmax - gmin + 1)) {
+      stop("probaPost must be a list of length (gmax - gmin + 1)
+      containing posterior probability at each g.")
+    }
+  }
+
+  if(all(is.na(clusterRunOutput)) == TRUE && all(is.na(probaPost)) == TRUE) {
+    stop("Either clusterRunOutput or probaPost must be provided.")
+  }
+
+  BIC <- - 2 * logLikelihood + (nParameters * log(nObservations))
+
+  ICL <- vector()
+
+  # if clusterRunOutput is provided by user
+  if(all(is.na(clusterRunOutput)) != TRUE) {
+    for (g in 1:(gmax - gmin + 1)) {
+      if(isTRUE(parallel) == "FALSE") {
+        # If non parallel run
+        z <- clusterRunOutput[[g]]$probaPost
+        mapz <- mclust::unmap(clusterRunOutput[[g]]$clusterlabels)
+      } else {
+        # If parallel run
+        z <- clusterRunOutput[[g]]$allResults$probaPost
+        mapz <- mclust::unmap(clusterRunOutput[[g]]$allResults$clusterlabels)
+      }
+      forICL <- function(g){sum(log(z[which(mapz[, g] == 1), g]))}
+      ICL[g] <- BIC[g] + sum(sapply(1:ncol(mapz), forICL))
+    }
+    ICLmodel <- seq(gmin, gmax, 1)[grep(min(ICL, na.rm = TRUE), ICL)]
+
+    if(isTRUE(parallel) == "FALSE") {
+      # If non parallel MCMC-EM or Variational EM run
+      ICLmodelLabels <- clusterRunOutput[[grep(min(ICL, na.rm = TRUE),
+                                               ICL)]]$clusterlabels
+    } else {
+      # If parallel MCMC-EM
+      ICLmodelLabels <- clusterRunOutput[[grep(min(ICL, na.rm = TRUE),
+                                               ICL)]]$allResults$clusterlabels
+    }
+  }
+
+  # if probaPost is provided by user
+  if(all(is.na(probaPost)) != TRUE) {
+
+    for (g in 1:(gmax - gmin + 1)) {
+      z <- probaPost[[g]]
+      mapz <- mclust::unmap(mclust::map(probaPost[[g]]))
+      forICL <- function(g){sum(log(z[which(mapz[, g] == 1), g]))}
+      ICL[g] <- BIC[g] + sum(sapply(1:ncol(mapz), forICL))
+    }
+    ICLmodel <- seq(gmin, gmax, 1)[grep(min(ICL, na.rm = TRUE), ICL)]
+    ICLmodelLabels <- mclust::map(probaPost[[grep(min(ICL, na.rm = TRUE), ICL)]])
+  }
+
+  # Check for spurious clusters
+  ICLMessage <- NA
+  if (max(ICLmodelLabels) != ICLmodel) {
+    ICLmodel <- max(ICLmodelLabels)
+    ICLMessage <- "Spurious or empty cluster resulted."
+  }
+
+  ICLresults <- list(allICLvalues = ICL,
+                     ICLmodelselected = ICLmodel,
+                     ICLmodelSelectedLabels = ICLmodelLabels,
+                     ICLMessage = ICLMessage)
+  class(ICLresults) <- "ICL"
+  return(ICLresults)
+}
+
+
+
+
+
+
+
+#' Visualize Clustered Results Via MPLN
+#'
+#' A function to visualize data and clustering results obtained
+#' from a mixtures of multivariate Poisson-log normal (MPLN) model.
+#' The function produces heatmaps and line plots of input data.
+#' If cluster membership of observations are provided, this
+#' information will be indicated in the figures. If a matrix of
+#' probabilities for the observations belonging to each cluster
+#' is provided, the option to produce a barplot of probabilities
+#' is also available.
+#'
+#'
+#' @param dataset A dataset of class matrix and type integer such that
+#'    rows correspond to observations and columns correspond to variables.
+#' @param plots A character string indicating which plots to be produced.
+#'    Options are 'heatmaps', 'lines', 'bar', and 'all'. Default is 'all'.
+#' @param probabilities A matrix of size N x C, such that rows correspond
+#'    to N observations and columns correspond to C clusters. Each row
+#'    should sum to 1. Default is NA.
+#' @param clusterMembershipVector A numeric vector of length nrow(dataset)
+#'    containing the cluster membership of each observation as generated by
+#'    mpln(). Default is NA.
+#' @param LinePlotColours Character string indicating if the line plots
+#'    should be multicoloured or monotone, in black. Options are
+#'    'multicolour' or 'black'. Default is 'black'.
+#' @param printPlot Logical indicating if plot(s) should be saved in local
+#'    directory. Default TRUE. Options TRUE or FALSE.
+#' @param fileName Unique character string indicating the name for the plot
+#'    being generated. Default is Plot_date, where date is obtained from
+#'    date().
+#' @param format Character string indicating the format of the image to
+#'    be produced. Default 'pdf'. Options 'pdf' or 'png'.
+#'
+#' @return Plotting function provides the possibility for line and heatmap
+#'    plots.
+#'
+#' @examples
+#' # Generating simulated data
+#'
+#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+#'
+#' trueSigma1 <- diag(6) * 2
+#' trueSigma2 <- diag(6)
+#'
+#'  simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
+#'                                       dimensionality = 6,
+#'                                       mixingProportions = c(0.79, 0.21),
+#'                                       mu = rbind(trueMu1, trueMu2),
+#'                                       sigma = rbind(trueSigma1, trueSigma2),
+#'                                       produceImage = "No")
+#'
+#'  MPLNClustResults <- MPLNClust::mplnVariational(
+#'                               dataset = as.matrix(simulatedCounts$dataset),
+#'                               membership = "none",
+#'                               gmin = 1,
+#'                               gmax = 2,
+#'                               initMethod = "kmeans",
+#'                               nInitIterations = 1,
+#'                               normalize = "Yes")
+#'
+#'  MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
+#'                                          plots = 'all',
+#'                                          probabilities =
+#'                                          MPLNClustResults$allResults$`G=2`$probaPost,
+#'                                          clusterMembershipVector =
+#'                                          MPLNClustResults$allResults$`G=2`$clusterlabels,
+#'                                          fileName = 'TwoClusterModel',
+#'                                          printPlot = FALSE,
+#'                                          format = 'png')
+#'
+#' @author Anjali Silva, \email{anjali.silva@uhnresearch.ca}
+#'
+#' @export
+#' @import graphics
+#' @import ggplot2
+#' @importFrom grDevices png
+#' @importFrom grDevices pdf
+#' @importFrom grDevices dev.off
+#' @importFrom RColorBrewer brewer.pal.info
+#' @importFrom RColorBrewer brewer.pal
+#' @importFrom randomcoloR distinctColorPalette
+#' @importFrom pheatmap pheatmap
+#' @importFrom gplots heatmap.2
+#' @importFrom gplots redgreen
+mplnVisualize <- function(dataset,
+                          plots = 'all',
+                          probabilities = NA,
+                          clusterMembershipVector = NA,
+                          fileName = paste0('Plot_',date()),
+                          LinePlotColours = "black",
+                          printPlot = TRUE,
+                          format = 'pdf') {
+
+  # Checking user input
+  if (typeof(dataset) != "double" & typeof(dataset) != "integer") {
+    stop("\n Dataset type needs to be integer")
+  }
+
+  if (is.matrix(dataset) != TRUE) {
+    stop("\n Dataset needs to be a matrix")
+  }
+
+  if (is.character(plots) == TRUE) {
+    plotsMethodsPossible<- c("all", "bar", "lines", "heatmaps")
+    if(all((plots == plotsMethodsPossible) == FALSE)) {
+      stop("initMethod should of class character, specifying
+             either: all, bar, lines, heatmaps.")
+    }
+  } else if (is.character(plots) != TRUE) {
+    stop("initMethod should of class character, specifying
+             either: all, bar, lines, heatmaps.")
+  }
+
+  if (is.logical(clusterMembershipVector) == TRUE) {
+    cat("\n clusterMembershipVector is not provided.")
+    clusterMembershipVector <- rep(1, nrow(dataset))
+
+  } else if (is.numeric(clusterMembershipVector) == TRUE) {
+    if (nrow(dataset) != length(clusterMembershipVector)) {
+      stop("\n length(clusterMembershipVector) should match
+          nrow(dataset)")
+    }
+  }
+
+
+
+  if (is.logical(probabilities) == TRUE) {
+    cat("\n Probabilities are not provided. Barplot of probabilities will not be produced.")
+  } else if (is.matrix(probabilities) == TRUE) {
+    if (nrow(probabilities) != length(clusterMembershipVector)) {
+      stop("\n length(probabilities) should match nrow(dataset)")
+    }
+    if (any(rowSums(probabilities) >= 1.01)) {
+      stop("\n rowSums(probabilities) reveals at least
+          one observation has probability != 1.")
+    }
+    if (any(rowSums(probabilities) <= 0.99)) {
+      stop("\n rowSums(probabilities) reveals at least
+          one observation has probability != 1.")
+    }
+  }
+
+
+  # Obtaining path to save images
+  pathNow <- getwd()
+
+  # Saving cluster membership for each observation
+  DataPlusLabs <- cbind(dataset, clusterMembershipVector)
+  ordervector <- anothervector <- list()
+
+  # Divide observations into each cluster based on membership
+  for (i in 1:max(clusterMembershipVector)) {
+    ordervector[[i]] <- which(DataPlusLabs[,
+                                           ncol(dataset) + 1] == i)
+    # divide observations as an integer based on cluster membership
+    anothervector[[i]] <- rep(i,
+                              length(which(DataPlusLabs[,
+                                                        ncol(dataset) + 1] == i)))
+  }
+
+  vec <- unlist(ordervector) # put observations in order of cluster membership
+  colorsvector <- unlist(anothervector) # put all details together as integers
+
+  # Setting the colours
+  if(max(clusterMembershipVector) > 17) {
+    qual_col_pals <- RColorBrewer::brewer.pal.info[brewer.pal.info$category == 'qual', ]
+    coloursBarPlot <- unlist(mapply(RColorBrewer::brewer.pal,
+                                    qual_col_pals$maxcolors,
+                                    rownames(qual_col_pals)))
+  } else {
+    coloursBarPlot <- c('#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6',
+                        '#bcf60c', '#fabebe', '#008080', '#e6beff', '#9a6324',
+                        '#fffac8', '#800000', '#aaffc3', '#808000', '#ffd8b1',
+                        '#000075', '#808080')
+  }
+
+
+  # empty plots
+  heatmapOne <- heatmapTwo <- linePlots <- barPlot <- NULL
+
+  if (plots == 'all' || plots == 'heatmaps') {
+
+    # Heatmap 1
+    if (printPlot == TRUE) {
+
+      if (format == 'png') {
+        grDevices::png(paste0(pathNow, "/heatmap1_", fileName, ".png"))
+      } else {
+        grDevices::pdf(paste0(pathNow, "/heatmap1_", fileName, ".pdf"))
+      }
+
+      gplots::heatmap.2(as.matrix(dataset[vec, ]),
+                        dendrogram = "column",
+                        trace = "none",
+                        scale = "row",
+                        Rowv = FALSE, col = rev(gplots::redgreen(75)),
+                        RowSideColor = coloursBarPlot[colorsvector],
+                        labRow = FALSE,
+                        main = paste("Clustering results, G =",
+                                     max(clusterMembershipVector)))
+      graphics::par(xpd = TRUE)
+      graphics::legend(xpd = TRUE, x = -0.1, y= 0,
+                       legend = paste0("Cluster ", unique(colorsvector)),
+                       col = unique(coloursBarPlot[colorsvector]),
+                       lty = 1,
+                       lwd = 5,
+                       cex =.8, horiz = FALSE)
+
+      grDevices::dev.off()
+    }
+
+
+    # Heatmap 2
+    # Only produced if less than 17 clusters
+    if(max(clusterMembershipVector) < 18) {
+      # Defining annotation row
+      annotation_row = data.frame(Cluster = factor(clusterMembershipVector[vec]))
+      if(is.null(rownames(dataset)) == TRUE) {
+        rownames(dataset)  = paste("Gene", c(1:nrow(dataset[vec, ])))
+        rownames(annotation_row) = rownames(dataset[vec, ])
+      } else {
+        rownames(annotation_row) = rownames(dataset[vec, ])
+      }
+
+      # Define row annotation colours
+      heatMap2RowAnnotation <- c("1" = coloursBarPlot[1], "2" = coloursBarPlot[2],
+                                 "3" = coloursBarPlot[3], "4" = coloursBarPlot[4],
+                                 "5" = coloursBarPlot[5], "6" = coloursBarPlot[6],
+                                 "7" = coloursBarPlot[7], "8" = coloursBarPlot[8],
+                                 "9" = coloursBarPlot[9], "10" = coloursBarPlot[10],
+                                 "11" = coloursBarPlot[11], "12" = coloursBarPlot[12],
+                                 "13" = coloursBarPlot[13], "14" = coloursBarPlot[14],
+                                 "15" = coloursBarPlot[15], "16" = coloursBarPlot[16],
+                                 "17" = coloursBarPlot[17])
+
+      # Show row names or not based on dataset size
+      if(nrow(dataset) < 50){
+        showLabels = TRUE
+      } else {
+        showLabels = FALSE
+      }
+
+
+      if (printPlot == TRUE) {
+        if (format == 'png') {
+          grDevices::png(paste0(pathNow, "/heatmap2_", fileName, ".png"))
+        } else {
+          grDevices::pdf(paste0(pathNow, "/heatmap2_", fileName, ".pdf"))
+        }
+
+        heatmapFunctionTwo(dataset = dataset,
+                           vec = vec,
+                           showLabels = showLabels,
+                           heatMap2RowAnnotation = heatMap2RowAnnotation,
+                           annotation_row = annotation_row,
+                           clusterMembershipVector = clusterMembershipVector)
+        grDevices::dev.off()
+      }
+
+
+      heatmapTwo <- heatmapFunctionTwo(dataset = dataset,
+                                       vec = vec,
+                                       showLabels = showLabels,
+                                       heatMap2RowAnnotation = heatMap2RowAnnotation,
+                                       annotation_row = annotation_row,
+                                       clusterMembershipVector = clusterMembershipVector)
+    }
+  }
+
+  if (plots == 'all' || plots == 'lines') {
+    # Line Plots
+
+    if (LinePlotColours == "multicolour") {
+      linePlots <- list()
+      for(cluster in unique(clusterMembershipVector)) {
+
+        # Save how many observations below to each cluster size,
+        # given by 'cluster'
+        if (length(which(DataPlusLabs[, ncol(dataset) + 1] == cluster)) == 1) {
+          toplot_1 <- as.matrix(DataPlusLabs[which(DataPlusLabs[,
+                                                                ncol(dataset) + 1] == cluster), c(1:ncol(dataset))],
+                                ncol = ncol(dataset))
+          rownames(toplot_1) <- names(which(DataPlusLabs[, ncol(dataset) + 1] == cluster))
+        } else if (length(which(DataPlusLabs[, ncol(dataset) + 1] == cluster)) > 1) {
+          toplot_1 <- as.matrix(DataPlusLabs[which(DataPlusLabs[,
+                                                                ncol(dataset) + 1] == cluster), c(1:ncol(dataset))],
+                                ncol = ncol(dataset))
+        }
+
+        # Save column mean in last row
+        toplot1 <- rbind(log(toplot_1 + 1), colMeans(log(toplot_1 + 1)))
+        # If discontinunity is needed between samples (e.g. for 6 samples)
+        # toplot1_space=cbind(toplot1[,c(1:3)],rep(NA,nrow(toplot_1)+1),
+        # toplot1[,c(4:6)])
+
+
+        if (printPlot == TRUE) {
+          if (format == 'png') {
+            grDevices::png(paste0(pathNow, "/LinePlot_Cluster", cluster,
+                                  "_", fileName, ".png"))
+          } else {
+            grDevices::pdf(paste0(pathNow, "/LinePlot_Cluster", cluster,
+                                  "_", fileName, ".pdf"))
+          }
+
+          linePlotMultiCol(dataset = dataset,
+                           toplot1 = toplot1,
+                           toplot_1 = toplot_1,
+                           coloursBarPlot = coloursBarPlot,
+                           cluster = cluster)
+          grDevices::dev.off()
+        }
+
+        linePlots[[cluster]] <- linePlotMultiCol(dataset = dataset,
+                                                 toplot1 = toplot1,
+                                                 toplot_1 = toplot_1,
+                                                 coloursBarPlot = coloursBarPlot,
+                                                 cluster = cluster)
+      }
+    } else if (LinePlotColours == "black") {
+      linePlots <- list()
+      for(cluster in unique(clusterMembershipVector)) {
+
+
+        # Save how many observations below to each cluster size,
+        # given by 'cluster'
+        if (length(which(DataPlusLabs[, ncol(dataset) + 1] == cluster)) == 1) {
+          toplot_1 <- t(as.matrix(DataPlusLabs[which(DataPlusLabs[,
+                                                                  ncol(dataset) + 1] == cluster), c(1:ncol(dataset))],
+                                  ncol = ncol(dataset)))
+          rownames(toplot_1) <- names(which(DataPlusLabs[, ncol(dataset) + 1] == cluster))
+        } else if (length(which(DataPlusLabs[, ncol(dataset) + 1] == cluster)) > 1) {
+          toplot_1 <- as.matrix(DataPlusLabs[which(DataPlusLabs[,
+                                                                ncol(dataset) + 1] == cluster), c(1:ncol(dataset))],
+                                ncol = ncol(dataset))
+        }
+
+        # Save column mean in last row
+        toplot1 <- rbind(log(toplot_1 + 1), colMeans(log(toplot_1 + 1)))
+        # If discontinunity is needed between samples (e.g. for 6 samples)
+        # toplot1_space=cbind(toplot1[,c(1:3)],rep(NA,nrow(toplot_1)+1),
+        # toplot1[,c(4:6)])
+
+        if (printPlot == TRUE) {
+          if (format == 'png') {
+            grDevices::png(paste0(pathNow, "/LinePlot_Cluster", cluster,
+                                  "_", fileName, ".png"))
+          } else {
+            grDevices::pdf(paste0(pathNow, "/LinePlot_Cluster", cluster,
+                                  "_", fileName, ".pdf"))
+          }
+          linePlotMonoCol(dataset = dataset,
+                          toplot1 = toplot1,
+                          toplot_1 = toplot_1,
+                          cluster = cluster)
+          grDevices::dev.off()
+        }
+
+        linePlots[[cluster]] <- linePlotMonoCol(dataset = dataset,
+                                                toplot1 = toplot1,
+                                                toplot_1 = toplot_1,
+                                                cluster = cluster)
+      }
+    }
+  }
+
+  if (plots == 'all' || plots == 'bar') {
+
+    if(is.logical(probabilities) == TRUE){
+      stop("\n probabilities should be provided to make bar plot.")
+    }
+
+    # Bar plot
+    tableProbabilities <- as.data.frame(cbind(Sample = c(1:nrow(probabilities)),
+                                              Cluster = mclust::map(probabilities),
+                                              probabilities))
+
+    names(tableProbabilities) <- c("Sample", "Cluster",
+                                   paste0("P", rep(1:(ncol(tableProbabilities)-2))))
+
+    tableProbabilitiesMelt <- reshape::melt(tableProbabilities,
+                                            id.vars = c("Sample","Cluster"))
+
+    if (printPlot == TRUE) {
+      barPlot <- barPlotFunction(tableProbabilitiesMelt = tableProbabilitiesMelt,
+                                 coloursBarPlot = coloursBarPlot,
+                                 probabilities = probabilities)
+      ggplot2::ggsave(paste0(pathNow,"/barplot_", fileName,".",format))
+    }
+
+    barPlot <- barPlotFunction(tableProbabilitiesMelt = tableProbabilitiesMelt,
+                               coloursBarPlot = coloursBarPlot,
+                               probabilities = probabilities)
+  }
+
+  return(list(heatmapOne,
+              heatmapTwo,
+              linePlots,
+              barPlot))
+}
+
+
+
+
+heatmapFunctionTwo <- function(dataset,
+                               vec,
+                               showLabels,
+                               heatMap2RowAnnotation,
+                               annotation_row,
+                               clusterMembershipVector) {
+  pheatmapPlot <- pheatmap::pheatmap(as.matrix(dataset[vec, ]), show_colnames = TRUE,
+                                     show_rownames = showLabels,
+                                     labels_col = colnames(dataset),
+                                     annotation_row = annotation_row,
+                                     annotation_colors = list(Cluster = heatMap2RowAnnotation[
+                                       sort(unique(clusterMembershipVector))]),
+                                     fontface = "italic", legend = TRUE, scale ="row",
+                                     border_color = "black", cluster_row = FALSE,
+                                     cluster_col = FALSE,
+                                     color =  rev(gplots::redgreen(1000)) )
+  return(pheatmapPlot)
+}
+
+
+linePlotMultiCol <- function(dataset,
+                             toplot1,
+                             toplot_1,
+                             coloursBarPlot,
+                             cluster) {
+  linePlotMultiCol <- graphics::matplot(t(toplot1), type = "l", pch = 1,
+                                        col = c(rep(coloursBarPlot[cluster], nrow(toplot_1)), 7),
+                                        xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
+                                        lty = c(rep(2, nrow(toplot_1)), 1),
+                                        lwd = c(rep(3, nrow(toplot_1)), 4),
+                                        xaxt = "n", xlim = c(1, ncol(toplot1)),
+                                        main = paste("Cluster ", cluster))
+  linePlotMultiCol <- linePlotMultiCol + axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
+  return(linePlotMultiCol)
+}
+
+
+linePlotMonoCol <- function(dataset,
+                            toplot1,
+                            toplot_1,
+                            cluster) {
+  linePlotMonoCol <- graphics::matplot(t(toplot1), type = "l", pch = 1,
+                                       col = c(rep(1, nrow(toplot_1)), 7),
+                                       xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
+                                       lty = c(rep(2, nrow(toplot_1)), 1),
+                                       lwd = c(rep(3, nrow(toplot_1)), 4),
+                                       xaxt = "n", xlim = c(1, ncol(toplot1)),
+                                       main = paste("Cluster ", cluster))
+  linePlotMonoCol <- linePlotMonoCol + axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
+  return(linePlotMonoCol)
+}
+
+
+barPlotFunction <- function(tableProbabilitiesMelt,
+                            coloursBarPlot,
+                            probabilities) {
+
+  if(is.data.frame(tableProbabilitiesMelt) != TRUE) {
+    stop("tableProbabilitiesMelt should be a data frame")
+  }
+
+  if(is.character(coloursBarPlot) != TRUE) {
+    stop("coloursBarPlot should be character")
+  }
+
+  if(is.matrix(probabilities) != TRUE) {
+    stop("probabilities should be a matrix")
+  }
+
+  barPlot <- ggplot2::ggplot(data = tableProbabilitiesMelt,
+                             ggplot2::aes(fill = variable, y = value, x = Sample))
+
+  barPlot <- barPlot + ggplot2::geom_bar(position = "fill", stat = "identity") +
+    scale_fill_manual(values = coloursBarPlot,
+                      name = "Cluster") + theme_bw() +
+    theme(text = element_text(size = 10),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          axis.text.x = element_text(face = "bold"),
+          axis.text.y = element_text(face = "bold")) +
+    coord_cartesian(ylim = c(0, 1), xlim = c(1, nrow(probabilities))) +
+    labs(x = "Observation") +
+    scale_y_continuous(name = "Posterior probability", limits = c(0: 1))
+  return(barPlot)
+}
+
+
+
+
+
+
+
+#' Generating Data Using Mixtures of MPLN
+#'
+#' This function simulates data from a mixture of MPLN model.
+#'
+#' @param nObservations A positive integer indicating the number of observations for
+#'    the dataset.
+#' @param dimensionality A positive integer indicating the dimensionality for the
+#'    dataset.
+#' @param mixingProportions A numeric vector that length equal to the number of total
+#'    components, indicating the proportion of each component. Vector content should
+#'    sum to 1.
+#' @param mu A matrix of size (dimensionality x number of components), indicating
+#'    the mean for each component. See example.
+#' @param sigma A matrix of size ((dimensionality * number of components) x
+#'    dimensionality), indicating the covariance matrix for each component.
+#'    See example.
+#' @param produceImage A character string indicating whether or not to
+#'    produce an image. Options "Yes" or "No". Image will be produced as
+#'    'Pairs plot of log-transformed data.png" in the current working
+#'    directory.
+#' @param ImageName A character string indicating name for image, if
+#'    produceImage is set to "Yes". Default is "TwoComponents".
+#'
+#' @return Returns an S3 object of class mplnDataGenerator with results.
+#' \itemize{
+#'   \item dataset - Simulated dataset.
+#'   \item trueMembership -A numeric vector indicating the membership of
+#'      each observation.
+#'   \item probaPost - A matrix indicating the posterior probability that
+#'      each observation belong to the component/cluster.
+#'   \item truenormfactors - A numeric vector indicating the true
+#'      normalization factors used for adjusting the library sizes.
+#'   \item observations - Number of observations in the simulated dataset.
+#'   \item dimensionality - Dimensionality of the simulated dataset.
+#'   \item mixingProportions - A numeric vector indicating the mixing
+#'      proportion of each component.
+#'   \item mu - True mean used for the simulated dataset.
+#'   \item sigma - True covariances used for the simulated dataset.
+#'}
+#'
+#' @examples
+#' # Generating simulated data
+#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+#'
+#' trueSigma1 <- diag(6) * 2
+#' trueSigma2 <- diag(6)
+#'
+#' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
+#'                                            dimensionality = 6,
+#'                                            mixingProportions = c(0.79, 0.21),
+#'                                            mu = rbind(trueMu1, trueMu2),
+#'                                            sigma = rbind(trueSigma1, trueSigma2),
+#'                                            produceImage = "No",
+#'                                            ImageName = "TwoComponents")
+#'
+#' @author Anjali Silva, \email{anjali.silva@uhnresearch.ca}
+#'
+#' @references
+#' Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.
+#' \emph{Biometrika} 76.
+#'
+#' Silva, A. et al. (2019). A multivariate Poisson-log normal mixture model
+#' for clustering transcriptome sequencing data. \emph{BMC Bioinformatics} 20.
+#' \href{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0}{Link}
+#'
+#' @export
+#' @import stats
+#' @importFrom mvtnorm rmvnorm
+#' @importFrom edgeR calcNormFactors
+#' @importFrom grDevices dev.off
+#' @importFrom grDevices png
+#' @importFrom graphics pairs
+mplnDataGenerator <- function(nObservations,
+                              dimensionality,
+                              mixingProportions,
+                              mu,
+                              sigma,
+                              produceImage = "No",
+                              ImageName = "sampleName") {
+
+  # Checking user input
+  if(is.numeric(nObservations) != TRUE) {
+    stop("nObservations argument should be of class numeric.")
+  }
+
+  if(is.numeric(dimensionality) != TRUE) {
+    stop("dimensionality argument should be of class numeric.")
+  }
+
+  if(is.numeric(mixingProportions) != TRUE) {
+    stop("mixingProportions argument should be a vector of class numeric.")
+  }
+
+  if (sum(mixingProportions) != 1) {
+    stop("mixingProportions argument should be a vector that sum to 1.")
+  }
+
+  if(is.matrix(mu) != TRUE) {
+    stop("mu argument should be of class matrix.")
+  }
+
+  if(ncol(mu) != dimensionality) {
+    stop("mu should be a matrix, which has number of columns equalling dimensionality.")
+  }
+
+  if(nrow(mu) != length(mixingProportions)) {
+    stop("mu should be a matrix, which has number of rows equalling number of components.")
+  }
+
+  if(is.matrix(sigma) != TRUE) {
+    stop("sigma argument should be of class matrix.")
+  }
+
+  if(ncol(sigma) != dimensionality) {
+    stop("sigma should be a matrix, which has number of columns equalling
+      dimensionality.")
+  }
+
+  if(nrow(sigma) != dimensionality * length(mixingProportions)) {
+    stop("sigma should be a matrix, which has number of rows equalling
+      (dimensionality * number of components).")
+  }
+
+  if (produceImage == "Yes" && is.character(ImageName) != TRUE) {
+    stop("ImageName should be a character string of class character.")
+  }
+
+  # Begin calculations - generate z
+  z <- t(stats::rmultinom(nObservations, size = 1, mixingProportions))
+
+  y <- theta <- nG <- vector("list", length = length(mixingProportions))
+
+  # For visualization only
+  theta2 <- matrix(NA, ncol = dimensionality, nrow = nObservations)
+
+  for (i in seq_along(1:length(mixingProportions))) {
+    nG[[i]] <- which(z[, i] == 1)
+    theta[[i]] <- mvtnorm::rmvnorm(n = length(nG[[i]]),
+                                   mean = mu[i, ],
+                                   sigma = sigma[((i - 1) *
+                                                    dimensionality + 1):(i * dimensionality), ])
+    theta2[nG[[i]], ] <- mvtnorm::rmvnorm(n = length(nG[[i]]),
+                                          mean = mu[i, ],
+                                          sigma = sigma[((i  -1) *
+                                                           dimensionality + 1):(i * dimensionality), ])
+  }
+
+  y <- matrix(NA, ncol = dimensionality, nrow = nObservations)
+  for (i in seq_along(1:nObservations)) {
+    for (j in seq_along(1:dimensionality)) {
+      y[i, j] <- stats::rpois(1, exp(theta2[i, j]))
+    }
+  }
+
+  norms <- log(edgeR::calcNormFactors(y))
+
+  # Generating counts with norm factors
+  y2 <- matrix(NA, ncol = dimensionality, nrow = nObservations)
+  for (i in seq_along(1:nObservations)) {
+    for (j in seq_along(1:dimensionality)) {
+      y2[i, j] <- stats::rpois(n = 1, lambda = exp(theta2[i, j] + norms[j]))
+    }
+  }
+
+  if (produceImage == "Yes") {
+    # Obtaining path to save images
+    pathNow <- getwd()
+    grDevices::png(paste0(pathNow, "/PairsPlot_", ImageName,".png"))
+    graphics::pairs(log(y2 + 1 / 100), col = mclust::map(z) + 1,
+                    main = "Pairs plot of log-transformed data")
+    grDevices::dev.off()
+  }
+
+  results <- list(dataset = y2,
+                  trueMembership = mclust::map(z),
+                  probaPost = z,
+                  trueNormFactors = norms,
+                  observations = nObservations,
+                  dimensionality = dimensionality,
+                  mixingProportions = mixingProportions,
+                  trueMu = mu,
+                  trueSigma = sigma)
+
+  class(results) <- "mplnDataGenerator"
+  return(results)
+}
+
 # [END]
