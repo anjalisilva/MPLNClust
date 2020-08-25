@@ -220,6 +220,7 @@ legend("top", inset = c(- 0.4, 0), legend = c("BIC", "ICL", "AIC", "AIC3"),
 <br>
 
 <div style="text-align:left">
+
 ## Package References
 
 [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data. *BMC Bioinformatics* 20. ](https://pubmed.ncbi.nlm.nih.gov/31311497/)
