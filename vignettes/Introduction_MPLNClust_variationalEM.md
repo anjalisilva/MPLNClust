@@ -1,36 +1,4 @@
-
----
-title: "A tour of MPLNClust with variational-EM"
-author: "Anjali Silva"
-date: "`r format(Sys.time(), '%d %b %Y')`"
-output: 
-  rmarkdown::html_vignette:
-    toc: true
-    number_sections: false
-vignette: >
-  %\VignetteIndexEntry{A tour of MPLNClust with variational-EM}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
----
-
-```{r setup, include=FALSE}
-library(knitr)
-opts_chunk$set(fig.align = "center", 
-               out.width = "90%",
-               fig.width = 6, fig.height = 5.5,
-               dev.args=list(pointsize=10),
-               par = TRUE, # needed for setting hook 
-               collapse = TRUE, # collapse input & ouput code in chunks
-               warning = FALSE)
-
-knit_hooks$set(par = function(before, options, envir)
-  { if(before && options$fig.show != "none") 
-       par(family = "sans", mar=c(4.1,4.1,1.1,1.1), mgp=c(3,1,0), tcl=-0.5)
-})
-set.seed(1) # for exact reproducibility
-```
-       
-## Introduction
+# Introduction
 
 **MPLNClust** is an R package for model-based clustering based on finite multivariate Poisson-log normal mixture modelling proposed by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). It provides functions for parameter estimation via  1) an MCMC-EM framework by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a variational Gaussian approximation with EM algorithm by [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857). Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE, if more than 10 models are considered) are offered for model selection. Also included is a function for simulating data from this model. An additional functionality is available for displaying and visualizing clustering results. **This document gives a tour of MPLNClust (version 0.1.0) functionalities, here looking at methods of parameter estimation via 2) a variational Gaussian approximation with EM algorithm by [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857)**. It was written in R Markdown, using the [knitr](https://cran.r-project.org/package=knitr) package for production. For MPLNClust functionalities via 1) an MCMC-EM framework, see the other vignette: A tour of MPLNClust with MCMC-EM. 
 
@@ -278,18 +246,3 @@ legend("top", inset = c(- 0.4, 0), legend = c("BIC", "ICL", "AIC", "AIC3"),
 
 [Si, Y. (2012). MBCluster.Seq: Model-Based Clustering for RNA-seq Data. R package version 1.0.](https://CRAN.R-project.org/package=MBCluster.Seq)
 
-
-
-----
-
-```{r}
-sessionInfo()
-```
-
----
-# This document was created based on the format used in mclust.rmd 
-# Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5:
-#   clustering, classification and density estimation using Gaussian finite
-#   mixture models The R Journal 8/1, pp. 205-233
-# https://cran.r-project.org/web/packages/mclust/vignettes/mclust.html
---- 
