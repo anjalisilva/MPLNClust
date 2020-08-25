@@ -30,16 +30,12 @@ For visualizing clustering results: __*mplnVisualize*__.
 
 Information criteria are offered for model selection: __*AICFunction*__, __*BICFunction*__, __*AIC3Function*__, __*ICLFunction*__. 
 
-The shiny implementation of *mplnVariational*: __*runMPLNClust*__. To list all functions available in the package: 
+The shiny implementation of *mplnVariational*: __*runMPLNClust*__. 
+
+To list all functions available in the package: 
 
 ``` r
 ls("package:MPLNClust")
-```
-
-For tutorials and plot interpretation, refer to the vignette:
-
-``` r
-browseVignettes("MPLNClust")
 ```
 
 Some of the visualizations that could be created, shown with simulated RNA sequencing data as an example:
@@ -94,6 +90,20 @@ To check the convergence of MCMC chains, the potential scale reduction factor an
 
 ### Variational-EM Framework for Parameter Estimation 
 [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857) proposed a variational Gaussian approximation that alleviates challenges of MCMC-EM algorithm. Here the posterior distribution is approximated by minimizing the Kullback-Leibler (KL) divergence between the true and the approximating densities. A variational-EM based framework is used for parameter estimation. This algorithm is implemented in the function __*mplnVariational*__. 
+
+
+  
+## Tutorials  
+  
+For tutorials and plot interpretation, refer to the vignette:
+
+``` r
+browseVignettes("MPLNClust")
+```
+
+or see [A tour of MPLNClust with MCMC-EM](https://github.com/anjalisilva/MPLNClust/blob/master/vignettes/Introduction_MPLNClust_MCMCEM.md) and [A tour of MPLNClust with variational-EM](https://github.com/anjalisilva/MPLNClust/blob/master/vignettes/Introduction_MPLNClust_variationalEM.md).
+  
+
 
 ## Citation for Package
 ``` r
