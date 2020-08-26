@@ -88,7 +88,9 @@ pairs(sampleData$dataset, col = sampleData$trueMembership + 1,
 
 
 ## Clustering via variational-EM
+
 <div style="text-align:left">
+  
 Once the count data is available, clustering can be performed using the *mplnVariational* function. See *?mplnVariational* for more information, an example, and references. The variational Gaussian approximation proposed by [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857) alleviates challenges of MCMC-EM algorithm, originally used in [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). Therefore, *mplnVariational* may perform better for large datasets compared to *mplnMCMCParallel* or *mplnMCMCNonParallel*.
 
 The applicability of MPLNClust was originally illustrated using RNAseq data. Therefore, normalization is performed to account for library size differences. Currently, normalization factors are calculated using trimmed mean of M values (TMM) method of edgeR package.
@@ -162,10 +164,10 @@ The two images (above, left) show heatmaps of counts in the input dataset, with 
 
 <br>
 
-
 <div style="text-align:center"><img src="varEM_barplot_AllPlotsWithProbability.png" alt="varEM_barplot_AllPlotsWithProbability" width="500"/>
 
 <div style="text-align:left">
+  
 The above plot illustrates, for each observation, the probability of belonging to component/cluster 1 (P1), to component/cluster 2 (P2) or to component/cluster 3 (P3). In this example, there were 200 observations in the dataset. The bar for each observation look monotone, indicating high confidence in belonging to the indicated component/cluster. 
 
 <br>
@@ -178,7 +180,9 @@ In an alternative case (not tested here), which resulted in the below bar plot, 
 <br>
 
 <div style="text-align:left">
+  
 ## Clustering Other Data
+
 Here, an example dataset available in the package *MBCluster.Seq* is used.
 ``` r
 # Obtain data available in package MBCluster.Seq
