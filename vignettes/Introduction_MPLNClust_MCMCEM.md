@@ -75,13 +75,17 @@ pairs(sampleData$dataset, col = sampleData$trueMembership + 1,
       main = "Pairs plot of counts") # visualize counts
 ```
 <div style="text-align:center"><img src="MCMCEM_PairsPlot_Counts.png" alt="PairsPlot_Counts" width="450"/>
+  
 <div style="text-align:left">
 
 <br>
 
 <div style="text-align:left">
+  
 ## Clustering via MCMC-EM
+
 <div style="text-align:left">
+  
 Once the count data is available, clustering can be performed using the *mplnMCMCParallel* or *mplnMCMCNonParallel* function. See *?mplnMCMCParallel* or *?mplnMCMCNonParallel* for more information, an example, and references. 
 
 The applicability of MPLNClust was originally illustrated using RNAseq data. Therefore, normalization is performed to account for library size differences. Currently, normalization factors are calculated using trimmed mean of M values (TMM) method of edgeR package.
@@ -206,6 +210,7 @@ Since argument *LinePlotColours = "multicolour"* was set, the line plots now can
 
 
 <div style="text-align:left">
+  
 The above plot illustrates, for each observation, the probability of belonging to component/cluster 1 (P1) or probability of belonging to component/cluster 2 (P2). In this example, there were 100 observations in the dataset. The bar for each observation look monotone, indicating high confidence in belonging to the indicated component/cluster. 
 
 <br>
@@ -213,6 +218,7 @@ The above plot illustrates, for each observation, the probability of belonging t
 In an alternative case (not tested here), which resulted in the below bar plot, indicates variability in probability of belonging to a component/cluster for a given observation. For example, for the first observation there is about 0.41 probability (P1) of belonging to component/cluster 1 and about a 0.59 probability (P2) of belonging to component/cluster 2. Therefore, it is assigned to component/cluster 2. Alternatively, for the 25th observation there is about 0.99 probability (P1) of belonging to component/cluster 1 and about 0.01 probability (P2) of belonging to component/cluster 2.  Therefore, it is assigned to component/cluster 1. 
 
 <div style="text-align:center"><img src="MCMCEM_barplot_AllPlotsWithProbability_LowConf.png" alt="MCMCEM_barplot_AllPlotsWithProbability_LowConf" width="500"/>
+  
 <div style="text-align:left">
 
 <br>
@@ -241,7 +247,4 @@ In an alternative case (not tested here), which resulted in the below bar plot, 
 [Robinson, M.D., and Oshlack, A. (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology 11, R25.](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25)
 
 [Schwarz, G. (1978). Estimating the dimension of a model. The Annals of Statistics 6.](https://www.jstor.org/stable/2958889?seq=1)
-
-
-----
 
