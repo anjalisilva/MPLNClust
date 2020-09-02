@@ -11,7 +11,8 @@ Description: Performs clustering using mixtures of multivariate Poisson-log norm
     and model selection using AIC, AIC3, BIC and ICL. Permit to visualize clustering results.
 Encoding: UTF-8
 LazyData: true
-Depends: R (>= 3.1.0)
+Depends: R (>= 3.4.0),
+         Rcpp (>= 0.12.0)
 biocViews: 
 Imports: 
     coda,
@@ -26,10 +27,9 @@ Imports:
     mclust,
     mvtnorm,
     randomcoloR,
-    Rcpp,
     RColorBrewer,
     reshape, 
-    rstan,
+    rstan (>= 2.18.1),
     parallel,
     pheatmap,
     shiny
@@ -42,3 +42,9 @@ Suggests:
 License: MIT + file LICENSE
 VignetteBuilder: knitr
 URL: https://github.com/anjalisilva/MPLNClust
+LinkingTo: 
+  StanHeaders (>= 2.18.0),
+  rstan (>= 2.18.1),
+  BH (>= 1.66.0-1), 
+  Rcpp (>= 0.12.0),
+  RcppEigen (>= 0.3.3.4.0)
