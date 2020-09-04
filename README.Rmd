@@ -35,7 +35,6 @@ install_github("anjalisilva/MPLNClust", build_vignettes = TRUE)
 library("MPLNClust")
 ```
 
-
 ## Overview
 
 `MPLNClust` contains 10 functions. 
