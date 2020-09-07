@@ -3442,6 +3442,8 @@ barPlotFunction <- function(tableProbabilitiesMelt,
                             coloursBarPlot,
                             probabilities) {
 
+  variable <- value <- Sample <- NULL
+
   if(is.data.frame(tableProbabilitiesMelt) != TRUE) {
     stop("tableProbabilitiesMelt should be a data frame")
   }
