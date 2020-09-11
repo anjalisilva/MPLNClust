@@ -1885,9 +1885,16 @@ varMPLNClustering <- function(dataset,
 
     for (g in 1:G) {
       obs <- which(zValue[ , g] == 1)
-      mu[[g]] <- colMeans(log(dataset[obs, ] + 1 / 6)) # starting value for mu
-      sigma[[g]] <- var(log(dataset[obs, ] + 1 / 6)) # starting value for sample covariance matrix
-      isigma[[g]] <- solve(sigma[[g]])
+      # starting value for mu
+      mu[[g]] <- colMeans(log(dataset[obs, ] + 1 / 6))
+      # starting value for sample covariance matrix
+      sigma[[g]] <- var(log(dataset[obs, ] + 1 / 6))
+      # starting value for inverse of sample covariance matrix
+      # If the inverse is not present for covariance matrix, handle that
+      isigma[[g]] <- tryCatch(solve(sigma[[g]]), error = function(err) NA)
+      if(all(is.na(isigma[[g]]))) {
+        isigma[[g]] <- solve(sigma[[g]] + 0.001) # if error with inverse
+      }
     }
 
     for (g in 1:G) {
@@ -2185,7 +2192,13 @@ varMPLNInitClustering <- function(dataset,
     mu[[g]] <- colMeans(log(dataset[obs, ] + 1 / 6)) # starting value for mu
     # starting value for sample covariance matrix
     sigma[[g]] <- cov(log(dataset[obs, ] + 1 / 6))
-    isigma[[g]] <- solve(sigma[[g]])
+    # starting value for inverse of sample covariance matrix
+    # If the inverse is not present for covariance matrix, handle that
+    isigma[[g]] <- tryCatch(solve(sigma[[g]]), error = function(err) NA)
+    if(all(is.na(isigma[[g]]))) {
+      isigma[[g]] <- solve(sigma[[g]] + 0.001) # if error with inverse
+    }
+
   }
 
   for (g in 1:G) {
@@ -3032,6 +3045,7 @@ ICLFunction <- function(logLikelihood,
 #'                                       sigma = rbind(trueSigma1, trueSigma2),
 #'                                       produceImage = "No")
 #'
+#'  # Clustering data
 #'  MPLNClustResults <- MPLNClust::mplnVariational(
 #'                               dataset = as.matrix(simulatedCounts$dataset),
 #'                               membership = "none",
@@ -3041,6 +3055,7 @@ ICLFunction <- function(logLikelihood,
 #'                               nInitIterations = 1,
 #'                               normalize = "Yes")
 #'
+#'  # Visualize data
 #'  MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
 #'                                          plots = 'all',
 #'                                          probabilities =
