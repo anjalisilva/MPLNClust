@@ -74,6 +74,7 @@ trueSigma2 <- diag(6)
                                       sigma = rbind(trueSigma1, trueSigma2),
                                       produceImage = "No")
 
+ # Clustering data
  MPLNClustResults <- MPLNClust::mplnVariational(
                               dataset = as.matrix(simulatedCounts$dataset),
                               membership = "none",
@@ -83,6 +84,7 @@ trueSigma2 <- diag(6)
                               nInitIterations = 1,
                               normalize = "Yes")
 
+ # Visualize data
  MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
                                          plots = 'all',
                                          probabilities =
