@@ -3146,10 +3146,10 @@ mplnVisualize <- function(dataset,
 
   # Setting the colours
   if(max(clusterMembershipVector) > 17) {
-    qual_col_pals <- RColorBrewer::brewer.pal.info[brewer.pal.info$category == 'qual', ]
+    qualColPals <- RColorBrewer::brewer.pal.info[brewer.pal.info$category == 'qual', ]
     coloursBarPlot <- unlist(mapply(RColorBrewer::brewer.pal,
-                                    qual_col_pals$maxcolors,
-                                    rownames(qual_col_pals)))
+                                    qualColPals$maxcolors,
+                                    rownames(qualColPals)))
   } else {
     coloursBarPlot <- c('#4363d8', '#f58231', '#911eb4', '#46f0f0', '#f032e6',
                         '#bcf60c', '#fabebe', '#008080', '#e6beff', '#9a6324',
@@ -3182,7 +3182,7 @@ mplnVisualize <- function(dataset,
                         main = paste("Clustering results, G =",
                                      max(clusterMembershipVector)))
       graphics::par(xpd = TRUE)
-      graphics::legend(xpd = TRUE, x = -0.1, y= 0,
+      graphics::legend(xpd = TRUE, x = -0.1, y = 0,
                        legend = paste0("Cluster ", unique(colorsvector)),
                        col = unique(coloursBarPlot[colorsvector]),
                        lty = 1,
@@ -3260,20 +3260,20 @@ mplnVisualize <- function(dataset,
         # Save how many observations below to each cluster size,
         # given by 'cluster'
         if (length(which(DataPlusLabs[, ncol(dataset) + 1] == cluster)) == 1) {
-          toplot_1 <- as.matrix(DataPlusLabs[which(DataPlusLabs[,
+          toPlot2 <- as.matrix(DataPlusLabs[which(DataPlusLabs[,
                                                                 ncol(dataset) + 1] == cluster), c(1:ncol(dataset))],
                                 ncol = ncol(dataset))
-          rownames(toplot_1) <- names(which(DataPlusLabs[, ncol(dataset) + 1] == cluster))
+          rownames(toPlot2) <- names(which(DataPlusLabs[, ncol(dataset) + 1] == cluster))
         } else if (length(which(DataPlusLabs[, ncol(dataset) + 1] == cluster)) > 1) {
-          toplot_1 <- as.matrix(DataPlusLabs[which(DataPlusLabs[,
+          toPlot2 <- as.matrix(DataPlusLabs[which(DataPlusLabs[,
                                                                 ncol(dataset) + 1] == cluster), c(1:ncol(dataset))],
                                 ncol = ncol(dataset))
         }
 
         # Save column mean in last row
-        toplot1 <- rbind(log(toplot_1 + 1), colMeans(log(toplot_1 + 1)))
+        toplot1 <- rbind(log(toPlot2 + 1), colMeans(log(toPlot2 + 1)))
         # If discontinunity is needed between samples (e.g. for 6 samples)
-        # toplot1_space=cbind(toplot1[,c(1:3)],rep(NA,nrow(toplot_1)+1),
+        # toplot1_space=cbind(toplot1[,c(1:3)],rep(NA,nrow(toPlot2)+1),
         # toplot1[,c(4:6)])
 
 
@@ -3288,7 +3288,7 @@ mplnVisualize <- function(dataset,
 
           linePlotMultiCol(dataset = dataset,
                            toplot1 = toplot1,
-                           toplot_1 = toplot_1,
+                           toPlot2 = toPlot2,
                            coloursBarPlot = coloursBarPlot,
                            cluster = cluster)
           grDevices::dev.off()
@@ -3296,7 +3296,7 @@ mplnVisualize <- function(dataset,
 
         linePlots[[cluster]] <- linePlotMultiCol(dataset = dataset,
                                                  toplot1 = toplot1,
-                                                 toplot_1 = toplot_1,
+                                                 toPlot2 = toPlot2,
                                                  coloursBarPlot = coloursBarPlot,
                                                  cluster = cluster)
       }
@@ -3308,20 +3308,20 @@ mplnVisualize <- function(dataset,
         # Save how many observations below to each cluster size,
         # given by 'cluster'
         if (length(which(DataPlusLabs[, ncol(dataset) + 1] == cluster)) == 1) {
-          toplot_1 <- t(as.matrix(DataPlusLabs[which(DataPlusLabs[,
+          toPlot2 <- t(as.matrix(DataPlusLabs[which(DataPlusLabs[,
                                                                   ncol(dataset) + 1] == cluster), c(1:ncol(dataset))],
                                   ncol = ncol(dataset)))
-          rownames(toplot_1) <- names(which(DataPlusLabs[, ncol(dataset) + 1] == cluster))
+          rownames(toPlot2) <- names(which(DataPlusLabs[, ncol(dataset) + 1] == cluster))
         } else if (length(which(DataPlusLabs[, ncol(dataset) + 1] == cluster)) > 1) {
-          toplot_1 <- as.matrix(DataPlusLabs[which(DataPlusLabs[,
+          toPlot2 <- as.matrix(DataPlusLabs[which(DataPlusLabs[,
                                                                 ncol(dataset) + 1] == cluster), c(1:ncol(dataset))],
                                 ncol = ncol(dataset))
         }
 
         # Save column mean in last row
-        toplot1 <- rbind(log(toplot_1 + 1), colMeans(log(toplot_1 + 1)))
+        toplot1 <- rbind(log(toPlot2 + 1), colMeans(log(toPlot2 + 1)))
         # If discontinunity is needed between samples (e.g. for 6 samples)
-        # toplot1_space=cbind(toplot1[,c(1:3)],rep(NA,nrow(toplot_1)+1),
+        # toplot1_space=cbind(toplot1[,c(1:3)],rep(NA,nrow(toPlot2)+1),
         # toplot1[,c(4:6)])
 
         if (printPlot == TRUE) {
@@ -3334,14 +3334,14 @@ mplnVisualize <- function(dataset,
           }
           linePlotMonoCol(dataset = dataset,
                           toplot1 = toplot1,
-                          toplot_1 = toplot_1,
+                          toPlot2 = toPlot2,
                           cluster = cluster)
           grDevices::dev.off()
         }
 
         linePlots[[cluster]] <- linePlotMonoCol(dataset = dataset,
                                                 toplot1 = toplot1,
-                                                toplot_1 = toplot_1,
+                                                toPlot2 = toPlot2,
                                                 cluster = cluster)
       }
     }
@@ -3407,14 +3407,14 @@ heatmapFunctionTwo <- function(dataset,
 
 linePlotMultiCol <- function(dataset,
                              toplot1,
-                             toplot_1,
+                             toPlot2,
                              coloursBarPlot,
                              cluster) {
   linePlotMultiCol <- graphics::matplot(t(toplot1), type = "l", pch = 1,
-                                        col = c(rep(coloursBarPlot[cluster], nrow(toplot_1)), 7),
+                                        col = c(rep(coloursBarPlot[cluster], nrow(toPlot2)), 7),
                                         xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
-                                        lty = c(rep(2, nrow(toplot_1)), 1),
-                                        lwd = c(rep(3, nrow(toplot_1)), 4),
+                                        lty = c(rep(2, nrow(toPlot2)), 1),
+                                        lwd = c(rep(3, nrow(toPlot2)), 4),
                                         xaxt = "n", xlim = c(1, ncol(toplot1)),
                                         main = paste("Cluster ", cluster))
   linePlotMultiCol <- linePlotMultiCol + axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
@@ -3424,13 +3424,13 @@ linePlotMultiCol <- function(dataset,
 
 linePlotMonoCol <- function(dataset,
                             toplot1,
-                            toplot_1,
+                            toPlot2,
                             cluster) {
   linePlotMonoCol <- graphics::matplot(t(toplot1), type = "l", pch = 1,
-                                       col = c(rep(1, nrow(toplot_1)), 7),
+                                       col = c(rep(1, nrow(toPlot2)), 7),
                                        xlab = "Samples", ylab = "Expression (log counts)", cex = 1,
-                                       lty = c(rep(2, nrow(toplot_1)), 1),
-                                       lwd = c(rep(3, nrow(toplot_1)), 4),
+                                       lty = c(rep(2, nrow(toPlot2)), 1),
+                                       lwd = c(rep(3, nrow(toPlot2)), 4),
                                        xaxt = "n", xlim = c(1, ncol(toplot1)),
                                        main = paste("Cluster ", cluster))
   linePlotMonoCol <- linePlotMonoCol + axis(1, at = c(1:ncol(dataset)), labels = colnames(dataset))
