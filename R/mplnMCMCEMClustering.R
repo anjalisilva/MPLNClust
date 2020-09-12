@@ -1893,7 +1893,7 @@ varMPLNClustering <- function(dataset,
       # If the inverse is not present for covariance matrix, handle that
       isigma[[g]] <- tryCatch(solve(sigma[[g]]), error = function(err) NA)
       if(all(is.na(isigma[[g]]))) {
-        isigma[[g]] <- solve(sigma[[g]] + 0.001) # if error with inverse
+        isigma[[g]] <- diag(ncol(dataset[obs, ])) # if error with inverse
       }
     }
 
@@ -2196,7 +2196,7 @@ varMPLNInitClustering <- function(dataset,
     # If the inverse is not present for covariance matrix, handle that
     isigma[[g]] <- tryCatch(solve(sigma[[g]]), error = function(err) NA)
     if(all(is.na(isigma[[g]]))) {
-      isigma[[g]] <- solve(sigma[[g]] + 0.001) # if error with inverse
+      isigma[[g]] <- diag(ncol(dataset[obs, ])) # if error with inverse
     }
 
   }
