@@ -2014,7 +2014,7 @@ varMPLNClustering <- function(dataset,
 
       # check for error, if rowsums are zero
       rowSumsZero <- which(rowSums(forz) == 0)
-      if(length(rowSumsZero) > 1) {
+      if(length(rowSumsZero) > 0) {
         forz[rowSumsZero, ] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
                                                            centers = G,
                                                            nstart = 100)$cluster)[rowSumsZero, ]
@@ -2293,7 +2293,7 @@ varMPLNInitClustering <- function(dataset,
 
       # check for error, if rowsums are zero
       rowSumsZero <- which(rowSums(forz) == 0)
-      if(length(rowSumsZero) > 1) {
+      if(length(rowSumsZero) > 0) {
         forz[rowSumsZero, ] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
                                                            centers = G,
                                                            nstart = 100)$cluster)[rowSumsZero, ]
