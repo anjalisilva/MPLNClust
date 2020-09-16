@@ -1885,15 +1885,26 @@ varMPLNClustering <- function(dataset,
 
     for (g in 1:G) {
       obs <- which(zValue[ , g] == 1)
-      # starting value for mu
-      mu[[g]] <- colMeans(log(dataset[obs, ] + 1 / 6))
-      # starting value for sample covariance matrix
-      sigma[[g]] <- var(log(dataset[obs, ] + 1 / 6))
-      # starting value for inverse of sample covariance matrix
-      # If the inverse is not present for covariance matrix, handle that
-      isigma[[g]] <- tryCatch(solve(sigma[[g]]), error = function(err) NA)
-      if(all(is.na(isigma[[g]]))) {
-        isigma[[g]] <- diag(ncol(dataset[obs, ])) # if error with inverse
+      if(length(obs) > 1) {
+        mu[[g]] <- colMeans(log(dataset[obs, ] + 1 / 6)) # starting value for mu
+        # starting value for sample covariance matrix
+        sigma[[g]] <- cov(log(dataset[obs, ] + 1 / 6))
+        # starting value for inverse of sample covariance matrix
+        # If the inverse is not present for covariance matrix, handle that
+        isigma[[g]] <- tryCatch(solve(sigma[[g]]), error = function(err) NA)
+        if(all(is.na(isigma[[g]]))) {
+          isigma[[g]] <- diag(ncol(dataset[obs, ])) # if error with inverse
+        }
+      } else if(length(obs) == 1) {
+        mu[[g]] <- log(dataset[obs, ] + 1 / 6) # starting value for mu
+        # starting value for sample covariance matrix
+        sigma[[g]] <- diag(ncol(dataset))
+        # starting value for inverse of sample covariance matrix
+        # If the inverse is not present for covariance matrix, handle that
+        isigma[[g]] <- tryCatch(solve(sigma[[g]]), error = function(err) NA)
+        if(all(is.na(isigma[[g]]))) {
+          isigma[[g]] <- diag(ncol(dataset[obs, ])) # if error with inverse
+        }
       }
     }
 
@@ -2189,16 +2200,27 @@ varMPLNInitClustering <- function(dataset,
 
   for (g in 1:G) {
     obs <- which(zValue[ , g] == 1)
-    mu[[g]] <- colMeans(log(dataset[obs, ] + 1 / 6)) # starting value for mu
-    # starting value for sample covariance matrix
-    sigma[[g]] <- cov(log(dataset[obs, ] + 1 / 6))
-    # starting value for inverse of sample covariance matrix
-    # If the inverse is not present for covariance matrix, handle that
-    isigma[[g]] <- tryCatch(solve(sigma[[g]]), error = function(err) NA)
-    if(all(is.na(isigma[[g]]))) {
-      isigma[[g]] <- diag(ncol(dataset[obs, ])) # if error with inverse
+    if(length(obs) > 1) {
+      mu[[g]] <- colMeans(log(dataset[obs, ] + 1 / 6)) # starting value for mu
+      # starting value for sample covariance matrix
+      sigma[[g]] <- cov(log(dataset[obs, ] + 1 / 6))
+      # starting value for inverse of sample covariance matrix
+      # If the inverse is not present for covariance matrix, handle that
+      isigma[[g]] <- tryCatch(solve(sigma[[g]]), error = function(err) NA)
+      if(all(is.na(isigma[[g]]))) {
+        isigma[[g]] <- diag(ncol(dataset[obs, ])) # if error with inverse
+      }
+    } else if(length(obs) == 1) {
+      mu[[g]] <- log(dataset[obs, ] + 1 / 6) # starting value for mu
+      # starting value for sample covariance matrix
+      sigma[[g]] <- diag(ncol(dataset))
+      # starting value for inverse of sample covariance matrix
+      # If the inverse is not present for covariance matrix, handle that
+      isigma[[g]] <- tryCatch(solve(sigma[[g]]), error = function(err) NA)
+      if(all(is.na(isigma[[g]]))) {
+        isigma[[g]] <- diag(ncol(dataset[obs, ])) # if error with inverse
+      }
     }
-
   }
 
   for (g in 1:G) {
