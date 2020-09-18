@@ -2248,8 +2248,13 @@ varMPLNInitClustering <- function(dataset,
       for (i in 1:nObservations) {
         dGX[[g]][[i]] <- diag(exp((log(normFactors) + mPreviousValue[[g]][i, ]) +
                                     0.5 * diag(S[[g]][[i]])), dimensionality) + isigma[[g]]
-        S[[g]][[i]] <- solve(dGX[[g]][[i]]) # update S
-        # will be used for updating sample covariance matrix
+        # update S; will be used for updating sample covariance matrix
+        S[[g]][[i]] <- tryCatch(solve(dGX[[g]][[i]]), error = function(err) NA)
+        if(all(is.na(S[[g]][[i]]))) {
+          S[[g]][[i]] <- diag(ncol(dGX[[g]][[i]])) # if error with inverse
+        }
+
+
         zSValue[[g]][[i]] <- zValue[i, g] * S[[g]][[i]]
         GX[[g]][[i]] <- dataset[i, ] - exp(mPreviousValue[[g]][i, ] +
                                              log(normFactors) + 0.5 * diag(S[[g]][[i]])) -
