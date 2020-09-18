@@ -2035,6 +2035,18 @@ varMPLNClustering <- function(dataset,
       }
     }
 
+    # if z generated has less clusters than numbG, then use random initialization
+    checkClusters <- 0
+    if(length(unique(mclust::map(zvalue))) < G) {
+      while(! checkClusters) {
+        zvalue <- randomInitfunction(numbG = G, nObservations = nObservations)
+        if(length(unique(mclust::map(zvalue))) == G) {
+          checkClusters <- 1
+          # cat("\n checkClusters", checkClusters)
+        }
+      }
+    }
+
 
     # Calculate log-likelihood
     logLikelihood[itOuter] <- sum(log(rowSums(forz)))
@@ -2123,9 +2135,16 @@ varMPLNInitialization <- function(dataset,
     if (initMethod == "kmeans" | is.na(initMethod)) {
       zValue[[iterations]] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
                                                           centers = numbG, nstart = 100)$cluster )
-      # if z generated has less columns than numbG, then use random initialization
-      if(ncol(zValue[[iterations]]) < numbG) {
-        zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+      # if z generated has less clusters than numbG, then use random initialization
+      checkClusters <- 0
+      if(length(unique(mclust::map(zValue[[iterations]]))) < numbG) {
+        while(! checkClusters) {
+          zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+          if(length(unique(mclust::map(zValue[[iterations]]))) == numbG) {
+            checkClusters <- 1
+            # cat("\n checkClusters", checkClusters)
+          }
+        }
       }
 
     } else if (initMethod == "random") {
@@ -2134,25 +2153,46 @@ varMPLNInitialization <- function(dataset,
     } else if (initMethod == "medoids") {
       zValue[[iterations]] <- mclust::unmap(cluster::pam(log(dataset + 1 / 3),
                                                          k = numbG,  cluster.only = TRUE))
-      # if z generated has less columns than numbG, then use random initialization
-      if(ncol(zValue[[iterations]]) < numbG) {
-        zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+      # if z generated has less clusters than numbG, then use random initialization
+      checkClusters <- 0
+      if(length(unique(mclust::map(zValue[[iterations]]))) < numbG) {
+        while(! checkClusters) {
+          zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+          if(length(unique(mclust::map(zValue[[iterations]]))) == numbG) {
+            checkClusters <- 1
+            # cat("\n checkClusters", checkClusters)
+          }
+        }
       }
 
     } else if (initMethod == "clara") {
       zValue[[iterations]] <- mclust::unmap(cluster::clara(log(dataset + 1 / 3),
                                                            k = numbG)$cluster)
-      # if z generated has less columns than numbG, then use random initialization
-      if(ncol(zValue[[iterations]]) < numbG) {
-        zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+      # if z generated has less clusters than numbG, then use random initialization
+      checkClusters <- 0
+      if(length(unique(mclust::map(zValue[[iterations]]))) < numbG) {
+        while(! checkClusters) {
+          zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+          if(length(unique(mclust::map(zValue[[iterations]]))) == numbG) {
+            checkClusters <- 1
+            # cat("\n checkClusters", checkClusters)
+          }
+        }
       }
 
     } else if (initMethod == "fanny") {
       zValue[[iterations]] <- mclust::unmap(cluster::fanny(log(dataset + 1 / 3),
                                                            k = numbG, memb.exp = numbG, cluster.only = TRUE)$clustering)
-      # if z generated has less columns than numbG, then use random initialization
-      if(ncol(zValue[[iterations]]) < numbG) {
-        zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+      # if z generated has less clusters than numbG, then use random initialization
+      checkClusters <- 0
+      if(length(unique(mclust::map(zValue[[iterations]]))) < numbG) {
+        while(! checkClusters) {
+          zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+          if(length(unique(mclust::map(zValue[[iterations]]))) == numbG) {
+            checkClusters <- 1
+            # cat("\n checkClusters", checkClusters)
+          }
+        }
       }
     }
 
@@ -2162,8 +2202,8 @@ varMPLNInitialization <- function(dataset,
                                                     zValue = zValue[[iterations]],
                                                     normFactors = normFactors,
                                                     maxIterations = 10)
-    # maxIterations set to 10 for initialization
 
+    # maxIterations set to 10 for initialization
     logLinit[iterations] <-
       unlist(utils::tail((initRuns[[iterations]]$logLikelihood), n = 1))
   }
@@ -2328,6 +2368,19 @@ varMPLNInitClustering <- function(dataset,
       } else {
         zvalue <- forz / rowSums(forz)
       }
+
+      # if z generated has less clusters than numbG, then use random initialization
+      checkClusters <- 0
+      if(length(unique(mclust::map(zvalue))) < G) {
+        while(! checkClusters) {
+          zvalue <- randomInitfunction(numbG = G, nObservations = nObservations)
+          if(length(unique(mclust::map(zvalue))) == G) {
+            checkClusters <- 1
+            # cat("\n checkClusters", checkClusters)
+          }
+        }
+      }
+
     }
 
 
