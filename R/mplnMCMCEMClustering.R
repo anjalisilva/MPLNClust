@@ -1137,28 +1137,6 @@ initializationRun <- function(gmodel,
   nObservations <- nrow(dataset)
   dimensionality <- ncol(dataset)
 
-  # Internal function for random initialization
-  randomInitfunction <- function(gmodel, nObservations) {
-    if(gmodel == 1) { # generating z if g=1
-      z <- as.matrix(rep.int(1, times = nObservations),
-                          ncol = gmodel,
-                          nrow = nObservations)
-    } else { # generating z if g>1
-      zValueConv <- 0
-      while(! zValueConv) {
-        # ensure that dimension of z is same as G (i.e.,
-        # if one column contains all 0s, then generate z again)
-        z <- t(stats::rmultinom(nObservations, size = 1,
-                                     prob = rep(1 / gmodel, gmodel)))
-        if(length(which(colSums(z) > 0)) == gmodel) {
-          zValueConv <- 1
-        }
-      }
-    }
-    return(z)
-  }
-
-
   for(iterations in seq_along(1:initIterations)) {
     # setting seed, to ensure if multiple iterations are selected by
     # user, then each run will give a different result.
@@ -2039,7 +2017,7 @@ varMPLNClustering <- function(dataset,
     checkClusters <- 0
     if(length(unique(mclust::map(zvalue))) < G) {
       while(! checkClusters) {
-        zvalue <- randomInitfunction(numbG = G, nObservations = nObservations)
+        zvalue <- randomInitfunction(gmodel = G, nObservations = nObservations)
         if(length(unique(mclust::map(zvalue))) == G) {
           checkClusters <- 1
           # cat("\n checkClusters", checkClusters)
@@ -2107,26 +2085,6 @@ varMPLNInitialization <- function(dataset,
   zValue <- initRuns <- list()
   logLinit <- vector()
 
-  # Internal function for random initialization
-  randomInitfunction <- function(numbG, nObservations) {
-    if(numbG == 1) { # generating zValue if g=1
-      zValue <- as.matrix(rep.int(1, times = nObservations),
-                          ncol = numbG,
-                          nrow = nObservations)
-    } else { # generating zValue if g>1
-      zValueConv <- 0
-      while(! zValueConv) {
-        # ensure that dimension of zValue is same as G (i.e.,
-        # if one column contains all 0s, then generate zValue again)
-        zValue <- t(stats::rmultinom(nObservations, size = 1,
-                                     prob = rep(1 / numbG, numbG)))
-        if(length(which(colSums(zValue) > 0)) == numbG) {
-          zValueConv <- 1
-        }
-      }
-    }
-    return(zValue)
-  }
 
   for(iterations in seq_along(1:nInitIterations)) {
     # setting seed, to ensure if multiple iterations are selected by
@@ -2139,7 +2097,7 @@ varMPLNInitialization <- function(dataset,
       checkClusters <- 0
       if(length(unique(mclust::map(zValue[[iterations]]))) < numbG) {
         while(! checkClusters) {
-          zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+          zValue[[iterations]] <- randomInitfunction(gmodel = numbG, nObservations = nObservations)
           if(length(unique(mclust::map(zValue[[iterations]]))) == numbG) {
             checkClusters <- 1
             # cat("\n checkClusters", checkClusters)
@@ -2148,7 +2106,7 @@ varMPLNInitialization <- function(dataset,
       }
 
     } else if (initMethod == "random") {
-      zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+      zValue[[iterations]] <- randomInitfunction(gmodel = numbG, nObservations = nObservations)
 
     } else if (initMethod == "medoids") {
       zValue[[iterations]] <- mclust::unmap(cluster::pam(log(dataset + 1 / 3),
@@ -2157,7 +2115,7 @@ varMPLNInitialization <- function(dataset,
       checkClusters <- 0
       if(length(unique(mclust::map(zValue[[iterations]]))) < numbG) {
         while(! checkClusters) {
-          zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+          zValue[[iterations]] <- randomInitfunction(gmodel = numbG, nObservations = nObservations)
           if(length(unique(mclust::map(zValue[[iterations]]))) == numbG) {
             checkClusters <- 1
             # cat("\n checkClusters", checkClusters)
@@ -2172,7 +2130,7 @@ varMPLNInitialization <- function(dataset,
       checkClusters <- 0
       if(length(unique(mclust::map(zValue[[iterations]]))) < numbG) {
         while(! checkClusters) {
-          zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+          zValue[[iterations]] <- randomInitfunction(gmodel = numbG, nObservations = nObservations)
           if(length(unique(mclust::map(zValue[[iterations]]))) == numbG) {
             checkClusters <- 1
             # cat("\n checkClusters", checkClusters)
@@ -2187,7 +2145,7 @@ varMPLNInitialization <- function(dataset,
       checkClusters <- 0
       if(length(unique(mclust::map(zValue[[iterations]]))) < numbG) {
         while(! checkClusters) {
-          zValue[[iterations]] <- randomInitfunction(numbG = numbG, nObservations = nObservations)
+          zValue[[iterations]] <- randomInitfunction(gmodel = numbG, nObservations = nObservations)
           if(length(unique(mclust::map(zValue[[iterations]]))) == numbG) {
             checkClusters <- 1
             # cat("\n checkClusters", checkClusters)
@@ -2373,7 +2331,7 @@ varMPLNInitClustering <- function(dataset,
       checkClusters <- 0
       if(length(unique(mclust::map(zvalue))) < G) {
         while(! checkClusters) {
-          zvalue <- randomInitfunction(numbG = G, nObservations = nObservations)
+          zvalue <- randomInitfunction(gmodel = G, nObservations = nObservations)
           if(length(unique(mclust::map(zvalue))) == G) {
             checkClusters <- 1
             # cat("\n checkClusters", checkClusters)
@@ -2434,6 +2392,28 @@ varMPLNInitClustering <- function(dataset,
 }
 
 
+
+
+# Internal function for random initialization
+randomInitfunction <- function(gmodel, nObservations) {
+  if(gmodel == 1) { # generating z if g = 1
+    zvalueRandomInit <- as.matrix(rep.int(1, times = nObservations),
+                   ncol = gmodel,
+                   nrow = nObservations)
+  } else { # generating z if g > 1
+    zValueConv <- 0
+    while(! zValueConv) {
+      # ensure that dimension of z is same as G (i.e.,
+      # if one column contains all 0s, then generate z again)
+      zvalueRandomInit <- t(stats::rmultinom(nObservations, size = 1,
+                              prob = rep(1 / gmodel, gmodel)))
+      if(length(which(colSums(zvalueRandomInit) > 0)) == gmodel) {
+        zValueConv <- 1
+      }
+    }
+  }
+  return(zvalueRandomInit)
+}
 
 
 
