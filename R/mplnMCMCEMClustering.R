@@ -2073,8 +2073,8 @@ varMPLNClustering <- function(dataset,
   Results <- list(piG = piG,
                   mu = mu,
                   sigma = sigma,
-                  probaPost = zValue,
-                  clusterlabels = mclust::map(zValue),
+                  probaPost = zvalue,
+                  clusterlabels = mclust::map(zvalue),
                   logLikelihood = logLikelihood)
 
   class(Results) <- "varMPLNClustering"
@@ -2365,10 +2365,10 @@ varMPLNInitClustering <- function(dataset,
                   mu = mu,
                   sigma = sigma,
                   isigma = isigma,
-                  zValue = zValue,
+                  zValue = zvalue,
                   m = m,
                   S = S,
-                  clusterlabels = mclust::map(zValue),
+                  clusterlabels = mclust::map(zvalue),
                   logLikelihood = logLikelihood)
 
   class(Results) <- "varMPLNInitClustering"
