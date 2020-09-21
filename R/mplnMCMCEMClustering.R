@@ -3027,8 +3027,8 @@ ICLFunction <- function(logLikelihood,
       if(isTRUE(parallel) == "FALSE") {
         # If non parallel run
 
-        # check if clusterResults[[g]] is NA
-        if(all(is.na(clusterResults[[g]])) != TRUE) {
+        # check if clusterRunOutput[[g]] is NA
+        if(all(is.na(clusterRunOutput[[g]])) != TRUE) {
           z <- clusterRunOutput[[g]]$probaPost
           mapz <- mclust::unmap(clusterRunOutput[[g]]$clusterlabels)
         }
@@ -3041,9 +3041,9 @@ ICLFunction <- function(logLikelihood,
       }
       forICL <- function(g){sum(log(z[which(mapz[, g] == 1), g]))}
 
-      if(all(is.na(clusterResults[[g]])) != TRUE) {
+      if(all(is.na(clusterRunOutput[[g]])) != TRUE) {
         ICL[g] <- BIC[g] + sum(sapply(1:ncol(mapz), forICL))
-      } else if(all(is.na(clusterResults[[g]])) == TRUE) {
+      } else if(all(is.na(clusterRunOutput[[g]])) == TRUE) {
         ICL[g] <- NA
       }
 
