@@ -1716,6 +1716,7 @@ mplnVariational <- function(dataset,
                                                   G = clustersize,
                                                   maxIterations = 1000,
                                                   normFactors = normFactors)
+    # cat("\n Legnth of clusterResults is ", length(clusterResults))
   }
 
   names(clusterResults) <- paste0(rep("G=", length(seq(gmin, gmax, 1))), seq(gmin, gmax, 1))
@@ -1731,9 +1732,17 @@ mplnVariational <- function(dataset,
       clustersize <- seq(gmin, gmax, 1)[g]
     }
 
-    logLikelihood[g] <- unlist(utils::tail(clusterResults[[g]]$logLikelihood, n = 1))
+    if(all(is.na(clusterResults[[g]])) != TRUE) {
+      logLikelihood[g] <- unlist(utils::tail(clusterResults[[g]]$logLikelihood, n = 1))
+    } else if(all(is.na(clusterResults[[g]])) == TRUE){
+      logLikelihood[g] <- NA
+    }
 
-    nParameters[g] <- calcParameters(numberG = clustersize, dimensionality = dimensionality)
+    if(all(is.na(clusterResults[[g]])) != TRUE) {
+      nParameters[g] <- calcParameters(numberG = clustersize, dimensionality = dimensionality)
+    } else if(all(is.na(clusterResults[[g]])) == TRUE){
+      nParameters[g] <- NA
+    }
 
     if (g == max(1:(gmax - gmin + 1))) { # starting model selection
       bic <- BICFunction(logLikelihood = logLikelihood,
@@ -1743,6 +1752,7 @@ mplnVariational <- function(dataset,
                          gmin = gmin,
                          gmax = gmax,
                          parallel = FALSE)
+      # cat("\n Done BIC")
 
       icl <- ICLFunction(logLikelihood = logLikelihood,
                          nParameters = nParameters,
@@ -1751,6 +1761,7 @@ mplnVariational <- function(dataset,
                          gmax = gmax,
                          clusterRunOutput = clusterResults,
                          parallel = FALSE)
+      # cat("\n Done ICL")
 
       aic <- AICFunction(logLikelihood = logLikelihood,
                          nParameters = nParameters,
@@ -1758,6 +1769,7 @@ mplnVariational <- function(dataset,
                          gmin = gmin,
                          gmax = gmax,
                          parallel = FALSE)
+      # cat("\n Done AIC")
 
       aic3 <- AIC3Function(logLikelihood = logLikelihood,
                            nParameters = nParameters,
@@ -1765,8 +1777,8 @@ mplnVariational <- function(dataset,
                            gmin = gmin,
                            gmax = gmax,
                            parallel = FALSE)
+      # cat("\n Done AIC3")
     }
-
   }
 
 
@@ -1939,6 +1951,11 @@ varMPLNClustering <- function(dataset,
         dGX[[g]][[i]] <- diag(exp((log(normFactors) + mPreviousValue[[g]][i, ]) +
                                     0.5 * diag(S[[g]][[i]])), dimensionality) + isigma[[g]]
         S[[g]][[i]] <- solve(dGX[[g]][[i]]) # update S
+        # update S; will be used for updating sample covariance matrix
+        # S[[g]][[i]] <- tryCatch(solve(dGX[[g]][[i]]), error = function(err) NA)
+        # if(all(is.na(S[[g]][[i]]))) {
+        #   S[[g]][[i]] <- diag(ncol(dGX[[g]][[i]])) # if error with inverse
+        # }
         zSValue[[g]][[i]] <- zValue[i, g] * S[[g]][[i]] # will be used for updating sample covariance matrix
         GX[[g]][[i]] <- dataset[i, ] - exp(mPreviousValue[[g]][i, ] +
                                              log(normFactors) + 0.5 * diag(S[[g]][[i]])) -
@@ -2014,61 +2031,74 @@ varMPLNClustering <- function(dataset,
     }
 
     # if z generated has less clusters than numbG, then use random initialization
-    checkClusters <- 0
+    # checkClusters <- 0
+    # if(length(unique(mclust::map(zvalue))) < G) {
+    #   while(! checkClusters) {
+    #     zvalue <- randomInitfunction(gmodel = G, nObservations = nObservations)
+    #     if(length(unique(mclust::map(zvalue))) == G) {
+    #       checkClusters <- 1
+    #       # cat("\n checkClusters", checkClusters)
+    #     }
+    #   }
+    # }
+
+    # if z generated has less clusters than numbG, then NA
     if(length(unique(mclust::map(zvalue))) < G) {
-      while(! checkClusters) {
-        zvalue <- randomInitfunction(gmodel = G, nObservations = nObservations)
-        if(length(unique(mclust::map(zvalue))) == G) {
-          checkClusters <- 1
-          # cat("\n checkClusters", checkClusters)
+      cat("\n length(unique(mclust::map(zvalue))) < G for G =", G)
+      checks <- 2
+
+    } else { # if z generated clusters == numbG
+
+      # Calculate log-likelihood
+      logLikelihood[itOuter] <- sum(log(rowSums(forz)))
+
+      # Stopping criterion
+      if (itOuter > 2) {
+
+        if ((logLikelihood[itOuter - 1] - logLikelihood[itOuter - 2]) == 0) {
+          checks <-1
+        } else {
+          # Aitken stopping criterion
+          termAitkens <- (logLikelihood[itOuter]- logLikelihood[itOuter - 1]) /
+            (logLikelihood[itOuter - 1] - logLikelihood[itOuter - 2])
+          term2Aitkens <- (1 / (1 - termAitkens) * (logLikelihood[itOuter] -
+                                                      logLikelihood[itOuter - 1]))
+          aloglik[itOuter] <- logLikelihood[itOuter - 1] + term2Aitkens
+          if (abs(aloglik[itOuter] - logLikelihood[itOuter - 1]) < 0.001) {
+            # If this critera, as per Böhning et al., 1994 is achieved
+            # convergence is achieved
+            checks <- 1
+          } else {
+            checks <- checks}
         }
       }
-    }
-
-
-    # Calculate log-likelihood
-    logLikelihood[itOuter] <- sum(log(rowSums(forz)))
-
-    # Stopping criterion
-    if (itOuter > 2) {
-
-      if ((logLikelihood[itOuter - 1] - logLikelihood[itOuter - 2]) == 0) {
-        checks <-1
-      } else {
-        # Aitken stopping criterion
-        termAitkens <- (logLikelihood[itOuter]- logLikelihood[itOuter - 1]) /
-          (logLikelihood[itOuter - 1] - logLikelihood[itOuter - 2])
-        term2Aitkens <- (1 / (1 - termAitkens) * (logLikelihood[itOuter] -
-                                                    logLikelihood[itOuter - 1]))
-        aloglik[itOuter] <- logLikelihood[itOuter - 1] + term2Aitkens
-        if (abs(aloglik[itOuter] - logLikelihood[itOuter - 1]) < 0.001) {
-          # If this critera, as per Böhning et al., 1994 is achieved
-          # convergence is achieved
-          checks <- 1
-        } else {
-          checks <- checks}
+      # print(itOuter)
+      itOuter <- itOuter + 1
+      if (itOuter == maxIterations) {
+        checks <- 1
       }
-    }
-    # print(itOuter)
-    itOuter <- itOuter + 1
-    if (itOuter == maxIterations) {
-      checks <- 1
     }
   }
 
-  # Naming parameters
-  names(mu) <- names(sigma) <- paste0(rep("G=", G), 1:G)
+  if(checks == 1) {
+    # Naming parameters
+    names(mu) <- names(sigma) <- paste0(rep("G=", G), 1:G)
 
-  # Saving results for output
-  Results <- list(piG = piG,
-                  mu = mu,
-                  sigma = sigma,
-                  probaPost = zvalue,
-                  clusterlabels = mclust::map(zvalue),
-                  logLikelihood = logLikelihood)
+    # Saving results for output
+    Results <- list(piG = piG,
+                    mu = mu,
+                    sigma = sigma,
+                    probaPost = zvalue,
+                    clusterlabels = mclust::map(zvalue),
+                    logLikelihood = logLikelihood)
 
-  class(Results) <- "varMPLNClustering"
-  return(Results)
+    class(Results) <- "varMPLNClustering"
+    return(Results)
+  } else if(checks == 2) {
+    # if z generated has less clusters than numbG, then NA
+    return(NA)
+  }
+
 }
 
 
@@ -2996,15 +3026,27 @@ ICLFunction <- function(logLikelihood,
     for (g in 1:(gmax - gmin + 1)) {
       if(isTRUE(parallel) == "FALSE") {
         # If non parallel run
-        z <- clusterRunOutput[[g]]$probaPost
-        mapz <- mclust::unmap(clusterRunOutput[[g]]$clusterlabels)
+
+        # check if clusterResults[[g]] is NA
+        if(all(is.na(clusterResults[[g]])) != TRUE) {
+          z <- clusterRunOutput[[g]]$probaPost
+          mapz <- mclust::unmap(clusterRunOutput[[g]]$clusterlabels)
+        }
+
+
       } else {
         # If parallel run
         z <- clusterRunOutput[[g]]$allResults$probaPost
         mapz <- mclust::unmap(clusterRunOutput[[g]]$allResults$clusterlabels)
       }
       forICL <- function(g){sum(log(z[which(mapz[, g] == 1), g]))}
-      ICL[g] <- BIC[g] + sum(sapply(1:ncol(mapz), forICL))
+
+      if(all(is.na(clusterResults[[g]])) != TRUE) {
+        ICL[g] <- BIC[g] + sum(sapply(1:ncol(mapz), forICL))
+      } else if(all(is.na(clusterResults[[g]])) == TRUE) {
+        ICL[g] <- NA
+      }
+
     }
     ICLmodel <- seq(gmin, gmax, 1)[grep(min(ICL, na.rm = TRUE), ICL)]
 
@@ -3023,10 +3065,14 @@ ICLFunction <- function(logLikelihood,
   if(all(is.na(probaPost)) != TRUE) {
 
     for (g in 1:(gmax - gmin + 1)) {
-      z <- probaPost[[g]]
-      mapz <- mclust::unmap(mclust::map(probaPost[[g]]))
-      forICL <- function(g){sum(log(z[which(mapz[, g] == 1), g]))}
-      ICL[g] <- BIC[g] + sum(sapply(1:ncol(mapz), forICL))
+      if(all(is.na(probaPost[[g]])) != TRUE) {
+        z <- probaPost[[g]]
+        mapz <- mclust::unmap(mclust::map(probaPost[[g]]))
+        forICL <- function(g){sum(log(z[which(mapz[, g] == 1), g]))}
+        ICL[g] <- BIC[g] + sum(sapply(1:ncol(mapz), forICL))
+      } else if(all(is.na(probaPost[[g]])) == TRUE) {
+        ICL[g] <- NA
+      }
     }
     ICLmodel <- seq(gmin, gmax, 1)[grep(min(ICL, na.rm = TRUE), ICL)]
     ICLmodelLabels <- mclust::map(probaPost[[grep(min(ICL, na.rm = TRUE), ICL)]])
