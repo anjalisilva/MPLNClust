@@ -10,7 +10,11 @@ citEntry(
   number   = "1",
   pages    = "394",
   url      = "https://pubmed.ncbi.nlm.nih.gov/31311497/",
-  textVersion = paste(
 
+  textVersion = paste(
+    paste("Silva A., Rothstein S. J., McNicholas P. D., Subedi S. (2019).",
+        "A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data",
+        #"BMC Bioinformatics, 20(1).",
+        "URL https://pubmed.ncbi.nlm.nih.gov/31311497/")
   )
 )
