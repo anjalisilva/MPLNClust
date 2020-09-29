@@ -34,7 +34,7 @@ To install the latest version of the package:
 
 ``` r
 require("devtools")
-install_github("anjalisilva/MPLNClust", build_vignettes = TRUE)
+devtools::install_github("anjalisilva/MPLNClust", build_vignettes = TRUE)
 library("MPLNClust")
 ```
 
