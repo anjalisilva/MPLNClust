@@ -2557,7 +2557,7 @@ AICFunction <- function(logLikelihood,
 
 
 
-  AIC <- - 2 * logLikelihood + 2 * nParameters
+  AIC <- (- 2 * logLikelihood) + (2 * nParameters)
   AICmodel <- seq(gmin, gmax, 1)[grep(min(AIC, na.rm = TRUE), AIC)]
   AICMessage <- NA # For spurious clusters
 
@@ -2582,10 +2582,10 @@ AICFunction <- function(logLikelihood,
   }
 
 
-  AICresults<-list(allAICvalues = AIC,
-                   AICmodelselected = AICmodel,
-                   AICmodelSelectedLabels = AICmodelLabels,
-                   AICMessage = AICMessage)
+  AICresults <- list(allAICvalues = AIC,
+                     AICmodelselected = AICmodel,
+                     AICmodelSelectedLabels = AICmodelLabels,
+                     AICMessage = AICMessage)
   class(AICresults) <- "AIC"
   return(AICresults)
 }
@@ -2708,7 +2708,7 @@ AIC3Function <- function(logLikelihood,
   }
 
 
-  AIC3 <- - 2 * logLikelihood + 3 * nParameters
+  AIC3 <- (- 2 * logLikelihood) + (3 * nParameters)
   AIC3model <- seq(gmin, gmax, 1)[grep(min(AIC3,na.rm = TRUE), AIC3)]
   AIC3Message <- NA # For spurious clusters
 
@@ -2856,7 +2856,7 @@ BICFunction <- function(logLikelihood,
 
 
 
-  BIC <- - 2 * logLikelihood + (nParameters * log(nObservations))
+  BIC <- (- 2 * logLikelihood) + (nParameters * log(nObservations))
   BICmodel <- seq(gmin, gmax, 1)[grep(min(BIC, na.rm = TRUE), BIC)]
   BICMessage <- NA # For spurious clusters
 
@@ -3017,7 +3017,7 @@ ICLFunction <- function(logLikelihood,
     stop("Either clusterRunOutput or probaPost must be provided.")
   }
 
-  BIC <- - 2 * logLikelihood + (nParameters * log(nObservations))
+  BIC <- (- 2 * logLikelihood) + (nParameters * log(nObservations))
 
   ICL <- vector()
 
