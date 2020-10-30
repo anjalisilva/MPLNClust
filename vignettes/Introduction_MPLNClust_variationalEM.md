@@ -240,19 +240,19 @@ legend("top", inset = c(- 0.4, 0), legend = c("BIC", "ICL", "AIC", "AIC3"),
 
 ## Other References
 
-[Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution. Biometrika 76.](https://www.jstor.org/stable/2336624?seq=1)
+[Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution. *Biometrika* 76.](https://www.jstor.org/stable/2336624?seq=1)
 
-[Akaike, H. (1973). Information theory and an extension of the maximum likelihood principle. In Second International Symposium on Information Theory, New York, NY, USA, pp. 267–281. Springer Verlag.](https://link.springer.com/chapter/10.1007/978-1-4612-1694-0_15)
+[Akaike, H. (1973). Information theory and an extension of the maximum likelihood principle. In *Second International Symposium on Information Theory*, New York, NY, USA, pp. 267–281. Springer Verlag.](https://link.springer.com/chapter/10.1007/978-1-4612-1694-0_15)
 
 [Arlot, S., Brault, V., Baudry, J., Maugis, C., and Michel, B. (2016). capushe: CAlibrating Penalities Using Slope HEuristics. R package version 1.1.1.](https://CRAN.R-project.org/package=capushe)
 
-[Biernacki, C., G. Celeux, and G. Govaert (2000). Assessing a mixture model for clustering with the integrated classification likelihood. IEEE Transactions on Pattern Analysis and Machine Intelligence 22.](https://hal.inria.fr/inria-00073163/document)
+[Biernacki, C., G. Celeux, and G. Govaert (2000). Assessing a mixture model for clustering with the integrated classification likelihood. *IEEE Transactions on Pattern Analysis and Machine Intelligence* 22.](https://hal.inria.fr/inria-00073163/document)
 
-[Bozdogan, H. (1994). Mixture-model cluster analysis using model selection criteria and a new informational measure of complexity. In Proceedings of the First US/Japan Conference on the Frontiers of Statistical Modeling: An Informational Approach: Volume 2 Multivariate Statistical Modeling, pp. 69–113. Dordrecht: Springer Netherlands.](https://link.springer.com/chapter/10.1007/978-94-011-0800-3_3)
+[Bozdogan, H. (1994). Mixture-model cluster analysis using model selection criteria and a new informational measure of complexity. In *Proceedings of the First US/Japan Conference on the Frontiers of Statistical Modeling: An Informational Approach: Volume 2 Multivariate Statistical Modeling*, pp. 69–113. Dordrecht: Springer Netherlands.](https://link.springer.com/chapter/10.1007/978-94-011-0800-3_3)
 
-[Robinson, M.D., and Oshlack, A. (2010). A scaling normalization method for differential expression analysis of RNA-seq data. Genome Biology 11, R25.](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25)
+[Robinson, M.D., and Oshlack, A. (2010). A scaling normalization method for differential expression analysis of RNA-seq data. *Genome Biology* 11, R25.](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25)
 
-[Schwarz, G. (1978). Estimating the dimension of a model. The Annals of Statistics 6.](https://www.jstor.org/stable/2958889?seq=1)
+[Schwarz, G. (1978). Estimating the dimension of a model. *The Annals of Statistics* 6.](https://www.jstor.org/stable/2958889?seq=1)
 
 [Si, Y. (2012). MBCluster.Seq: Model-Based Clustering for RNA-seq Data. R package version 1.0.](https://CRAN.R-project.org/package=MBCluster.Seq)
 
