@@ -72,7 +72,7 @@ An overview of the package is illustrated below:
 
 <div style="text-align:center">
 
-<img src="inst/extdata/Overview_MPLNClust.png" width="600" height="400"/>
+<img src="inst/extdata/Overview_MPLNClust.png" width="800" height="400"/>
 
 <div style="text-align:left">
 
@@ -89,7 +89,7 @@ MPLNClust::runMPLNClust()
 
 <div style="text-align:center">
 
-<img src="inst/extdata/ShinyAppMPLNClust1.png" alt="ShinyApp1" width="600" height="400"/>
+<img src="inst/extdata/ShinyAppMPLNClust1.png" alt="ShinyApp1" width="800" height="400"/>
 
 <div style="text-align:left">
 
