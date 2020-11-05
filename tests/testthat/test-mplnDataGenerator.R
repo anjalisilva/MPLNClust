@@ -11,17 +11,18 @@ test_that("Data generation is as expected", {
   trueSigma2 <- diag(6)
 
   set.seed(1234)
-  simulated_counts <- mplnDataGenerator(nObservations = 50,
+  simulatedCounts <- mplnDataGenerator(nObservations = 50,
                                         dimensionality = 6,
                                         mixingProportions = c(0.79, 0.21),
                                         mu = rbind(trueMu1, trueMu2),
                                         sigma = rbind(trueSigma1, trueSigma2),
                                         produceImage = "No")
 
-  expect_that(length(simulated_counts), equals(9))
-  expect_that(simulated_counts, is_a("mplnDataGenerator"))
-  expect_that(trunc(simulated_counts$observations), equals(50))
-  expect_that(trunc(simulated_counts$dimensionality), equals(6))
+  expect_type(simulatedCounts, "list")
+  expect_length(simulatedCounts, 9)
+  expect_s3_class(simulatedCounts, "mplnDataGenerator")
+  expect_identical(trunc(simulatedCounts$observations), 50)
+  expect_identical(trunc(simulatedCounts$dimensionality), 6)
 })
 
 
