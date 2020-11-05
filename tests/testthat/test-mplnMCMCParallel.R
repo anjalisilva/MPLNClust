@@ -33,16 +33,17 @@ test_that("Checking clustering results", {
   # take more than 5s."
   # https://stackoverflow.com/questions/41307178/error-processing-vignette-failed-with-diagnostics-4-simultaneous-processes-spa
 
-  expect_that(length(mplnMCMCResults), equals(16))
-  expect_that(mplnMCMCResults, is_a("mplnMCMCParallel"))
-  expect_that(mplnMCMCResults$initalizationMethod, equals("kmeans"))
+  expect_type(mplnMCMCResults, "list")
+  expect_s3_class(mplnMCMCResults, "mplnMCMCParallel")
+  expect_length(mplnMCMCResults, 16)
+  expect_identical(mplnMCMCResults$initalizationMethod, "kmeans")
   numPara <- c(55)
-  expect_that(mplnMCMCResults$numbParameters, equals(numPara))
-  expect_that(mplnMCMCResults$trueLabels, equals(simulatedCounts$trueMembership))
-  expect_that(trunc(mplnMCMCResults$ICLresults$ICLmodelselected), equals(2))
-  expect_that(trunc(mplnMCMCResults$AICresults$AICmodelselected), equals(2))
-  expect_that(trunc(mplnMCMCResults$AIC3results$AIC3modelselected), equals(2))
-  expect_that(trunc(mplnMCMCResults$BICresults$BICmodelselected), equals(2))
+  expect_identical(mplnMCMCResults$numbParameters, numPara)
+  expect_identical(mplnMCMCResults$trueLabels, simulatedCounts$trueMembership)
+  expect_identical(trunc(mplnMCMCResults$ICLresults$ICLmodelselected), 2)
+  expect_identical(trunc(mplnMCMCResults$AICresults$AICmodelselected), 2)
+  expect_identical(trunc(mplnMCMCResults$AIC3results$AIC3modelselected), 2)
+  expect_identical(trunc(mplnMCMCResults$BICresults$BICmodelselected), 2)
 })
 
 

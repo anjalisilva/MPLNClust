@@ -34,11 +34,12 @@ test_that("Checking AIC model selection", {
                           gmax = mplnResults$gmax,
                           parallel = FALSE)
 
-  expect_that(length(AICmodel), equals(4))
-  expect_that(AICmodel, is_a("AIC"))
-  expect_that(length(unique(AICmodel$AICmodelSelectedLabels)), equals(2))
-  expect_that(AICmodel$allAICvalues, is_a("numeric"))
-  expect_that(trunc(AICmodel$AICmodelselected), equals(2))
+  expect_type(AICmodel, "list")
+  expect_s3_class(AICmodel, "AIC")
+  expect_length(AICmodel, 4)
+  expect_length(unique(AICmodel$AICmodelSelectedLabels), 2)
+  expect_identical(class(AICmodel$allAICvalues), "numeric")
+  expect_identical(trunc(AICmodel$AICmodelselected), 2)
  })
 context("Checking for invalid user input for AIC")
 test_that("AIC model selection error upon invalid user input", {
@@ -144,12 +145,16 @@ test_that("Checking AIC3 model selection", {
                            gmax = mplnResults$gmax,
                            parallel = FALSE)
 
- expect_that(length(AIC3model), equals(4))
- expect_that(AIC3model, is_a("AIC3"))
- expect_that(length(unique(AIC3model$AIC3modelSelectedLabels)), equals(2))
- expect_that(AIC3model$allAIC3values, is_a("numeric"))
- expect_that(trunc(AIC3model$AIC3modelselected), equals(2))
+
+ expect_type(AIC3model, "list")
+ expect_s3_class(AIC3model, "AIC3")
+ expect_length(AIC3model, 4)
+ expect_length(unique(AIC3model$AIC3modelSelectedLabels), 2)
+ expect_identical(class(AIC3model$allAIC3values), "numeric")
+ expect_identical(trunc(AIC3model$AIC3modelselected), 2)
 })
+
+
 context("Checking for invalid user input for AIC3")
 test_that("AIC3 model selection error upon invalid user input", {
 
@@ -254,12 +259,15 @@ test_that("Checking BIC model selection", {
                           gmax = mplnResults$gmax,
                           parallel = FALSE)
 
-  expect_that(length(BICmodel), equals(4))
-  expect_that(BICmodel, is_a("BIC"))
-  expect_that(length(unique(BICmodel$BICmodelSelectedLabels)), equals(2))
-  expect_that(BICmodel$allBICvalues, is_a("numeric"))
-  expect_that(trunc(BICmodel$BICmodelselected), equals(2))
+
+  expect_type(BICmodel, "list")
+  expect_s3_class(BICmodel, "BIC")
+  expect_length(BICmodel, 4)
+  expect_length(unique(BICmodel$BICmodelSelectedLabels), 2)
+  expect_identical(class(BICmodel$allBICvalues), "numeric")
+  expect_identical(trunc(BICmodel$BICmodelselected), 2)
 })
+
 context("Checking for invalid user input for BIC")
 test_that("BIC model selection error upon invalid user input", {
 
@@ -334,7 +342,6 @@ test_that("BIC model selection error upon invalid user input", {
 
 })
 
-
 test_that("Checking ICL model selection", {
 
   # Generating simulated data
@@ -369,12 +376,15 @@ test_that("Checking ICL model selection", {
                           gmax = mplnResults$gmax,
                           parallel = FALSE)
 
- expect_that(length(ICLmodel), equals(4))
- expect_that(ICLmodel, is_a("ICL"))
- expect_that(length(unique(ICLmodel$ICLmodelSelectedLabels)), equals(2))
- expect_that(ICLmodel$allICLvalues, is_a("numeric"))
- expect_that(trunc(ICLmodel$ICLmodelselected), equals(2))
+
+  expect_type(ICLmodel, "list")
+  expect_s3_class(ICLmodel, "ICL")
+  expect_length(ICLmodel, 4)
+  expect_length(unique(ICLmodel$ICLmodelSelectedLabels), 2)
+  expect_identical(class(ICLmodel$allICLvalues), "numeric")
+  expect_identical(trunc(ICLmodel$ICLmodelselected), 2)
 })
+
 context("Checking for invalid user input for ICL")
 test_that("ICL model selection error upon invalid user input", {
 

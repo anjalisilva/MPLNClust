@@ -34,8 +34,8 @@ test_that("Checking visualization", {
                                           printPlot = FALSE,
                                           format = 'png')
 
-  expect_that(length(MPLNVisuals), equals(4))
-  expect_that(MPLNVisuals, is_a("list"))
+  expect_type(MPLNVisuals, "list")
+  expect_length(MPLNVisuals, 4)
 })
 
 context("Checking for invalid user input")

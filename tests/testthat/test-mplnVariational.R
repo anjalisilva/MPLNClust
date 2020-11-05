@@ -25,17 +25,17 @@ test_that("Checking clustering results", {
                                                        initMethod = "kmeans",
                                                        normalize = "Yes")
 
-
-  expect_that(length(mplnVariationalResults), equals(16))
-  expect_that(mplnVariationalResults, is_a("mplnVariational"))
-  expect_that(mplnVariationalResults$initalizationMethod, equals("kmeans"))
+  expect_type(mplnVariationalResults, "list")
+  expect_s3_class(mplnVariationalResults, "mplnVariational")
+  expect_length(mplnVariationalResults, 16)
+  expect_identical(mplnVariationalResults$initalizationMethod, "kmeans")
   numPara <- c(27, 55)
-  expect_that(mplnVariationalResults$numbParameters, equals(numPara))
-  expect_that(mplnVariationalResults$trueLabels, equals(simulatedCounts$trueMembership))
-  expect_that(trunc(mplnVariationalResults$ICLresults$ICLmodelselected), equals(2))
-  expect_that(trunc(mplnVariationalResults$AICresults$AICmodelselected), equals(2))
-  expect_that(trunc(mplnVariationalResults$AIC3results$AIC3modelselected), equals(2))
-  expect_that(trunc(mplnVariationalResults$BICresults$BICmodelselected), equals(2))
+  expect_identical(mplnVariationalResults$numbParameters, numPara)
+  expect_identical(mplnVariationalResults$trueLabels, simulatedCounts$trueMembership)
+  expect_identical(trunc(mplnVariationalResults$ICLresults$ICLmodelselected), 2)
+  expect_identical(trunc(mplnVariationalResults$AICresults$AICmodelselected), 2)
+  expect_identical(trunc(mplnVariationalResults$AIC3results$AIC3modelselected), 2)
+  expect_identical(trunc(mplnVariationalResults$BICresults$BICmodelselected), 2)
 })
 
 

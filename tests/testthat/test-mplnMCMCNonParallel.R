@@ -31,7 +31,6 @@ test_that("Checking clustering results", {
   expect_type(mplnMCMCResults, "list")
   expect_s3_class(mplnMCMCResults, "mplnMCMCNonParallel")
   expect_length(mplnMCMCResults, 16)
-  expect_that(mplnMCMCResults, is_a(""))
   expect_identical(mplnMCMCResults$initalizationMethod, "kmeans")
   numPara <- c(27)
   expect_identical(mplnMCMCResults$numbParameters, numPara)
