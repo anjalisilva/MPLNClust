@@ -13,20 +13,16 @@
 multivariate Poisson-log normal (MPLN) distribution proposed by [Silva
 et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). It was
 developed for count data, with clustering of RNA sequencing data as a
-motivation. However, the vector of normalization factors can be relaxed
-and clustering method may be applied to other types of count data.
-
-Main functions include ***mplnVariational***, ***mplnMCMCParallel*** or
-***mplnMCMCNonParallel*** to carry out model-based clustering using
-mixtures of MPLN model. Information criteria (AIC, BIC, AIC3 and ICL)
-are offered for model selection. Function ***mplnVisualize*** permit to
-visualize clustering results. Function ***mplnDataGenerator*** is
-available to generate simlulation data.
-
-Framework of *mplnVariational* makes it computationally efficient and
-faster compared to *mplnMCMCParallel* or *mplnMCMCNonParallel*.
-Therefore, *mplnVariational* may perform better for large datasets. For
-more information, see details section below.
+motivation. However, the clustering method may be applied to other types
+of count data. The package provides functions for functions for
+parameter estimation via 1) an MCMC-EM framework by [Silva et
+al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a
+variational Gaussian approximation with EM algorithm by [Subedi and
+Browne, 2020](https://arxiv.org/abs/2004.06857). Information criteria
+(AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE, if more
+than 10 models are considered) are offered for model selection. Also
+included are functions for simulating data from this model and
+visualization.
 
 ## Installation
 
@@ -38,27 +34,13 @@ devtools::install_github("anjalisilva/MPLNClust", build_vignettes = TRUE)
 library("MPLNClust")
 ```
 
+To run the Shiny app:
+
+``` r
+MPLNClust::runMPLNClust()
+```
+
 ## Overview
-
-`MPLNClust` contains 10 functions.
-
-For carrying out clustering of count data using mixtures of MPLN via
-variational expectation-maximization (EM): ***mplnVariational***.
-Functions ***mplnMCMCParallel*** or ***mplnMCMCNonParallel*** uses a
-Markov chain Monte Carlo expectation-maximization algorithm (MCMC-EM)
-for parameter estimation. Function *mplnMCMCParallel* uses MCMC-EM with
-parallelization while *mplnMCMCNonParallel* uses MCMC-EM with no
-parallelization.
-
-For the purpose of generating simlulation data via mixtures of MPLN:
-***mplnDataGenerator***.
-
-For visualizing clustering results: ***mplnVisualize***.
-
-Information criteria are offered for model selection: ***AICFunction***,
-***BICFunction***, ***AIC3Function***, ***ICLFunction***.
-
-The shiny implementation of *mplnVariational*: ***runMPLNClust***.
 
 To list all functions available in the package:
 
@@ -66,33 +48,40 @@ To list all functions available in the package:
 ls("package:MPLNClust")
 ```
 
-Some of the visualizations that could be created, shown with simulated
-RNA sequencing data as an example:
+`MPLNClust` contains 10 functions. For carrying out clustering of count
+data using mixtures of MPLN via variational expectation-maximization
+(EM): ***mplnVariational***. Functions ***mplnMCMCParallel*** or
+***mplnMCMCNonParallel*** uses a Markov chain Monte Carlo
+expectation-maximization algorithm (MCMC-EM) for parameter estimation.
+Function *mplnMCMCParallel* uses MCMC-EM with parallelization while
+*mplnMCMCNonParallel* uses MCMC-EM with no parallelization. For the
+purpose of generating simlulation data via mixtures of MPLN:
+***mplnDataGenerator***. For visualizing clustering results:
+***mplnVisualize***. Information criteria are offered for model
+selection: ***AICFunction***, ***BICFunction***, ***AIC3Function***,
+***ICLFunction***. The shiny implementation of *mplnVariational*:
+***runMPLNClust***.
 
-<p float="center">
+Framework of ***mplnVariational*** makes it computationally efficient
+and faster compared to ***mplnMCMCParallel*** or
+***mplnMCMCNonParallel***. Therefore, ***mplnVariational*** may perform
+better for large datasets. For more information, see details section
+below.
 
-<img src="inst/extdata/barplot_FourClusterModel.png" alt="Overview" width="350"/>
-           
-
-<img src="inst/extdata/heatmap_FourClusterModel.png" alt="Overview" width="332.5"/>
-
-Figures: Posterior probability of belonging to a cluster (left); Heatmap
-of counts across clusters (right).
-
-</p>
+An overview of the package is illustrated below:
 
 <div style="text-align:center">
 
-<img src="inst/extdata/LinePlots_FourClusterModel.png" alt="Lineplot" width="600" height="400"/>
-
-Figure: Observations divided by cluster. The yellow line represents the
-mean value for each cluster.
+<img src="inst/extdata/Overview_MPLNClust.png" width="600" height="400"/>
 
 <div style="text-align:left">
 
 <div style="text-align:left">
 
-Alternative, the Shiny app could be run:
+<div style="text-align:left">
+
+Alternatively, the Shiny app employing ***mplnVariational*** could be
+run and results could be visualized:
 
 ``` r
 MPLNClust::runMPLNClust()
@@ -101,8 +90,6 @@ MPLNClust::runMPLNClust()
 <div style="text-align:center">
 
 <img src="inst/extdata/ShinyAppMPLNClust1.png" alt="ShinyApp1" width="600" height="400"/>
-
-Figure: Shiny app for MPLNClust package showing cluster results.
 
 <div style="text-align:left">
 
