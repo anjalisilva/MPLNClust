@@ -59,15 +59,14 @@ is provided, the option to produce a barplot of probabilities
 is also available.
 }
 \examples{
-# Generating simulated data
-
 trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 
 trueSigma1 <- diag(6) * 2
 trueSigma2 <- diag(6)
 
- simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
+# Generating simulated data
+simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
                                       dimensionality = 6,
                                       mixingProportions = c(0.79, 0.21),
                                       mu = rbind(trueMu1, trueMu2),

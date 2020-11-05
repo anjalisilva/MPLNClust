@@ -54,29 +54,30 @@ mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
                                           initMethod = "kmeans",
                                           nInitIterations = 2,
                                           normalize = "Yes")
+\dontrun{
 # Clustering via mplnMCMCParallel
-# mplnResults <- MPLNClust::mplnMCMCParallel(dataset = sampleData$dataset,
-#                                             membership = sampleData$trueMembership,
-#                                             gmin = 1,
-#                                             gmax = 1,
-#                                             nChains = 3,
-#                                             nIterations = 400,
-#                                             initMethod = "kmeans",
-#                                             nInitIterations = 0,
-#                                             normalize = "Yes",
-#                                             numNodes = 2)
+mplnResults <- MPLNClust::mplnMCMCParallel(dataset = sampleData$dataset,
+                                             membership = sampleData$trueMembership,
+                                             gmin = 1,
+                                             gmax = 1,
+                                             nChains = 3,
+                                             nIterations = 400,
+                                             initMethod = "kmeans",
+                                             nInitIterations = 0,
+                                             normalize = "Yes",
+                                             numNodes = 2)
 
 # Clustering via mplnMCMCNonParallel
-# mplnResults <- MPLNClust::mplnMCMCNonParallel(dataset = sampleData$dataset,
-#                                               membership = sampleData$trueMembership,
-#                                               gmin = 1,
-#                                               gmax = 1,
-#                                               nChains = 3,
-#                                               nIterations = 700,
-#                                               initMethod = "kmeans",
-#                                               nInitIterations = 0,
-#                                               normalize = "Yes")
-
+mplnResults <- MPLNClust::mplnMCMCNonParallel(dataset = sampleData$dataset,
+                                               membership = sampleData$trueMembership,
+                                               gmin = 1,
+                                               gmax = 1,
+                                               nChains = 3,
+                                               nIterations = 700,
+                                               initMethod = "kmeans",
+                                               nInitIterations = 0,
+                                               normalize = "Yes")
+}
 }
 \references{
 Silva, A. et al. (2019). A multivariate Poisson-log normal mixture model

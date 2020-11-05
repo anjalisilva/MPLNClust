@@ -50,14 +50,13 @@ Performs model selection using Akaike Information Criterion (AIC).
 Formula: - 2 * logLikelihood + 2 * nParameters.
 }
 \examples{
-# Generating simulated data
-
 trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 
 trueSigma1 <- diag(6) * 2
 trueSigma2 <- diag(6)
 
+# Generating simulated data
 sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
                                  dimensionality = 6,
                                  mixingProportions = c(0.79, 0.21),

@@ -75,33 +75,33 @@
 #' }
 #'
 #' @examples
+#' \dontrun{
+#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+#'
+#' trueSigma1 <- diag(6) * 2
+#' trueSigma2 <- diag(6)
+#'
 #' # Generating simulated data
-#' # Not run
-#' # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
-#' # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
-#'
-#' # trueSigma1 <- diag(6) * 2
-#' # trueSigma2 <- diag(6)
-#'
-#' # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 40,
-#' #                                             dimensionality = 6,
-#' #                                             mixingProportions = c(0.79, 0.21),
-#' #                                             mu = rbind(trueMu1, trueMu2),
-#' #                                             sigma = rbind(trueSigma1, trueSigma2),
-#' #                                             produceImage = "No")
+#' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 40,
+#'                                              dimensionality = 6,
+#'                                              mixingProportions = c(0.79, 0.21),
+#'                                              mu = rbind(trueMu1, trueMu2),
+#'                                              sigma = rbind(trueSigma1, trueSigma2),
+#'                                              produceImage = "No")
 #'
 #' # Clustering
-#' # mplnResults <- MPLNClust::mplnMCMCParallel(dataset = sampleData$dataset,
-#' #                                             membership = sampleData$trueMembership,
-#' #                                             gmin = 1,
-#' #                                             gmax = 1,
-#' #                                             nChains = 3,
-#' #                                             nIterations = 400,
-#' #                                             initMethod = "kmeans",
-#' #                                             nInitIterations = 0,
-#' #                                             normalize = "Yes",
-#' #                                             numNodes = 2)
-#'
+#' mplnResults <- MPLNClust::mplnMCMCParallel(dataset = sampleData$dataset,
+#'                                              membership = sampleData$trueMembership,
+#'                                              gmin = 1,
+#'                                              gmax = 1,
+#'                                              nChains = 3,
+#'                                              nIterations = 400,
+#'                                              initMethod = "kmeans",
+#'                                              nInitIterations = 0,
+#'                                              normalize = "Yes",
+#'                                              numNodes = 2)
+#' }
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
 #'          \email{sdang@math.binghamton.edu}. }
 #'
@@ -556,32 +556,32 @@ mplnMCMCParallel <- function(dataset,
 #' }
 #'
 #' @examples
-#' # Not run
+#' \dontrun{
+#' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
+#' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
+#'
+#' trueSigma1 <- diag(6) * 2
+#' trueSigma2 <- diag(6)
+#'
 #' # Generating simulated data
-#'
-#' # trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
-#' # trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
-#'
-#' # trueSigma1 <- diag(6) * 2
-#' # trueSigma2 <- diag(6)
-#'
-#' # sampleData <- MPLNClust::mplnDataGenerator(nObservations = 40,
-#' #                                 dimensionality = 6,
-#' #                                 mixingProportions = c(0.79, 0.21),
-#' #                                 mu = rbind(trueMu1, trueMu2),
-#' #                                 sigma = rbind(trueSigma1, trueSigma2),
-#' #                                 produceImage = "No")
+#' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 40,
+#'                                  dimensionality = 6,
+#'                                  mixingProportions = c(0.79, 0.21),
+#'                                  mu = rbind(trueMu1, trueMu2),
+#'                                  sigma = rbind(trueSigma1, trueSigma2),
+#'                                  produceImage = "No")
 #'
 #' # Clustering
-#' # mplnResults <- MPLNClust::mplnMCMCNonParallel(dataset = sampleData$dataset,
-#' #                                               membership = sampleData$trueMembership,
-#' #                                               gmin = 1,
-#' #                                               gmax = 1,
-#' #                                               nChains = 3,
-#' #                                               nIterations = 700,
-#' #                                               initMethod = "kmeans",
-#' #                                               nInitIterations = 0,
-#' #                                               normalize = "Yes")
+#' mplnResults <- MPLNClust::mplnMCMCNonParallel(dataset = sampleData$dataset,
+#'                                                membership = sampleData$trueMembership,
+#'                                                gmin = 1,
+#'                                                gmax = 1,
+#'                                                nChains = 3,
+#'                                                nIterations = 700,
+#'                                                initMethod = "kmeans",
+#'                                                nInitIterations = 0,
+#'                                                normalize = "Yes")
+#' }
 #'
 #' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
 #'          \email{sdang@math.binghamton.edu}. }
@@ -1531,14 +1531,13 @@ stanRun <- function(model,
 #' }
 #'
 #' @examples
-#' # Generating simulated data
-#'
 #'  trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 #'  trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
 #'  trueSigma1 <- diag(6) * 2
 #'  trueSigma2 <- diag(6)
 #'
+#'  # Generating simulated data
 #'  sampleData <- MPLNClust::mplnDataGenerator(nObservations = 1000,
 #'                                             dimensionality = 6,
 #'                                             mixingProportions = c(0.79, 0.21),
@@ -2479,14 +2478,13 @@ randomInitfunction <- function(gmodel, nObservations) {
 #' }
 #'
 #' @examples
-#' # Generating simulated data
-#'
 #' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 #' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
 #' trueSigma1 <- diag(6) * 2
 #' trueSigma2 <- diag(6)
 #'
+#' # Generating simulated data
 #' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
 #'                                  dimensionality = 6,
 #'                                  mixingProportions = c(0.79, 0.21),
@@ -2504,7 +2502,7 @@ randomInitfunction <- function(gmodel, nObservations) {
 #'                                 normalize = "Yes")
 #'
 #' # Model selection
-#'  AICmodel <- MPLNClust::AICFunction(logLikelihood = mplnResults$logLikelihood,
+#' AICmodel <- MPLNClust::AICFunction(logLikelihood = mplnResults$logLikelihood,
 #'                          nParameters = mplnResults$numbParameters,
 #'                          clusterRunOutput = mplnResults$allResults,
 #'                          gmin = mplnResults$gmin,
@@ -2626,21 +2624,20 @@ AICFunction <- function(logLikelihood,
 #' }
 #'
 #' @examples
-#' # Generating simulated data
-#'
 #' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 #' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
-
+#'
 #' trueSigma1 <- diag(6) * 2
 #' trueSigma2 <- diag(6)
-
+#'
+#' # Generating simulated data
 #' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
 #'                                  dimensionality = 6,
 #'                                  mixingProportions = c(0.79, 0.21),
 #'                                  mu = rbind(trueMu1, trueMu2),
 #'                                  sigma = rbind(trueSigma1, trueSigma2),
 #'                                  produceImage = "No")
-
+#'
 #' # Clustering
 #' mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
 #'                                 membership = sampleData$trueMembership,
@@ -2777,21 +2774,20 @@ AIC3Function <- function(logLikelihood,
 #' }
 #'
 #' @examples
-#' # Generating simulated data
-#'
 #' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 #' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
-
+#'
 #' trueSigma1 <- diag(6) * 2
 #' trueSigma2 <- diag(6)
-
+#'
+#' # Generating simulated data
 #' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
 #'                                  dimensionality = 6,
 #'                                  mixingProportions = c(0.79, 0.21),
 #'                                  mu = rbind(trueMu1, trueMu2),
 #'                                  sigma = rbind(trueSigma1, trueSigma2),
 #'                                  produceImage = "No")
-
+#'
 #' # Clustering
 #' mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
 #'                                 membership = sampleData$trueMembership,
@@ -2930,14 +2926,13 @@ BICFunction <- function(logLikelihood,
 #' }
 #'
 #' @examples
-#' # Generating simulated data
-#'
 #' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 #' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
 #' trueSigma1 <- diag(6) * 2
 #' trueSigma2 <- diag(6)
 #'
+#' # Generating simluated data
 #' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
 #'                                            dimensionality = 6,
 #'                                            mixingProportions = c(0.79, 0.21),
@@ -3136,15 +3131,14 @@ ICLFunction <- function(logLikelihood,
 #'    plots.
 #'
 #' @examples
-#' # Generating simulated data
-#'
 #' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 #' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
 #' trueSigma1 <- diag(6) * 2
 #' trueSigma2 <- diag(6)
 #'
-#'  simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
+#' # Generating simulated data
+#' simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
 #'                                       dimensionality = 6,
 #'                                       mixingProportions = c(0.79, 0.21),
 #'                                       mu = rbind(trueMu1, trueMu2),
@@ -3641,13 +3635,13 @@ barPlotFunction <- function(tableProbabilitiesMelt,
 #'}
 #'
 #' @examples
-#' # Generating simulated data
 #' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 #' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
 #' trueSigma1 <- diag(6) * 2
 #' trueSigma2 <- diag(6)
 #'
+#' # Generating simulated data
 #' sampleData <- MPLNClust::mplnDataGenerator(nObservations = 100,
 #'                                            dimensionality = 6,
 #'                                            mixingProportions = c(0.79, 0.21),
