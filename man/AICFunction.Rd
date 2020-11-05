@@ -74,7 +74,7 @@ mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
                                 normalize = "Yes")
 
 # Model selection
- AICmodel <- MPLNClust::AICFunction(logLikelihood = mplnResults$logLikelihood,
+AICmodel <- MPLNClust::AICFunction(logLikelihood = mplnResults$logLikelihood,
                          nParameters = mplnResults$numbParameters,
                          clusterRunOutput = mplnResults$allResults,
                          gmin = mplnResults$gmin,

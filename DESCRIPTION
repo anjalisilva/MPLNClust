@@ -38,7 +38,8 @@ RoxygenNote: 7.1.1
 Suggests: 
     testthat,
     knitr,
-    rmarkdown
+    rmarkdown,
+    MBCluster.Seq
 License: MIT + file LICENSE
 VignetteBuilder: knitr
 URL: https://github.com/anjalisilva/MPLNClust
