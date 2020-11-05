@@ -28,16 +28,18 @@ test_that("Checking clustering results", {
                                                     nInitIterations = 0,
                                                     normalize = "Yes")
 
-  expect_that(length(mplnMCMCResults), equals(16))
-  expect_that(mplnMCMCResults, is_a("mplnMCMCNonParallel"))
-  expect_that(mplnMCMCResults$initalizationMethod, equals("kmeans"))
+  expect_type(mplnMCMCResults, "list")
+  expect_s3_class(mplnMCMCResults, "mplnMCMCNonParallel")
+  expect_length(mplnMCMCResults, 16)
+  expect_that(mplnMCMCResults, is_a(""))
+  expect_identical(mplnMCMCResults$initalizationMethod, "kmeans")
   numPara <- c(27)
-  expect_that(mplnMCMCResults$numbParameters, equals(numPara))
-  expect_that(mplnMCMCResults$trueLabels, equals(simulatedCounts$trueMembership))
-  expect_that(trunc(mplnMCMCResults$ICLresults$ICLmodelselected), equals(1))
-  expect_that(trunc(mplnMCMCResults$AICresults$AICmodelselected), equals(1))
-  expect_that(trunc(mplnMCMCResults$AIC3results$AIC3modelselected), equals(1))
-  expect_that(trunc(mplnMCMCResults$BICresults$BICmodelselected), equals(1))
+  expect_identical(mplnMCMCResults$numbParameters, numPara)
+  expect_identical(mplnMCMCResults$trueLabels, simulatedCounts$trueMembership)
+  expect_identical(trunc(mplnMCMCResults$ICLresults$ICLmodelselected), 1)
+  expect_identical(trunc(mplnMCMCResults$AICresults$AICmodelselected), 1)
+  expect_identical(trunc(mplnMCMCResults$AIC3results$AIC3modelselected), 1)
+  expect_identical(trunc(mplnMCMCResults$BICresults$BICmodelselected), 1)
 })
 
 
