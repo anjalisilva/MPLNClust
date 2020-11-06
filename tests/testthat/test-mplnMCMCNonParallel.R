@@ -39,6 +39,9 @@ test_that("Checking clustering results", {
   expect_identical(trunc(mplnMCMCResults$AICresults$AICmodelselected), 1)
   expect_identical(trunc(mplnMCMCResults$AIC3results$AIC3modelselected), 1)
   expect_identical(trunc(mplnMCMCResults$BICresults$BICmodelselected), 1)
+  expect_output(str(mplnMCMCResults), "List of 16")
+  expect_vector(mplnMCMCResults$BICresults$BICmodelSelectedLabels, ptype = double(), size = 40)
+
 })
 
 

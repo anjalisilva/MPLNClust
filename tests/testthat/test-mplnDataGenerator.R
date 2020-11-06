@@ -29,8 +29,7 @@ test_that("Data generation is as expected", {
                                   "mixingProportions", "trueMu",
                                   "trueSigma"))
   expect_output(str(simulatedCounts), "List of 9")
-  expect_snapshot_value()
-
+  expect_vector(simulatedCounts$mixingProportions, ptype = double(), size = 2)
 })
 
 
