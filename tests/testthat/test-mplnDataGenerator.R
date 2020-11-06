@@ -23,6 +23,14 @@ test_that("Data generation is as expected", {
   expect_s3_class(simulatedCounts, "mplnDataGenerator")
   expect_identical(trunc(simulatedCounts$observations), 50)
   expect_identical(trunc(simulatedCounts$dimensionality), 6)
+  expect_named(simulatedCounts, c("dataset", "trueMembership",
+                                  "probaPost", "trueNormFactors",
+                                  "observations", "dimensionality",
+                                  "mixingProportions", "trueMu",
+                                  "trueSigma"))
+  expect_output(str(simulatedCounts), "List of 9")
+  expect_snapshot_value()
+
 })
 
 
@@ -83,3 +91,4 @@ test_that("Data generate error upon invalid user input", {
     ImageName = 1234))
 
 })
+# [END]
