@@ -3203,6 +3203,7 @@ ICLFunction <- function(logLikelihood,
 #' @importFrom pheatmap pheatmap
 #' @importFrom gplots heatmap.2
 #' @importFrom gplots redgreen
+#' @importFrom reshape melt
 mplnVisualize <- function(dataset,
                           plots = 'all',
                           probabilities = NA,
