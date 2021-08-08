@@ -39,7 +39,8 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
-    MBCluster.Seq
+    MBCluster.Seq,
+    Biostrings
 License: MIT + file LICENSE
 VignetteBuilder: knitr
 URL: https://github.com/anjalisilva/MPLNClust
