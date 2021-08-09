@@ -422,20 +422,26 @@ varMPLNClassification <- function(dataset,
     mi <- mj <- Si <- Sj <- list() # variational parameters
 
     ###Other intermediate items initialized
-    Sk <- array(0, c(dimensionality, dimensionality, G))
+    Ski <- Skj <- array(0, c(dimensionality, dimensionality, G))
     miPreviousValue <- mjPreviousValue <- list()
-    GXi <- GXj <- dGXi <- dGXi <- zSiValue <- zSjValue <- list()
+    GXi <- GXj <- dGXi <- dGXj <- zSiValue <- zSjValue <- list()
 
 
     # Initialize z
     classIndicator  <- (membership == 0)
     zValue <- matrix(0, nObservations, G)
     for (i in 1:nObservations) {
-      if(classIndicator[i]) {zValue[i, ] <- 1 / G} # zjg (for non-labeled)
+      # zjg (for non-labeled) generate values randomly
+      if(classIndicator[i]) {zValue[i, sample(1:G, 1, replace=FALSE)] <- 1 } # zjg (for non-labeled)
       else{zValue[i, membership[i]] <- 1} # zig (for labeled)
     }
 
-    piG <- colSums(zValue) / nObservations
+    nObservationsi <- length(which(membership != 0)) # labeled observations
+    nObservationsj <- length(which(membership == 0)) # unlabeled observations
+    zValuei <- zValue[which(membership != 0), ] # labeled observations
+    zValuej <- zValue[which(membership == 0), ] # unlabeled observations
+
+    piG <- (colSums(zValuei) + colSums(zValuej)) / nObservations
 
     for (g in 1:G) {
       obs <- which(zValue[ , g] == 1)
@@ -467,14 +473,16 @@ varMPLNClassification <- function(dataset,
 
     for (g in 1:G) {
       # mPreviousValue = starting value for m
-      miPreviousValue[[g]] <- mi[[g]] <-
-          mjPreviousValue[[g]] <- mj[[g]] <- log(dataset + 1 / 6)
+      miPreviousValue[[g]] <- mi[[g]] <- log(dataset[which(membership != 0), ] + 1 / 6)
+      mjPreviousValue[[g]] <- mj[[g]] <- log(dataset[which(membership == 0), ] + 1 / 6)
 
       # starting value for S
       Si[[g]] <- Sj[[g]] <- list()
-      for (i in 1:nObservations) {
+      for (i in 1:nObservationsi) {
         Si[[g]][[i]] <- diag(dimensionality) * 0.000000001
-        Sj[[g]][[i]] <- diag(dimensionality) * 0.000000001
+      }
+      for (i in 1:nObservationsj) {
+        Sj[[g]][[i]] <-  diag(dimensionality) * 0.000000001
       }
     }
   } else if (nInitIterations != 0) {
@@ -489,17 +497,22 @@ varMPLNClassification <- function(dataset,
     mu <- initializationResults$mu
     sigma <- initializationResults$sigma
     isigma <- initializationResults$isigma
+
     miPreviousValue <- mi <- initializationResults$mi # variational parameters
     mjPreviousValue <- mj <- initializationResults$mj # variational parameters
     Si <- initializationResults$Si # variational parameters
     Sj <- initializationResults$Sj # variational parameters
-    zValue <- initializationResults$zValue
-    piG <- colSums(zValue) / nObservations
+    zValuei <- initializationResults$zValuei
+    zValuej <- initializationResults$zValuej
+
+    nObservationsi <- length(which(membership != 0)) # labeled observations
+    nObservationsj <- length(which(membership == 0)) # unlabeled observations
+
+    piG <- (colSums(zValuei) + colSums(zValuej)) / nObservations
 
     ###Other intermediate items initialized
-    Sk <- array(0, c(dimensionality, dimensionality, G))
-    GXi <- GXj <- dGXi <- dGXi <- zSiValue <- zSjValue <- list()
-
+    Ski <- Skj <- array(0, c(dimensionality, dimensionality, G))
+    GXi <- GXj <- dGXi <- dGXj <- zSiValue <- zSjValue <- list()
   }
 
 
@@ -520,41 +533,72 @@ varMPLNClassification <- function(dataset,
       GXi[[g]] <- GXj[[g]] <- list()
       dGXi[[g]] <- dGXj[[g]] <- list()
       zSiValue[[g]] <- zSjValue[[g]] <- list()
-      for (i in 1:nObservations) {
-        dGX[[g]][[i]] <- diag(exp((log(normFactors) + mPreviousValue[[g]][i, ]) +
-                                    0.5 * diag(S[[g]][[i]])), dimensionality) + isigma[[g]]
-        S[[g]][[i]] <- solve(dGX[[g]][[i]]) # update S
+
+      # for i
+      for (i in 1:nObservationsi) {
+        dGXi[[g]][[i]] <- diag(exp((log(normFactors) + miPreviousValue[[g]][i, ]) +
+                                    0.5 * diag(Si[[g]][[i]])), dimensionality) + isigma[[g]]
+        Si[[g]][[i]] <- solve(dGXi[[g]][[i]]) # update Si
         # update S; will be used for updating sample covariance matrix
         # S[[g]][[i]] <- tryCatch(solve(dGX[[g]][[i]]), error = function(err) NA)
         # if(all(is.na(S[[g]][[i]]))) {
         #   S[[g]][[i]] <- diag(ncol(dGX[[g]][[i]])) # if error with inverse
         # }
-        zSValue[[g]][[i]] <- zValue[i, g] * S[[g]][[i]] # will be used for updating sample covariance matrix
-        GX[[g]][[i]] <- dataset[i, ] - exp(mPreviousValue[[g]][i, ] +
-                                             log(normFactors) + 0.5 * diag(S[[g]][[i]])) -
-          (isigma[[g]]) %*% (mPreviousValue[[g]][i, ] - mu[[g]])
-        m[[g]][i , ] <- mPreviousValue[[g]][i , ] + S[[g]][[i]] %*% GX[[g]][[i]] # update m
+        zSiValue[[g]][[i]] <- zValuei[i, g] * Si[[g]][[i]] # for updating sample covariance matrix
+        GXi[[g]][[i]] <- dataset[i, ] - exp(miPreviousValue[[g]][i, ] +
+                                             log(normFactors) + 0.5 * diag(Si[[g]][[i]])) -
+                                             (isigma[[g]]) %*% (miPreviousValue[[g]][i, ] - mu[[g]])
+        mi[[g]][i , ] <- miPreviousValue[[g]][i , ] + Si[[g]][[i]] %*% GXi[[g]][[i]] # update mi
       }
 
-      mPreviousValue[[g]] <- m[[g]]
+      # for j
+      for (i in 1:nObservationsj) {
+        dGXj[[g]][[i]] <- diag(exp((log(normFactors) + mjPreviousValue[[g]][i, ]) +
+                                     0.5 * diag(Sj[[g]][[i]])), dimensionality) + isigma[[g]]
+        Sj[[g]][[i]] <- solve(dGXj[[g]][[i]]) # update Sj
+        # update S; will be used for updating sample covariance matrix
+        # S[[g]][[i]] <- tryCatch(solve(dGX[[g]][[i]]), error = function(err) NA)
+        # if(all(is.na(S[[g]][[i]]))) {
+        #   S[[g]][[i]] <- diag(ncol(dGX[[g]][[i]])) # if error with inverse
+        # }
+        zSjValue[[g]][[i]] <- zValuej[i, g] * Sj[[g]][[i]] # for updating sample covariance matrix
+        GXj[[g]][[i]] <- dataset[i, ] - exp(mjPreviousValue[[g]][i, ] +
+                                              log(normFactors) + 0.5 * diag(Sj[[g]][[i]])) -
+          (isigma[[g]]) %*% (mjPreviousValue[[g]][i, ] - mu[[g]])
+        mj[[g]][i , ] <- mjPreviousValue[[g]][i , ] + Sj[[g]][[i]] %*% GXj[[g]][[i]] # update mj
+      }
+
+      miPreviousValue[[g]] <- mi[[g]]
+      mjPreviousValue[[g]] <- mj[[g]]
 
       # Updating mu
-      mu[[g]] <- colSums(zValue[ , g] * m[[g]]) / sum(zValue[ , g])
+      mu[[g]] <- (colSums(zValuei[, g] * mi[[g]]) + colSums(zValuej[, g] * mj[[g]])) /
+                      (sum(zValuei[ , g]) + sum(zValuej[ , g]))
 
       # Updating sample covariance
-      muMatrix <- matrix(rep(mu[[g]], nObservations), nrow = nObservations, byrow = TRUE)
-      res <- m[[g]] - muMatrix
+      muMatrixi <- matrix(rep(mu[[g]], nObservationsi), nrow = nObservationsi, byrow = TRUE)
+      muMatrixj <- matrix(rep(mu[[g]], nObservationsj), nrow = nObservationsj, byrow = TRUE)
+      resi <- mi[[g]] - muMatrixi
+      resj <- mj[[g]] - muMatrixj
       # Calculate weighted covariance
-      temp <- stats::cov.wt(res, wt = zValue[ , g], center = FALSE, method = "ML")
-      Sk[ , , g] <- temp$cov
-      sigma[[g]] <- temp$cov + Reduce("+", zSValue[[g]]) / sum(zValue[ , g])
+      tempi <- stats::cov.wt(resi, wt = zValuei[ , g], center = FALSE, method = "ML")
+      tempj <- stats::cov.wt(resj, wt = zValuej[ , g], center = FALSE, method = "ML")
+      Ski[ , , g] <- tempi$cov
+      Skj[ , , g] <- tempj$cov
+      sigma[[g]] <- ((tempi$cov + Reduce("+", zSiValue[[g]])) +
+                        (tempj$cov + Reduce("+", zSjValue[[g]]))) /
+                            (sum(zValuei[ , g]) + sum(zValuej[ , g]))
       isigma[[g]] <- solve(sigma[[g]])
     }
 
-    piG <- colSums(zValue) / nObservations
+    piG <- (colSums(zValuei) + colSums(zValuej)) / nObservations
+
 
     # Matrix containing normaization factors
-    normFactorsAsMatrix <- matrix(rep(normFactors, nObservations), nrow = nObservations, byrow = TRUE)
+    normFactorsAsMatrixi <- matrix(rep(normFactors, nObservationsi),
+                                  nrow = nObservationsi, byrow = TRUE)
+    normFactorsAsMatrixj <- matrix(rep(normFactors, nObservationsj),
+                                   nrow = nObservationsj, byrow = TRUE)
 
     # A useful function
     zvalueFuncTerm <- function(x, y = isigma[[g]]) {
@@ -562,45 +606,77 @@ varMPLNClassification <- function(dataset,
     }
 
     # # Zvalue calculation
-    forz <- matrix(NA, ncol = G, nrow = nObservations)
+    forzi <- matrix(NA, ncol = G, nrow = nObservationsi)
+    forzj <- matrix(NA, ncol = G, nrow = nObservationsj)
 
     for (g in 1:G) {
       # exp(m_igj + 0.5 S_ig,jj)
-      two <- rowSums(exp(m[[g]] + log(normFactorsAsMatrix) +
-                           0.5 * matrix(unlist(lapply(S[[g]], diag)), ncol = dimensionality, byrow = TRUE)))
-      five <- 0.5 * unlist(lapply(S[[g]], zvalueFuncTerm)) # trace(isigma x S_ig)
-      six <- 0.5 * log(unlist(lapply(S[[g]], det))) # 0.5 * log|S_ig|
+      twoi <- rowSums(exp(mi[[g]] + log(normFactorsAsMatrixi) +
+                           0.5 * matrix(unlist(lapply(Si[[g]], diag)),
+                                        ncol = dimensionality, byrow = TRUE)))
+      twoj <- rowSums(exp(mj[[g]] + log(normFactorsAsMatrixj) +
+                           0.5 * matrix(unlist(lapply(Sj[[g]], diag)),
+                                        ncol = dimensionality, byrow = TRUE)))
+      fivei <- 0.5 * unlist(lapply(Si[[g]], zvalueFuncTerm)) # trace(isigma x S_ig)
+      fivej <- 0.5 * unlist(lapply(Sj[[g]], zvalueFuncTerm)) # trace(isigma x S_ig)
+      sixi <- 0.5 * log(unlist(lapply(Si[[g]], det))) # 0.5 * log|S_ig|
+      sixj <- 0.5 * log(unlist(lapply(Sj[[g]], det))) # 0.5 * log|S_ig|
 
       # For zig calculation (the numerator part)
-      forz[ , g] <- piG[g] *
-        exp(rowSums(m[[g]] * dataset) - two - rowSums(lfactorial(dataset)) +
-              rowSums(log(normFactorsAsMatrix) * dataset) -
-              0.5 * mahalanobis(m[[g]], center = mu[[g]], cov = sigma[[g]]) -
-              five + six - 0.5 * log(det(sigma[[g]])) - dimensionality / 2)
+      forzi[ , g] <- piG[g] *
+        exp(rowSums(mi[[g]] * dataset[which(membership != 0), ]) - twoi - rowSums(lfactorial(dataset[which(membership != 0), ])) +
+              rowSums(log(normFactorsAsMatrixi) * dataset[which(membership != 0), ]) -
+              0.5 * mahalanobis(mi[[g]], center = mu[[g]], cov = sigma[[g]]) -
+              fivei + sixi - 0.5 * log(det(sigma[[g]])) - dimensionality / 2)
+
+      # For zjg calculation (the numerator part)
+      forzj[ , g] <- piG[g] *
+        exp(rowSums(mj[[g]] * dataset[which(membership == 0), ]) - twoj - rowSums(lfactorial(dataset[which(membership == 0), ])) +
+              rowSums(log(normFactorsAsMatrixj) * dataset[which(membership == 0), ]) -
+              0.5 * mahalanobis(mj[[g]], center = mu[[g]], cov = sigma[[g]]) -
+              fivej + sixj - 0.5 * log(det(sigma[[g]])) - dimensionality / 2)
     }
 
 
     # Calculate zValue value
-    # check which forz == 0 and rowSums(forz)==0 and which of these
-    # have both equalling to 0 (because 0/0 =NaN)
+    # check which forz == 0 and rowSums(forz) == 0 and which of these
+    # have both equalling to 0 (because 0/0 = NaN)
     if (G == 1) {
-      errorpossible <- Reduce(intersect,
-                              list(which(forz == 0),
-                                   which(rowSums(forz) == 0)))
-      forz[errorpossible] <- 1e-100
-      zvalue <- forz / rowSums(forz)
+      errorpossiblei <- Reduce(intersect,
+                              list(which(forzi == 0),
+                                   which(rowSums(forzi) == 0)))
+      forzi[errorpossiblei] <- 1e-100
+      zvaluei <- forzi / rowSums(forzi)
+
+      errorpossiblej <- Reduce(intersect,
+                               list(which(forzj == 0),
+                                    which(rowSums(forzj) == 0)))
+      forzj[errorpossiblej] <- 1e-100
+      zvaluej <- forzj / rowSums(forzj)
     } else {
 
       # check for error, if rowsums are zero
-      rowSumsZero <- which(rowSums(forz) == 0)
-      if(length(rowSumsZero) > 0) {
-        forz[rowSumsZero, ] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
-                                                           centers = G,
-                                                           nstart = 100)$cluster)[rowSumsZero, ]
-        zvalue <- forz / rowSums(forz)
+      rowSumsZeroi <- which(rowSums(forzi) == 0)
+      if(length(rowSumsZeroi) > 0) {
+        forzi[rowSumsZeroi, ] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
+                                                            centers = G,
+                                                            nstart = 100)$cluster)[rowSumsZeroi, ]
+        zvaluei <- forzi / rowSums(forzi)
       } else {
-        zvalue <- forz / rowSums(forz)
+        zvaluei <- forzi / rowSums(forzi)
       }
+
+      rowSumsZeroj <- which(rowSums(forzj) == 0)
+      if(length(rowSumsZeroj) > 0) {
+        forzj[rowSumsZeroj, ] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
+                                                             centers = G,
+                                                             nstart = 100)$cluster)[rowSumsZeroj, ]
+        zvaluej <- forzj / rowSums(forzj)
+      } else {
+        zvaluej <- forzj / rowSums(forzj)
+      }
+
+
     }
 
     # if z generated has less clusters than numbG, then use random initialization
@@ -615,15 +691,20 @@ varMPLNClassification <- function(dataset,
     #   }
     # }
 
+    zValue <- matrix(0, nObservations, G)
+    zValue[which(membership != 0),] <- zValuei
+    zValue[which(membership == 0),] <- zValuej
+
+
     # if z generated has less clusters than numbG, then NA
-    if(length(unique(mclust::map(zvalue))) < G) {
+    if(length(unique(mclust::map(zValue))) < G) {
       cat("\n length(unique(mclust::map(zvalue))) < G for G =", G)
       checks <- 2
 
     } else { # if z generated clusters == numbG
 
       # Calculate log-likelihood
-      logLikelihood[itOuter] <- sum(log(rowSums(forz)))
+      logLikelihood[itOuter] <- sum(log(rowSums(forzi) + rowSums(forzj)))
 
       # Stopping criterion
       if (itOuter > 2) {
@@ -673,3 +754,365 @@ varMPLNClassification <- function(dataset,
   }
 
 }
+
+
+
+
+
+
+
+
+varMPLNClassificationInit <- function(dataset,
+                                      numbG,
+                                      initMethod,
+                                      nInitIterations,
+                                      membership,
+                                      normFactors) {
+
+  dimensionality <- ncol(dataset)
+  nObservations <- nrow(dataset)
+
+  zValue <- zValueKnown <- initRuns <- list()
+  logLinit <- vector()
+
+  # Initialize z with known memberships
+  classIndicator  <- (membership == 0)
+  zValueKnown[[1]] <- matrix(0, nObservations, G)
+  for (i in 1:nObservations) {
+    if(classIndicator[i]) {zValueKnown[[1]][i, ] <- 0} # zjg (for non-labeled)
+    else{zValueKnown[[1]][i, membership[i]] <- 1} # zig (for labeled)
+  }
+
+  for(iterations in seq_along(1:nInitIterations)) {
+
+    # the known memberships will always remain same
+    zValueKnown[[i]] <- zValueKnown[[1]]
+
+    # setting seed, to ensure if multiple iterations are selected by
+    # user, then each run will give a different result.
+    set.seed(iterations)
+    if (initMethod == "kmeans" | is.na(initMethod)) {
+      zValue[[iterations]] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
+                                                          centers = numbG, nstart = 100)$cluster )
+      # if z generated has less clusters than numbG, then use random initialization
+      checkClusters <- 0
+      if(length(unique(mclust::map(zValue[[iterations]]))) < numbG) {
+        while(! checkClusters) {
+          zValue[[iterations]] <- randomInitfunction(gmodel = numbG, nObservations = nObservations)
+          if(length(unique(mclust::map(zValue[[iterations]]))) == numbG) {
+            checkClusters <- 1
+            # cat("\n checkClusters", checkClusters)
+          }
+        }
+      }
+
+      # assing estimated values only to the observations requiring classification
+      zValueKnown[[i]][which(rowSums(zValueKnown) == 0), ] <-
+        zValue[[iterations]][which(rowSums(zValueKnown) == 0), ]
+
+    } else if (initMethod == "random") {
+      zValue[[iterations]] <- randomInitfunction(gmodel = numbG, nObservations = nObservations)
+
+      # assing estimated values only to the observations requiring classification
+      zValueKnown[[i]][which(rowSums(zValueKnown) == 0), ] <-
+        zValue[[iterations]][which(rowSums(zValueKnown) == 0), ]
+
+    } else if (initMethod == "medoids") {
+      zValue[[iterations]] <- mclust::unmap(cluster::pam(log(dataset + 1 / 3),
+                                                         k = numbG,  cluster.only = TRUE))
+      # if z generated has less clusters than numbG, then use random initialization
+      checkClusters <- 0
+      if(length(unique(mclust::map(zValue[[iterations]]))) < numbG) {
+        while(! checkClusters) {
+          zValue[[iterations]] <- randomInitfunction(gmodel = numbG, nObservations = nObservations)
+          if(length(unique(mclust::map(zValue[[iterations]]))) == numbG) {
+            checkClusters <- 1
+            # cat("\n checkClusters", checkClusters)
+          }
+        }
+      }
+
+      # assing estimated values only to the observations requiring classification
+      zValueKnown[[i]][which(rowSums(zValueKnown) == 0), ] <-
+        zValue[[iterations]][which(rowSums(zValueKnown) == 0), ]
+
+    } else if (initMethod == "clara") {
+      zValue[[iterations]] <- mclust::unmap(cluster::clara(log(dataset + 1 / 3),
+                                                           k = numbG)$cluster)
+      # if z generated has less clusters than numbG, then use random initialization
+      checkClusters <- 0
+      if(length(unique(mclust::map(zValue[[iterations]]))) < numbG) {
+        while(! checkClusters) {
+          zValue[[iterations]] <- randomInitfunction(gmodel = numbG, nObservations = nObservations)
+          if(length(unique(mclust::map(zValue[[iterations]]))) == numbG) {
+            checkClusters <- 1
+            # cat("\n checkClusters", checkClusters)
+          }
+        }
+      }
+
+      # assing estimated values only to the observations requiring classification
+      zValueKnown[[i]][which(rowSums(zValueKnown) == 0), ] <-
+        zValue[[iterations]][which(rowSums(zValueKnown) == 0), ]
+
+    } else if (initMethod == "fanny") {
+      zValue[[iterations]] <- mclust::unmap(cluster::fanny(log(dataset + 1 / 3),
+                                                           k = numbG, memb.exp = numbG, cluster.only = TRUE)$clustering)
+      # if z generated has less clusters than numbG, then use random initialization
+      checkClusters <- 0
+      if(length(unique(mclust::map(zValue[[iterations]]))) < numbG) {
+        while(! checkClusters) {
+          zValue[[iterations]] <- randomInitfunction(gmodel = numbG, nObservations = nObservations)
+          if(length(unique(mclust::map(zValue[[iterations]]))) == numbG) {
+            checkClusters <- 1
+            # cat("\n checkClusters", checkClusters)
+          }
+        }
+      }
+
+      # assing estimated values only to the observations requiring classification
+      zValueKnown[[i]][which(rowSums(zValueKnown) == 0), ] <-
+        zValue[[iterations]][which(rowSums(zValueKnown) == 0), ]
+    }
+
+
+    initRuns[[iterations]] <- varMPLNInitClustering(dataset = dataset,
+                                                    G = numbG,
+                                                    zValue = zValueKnown[[iterations]],
+                                                    normFactors = normFactors,
+                                                    maxIterations = 10)
+
+    # maxIterations set to 10 for initialization
+    logLinit[iterations] <-
+      unlist(utils::tail((initRuns[[iterations]]$logLikelihood), n = 1))
+  }
+
+  # select the initialization run with highest loglikelihood
+  initializationResults <- initRuns[[which(logLinit == max(logLinit, na.rm = TRUE))[1]]]
+
+  class(initializationResults) <- "varMPLNClassificationInit"
+  return(initializationResults)
+}
+
+
+
+
+varMPLNInitClustering <- function(dataset,
+                                  G,
+                                  zValue,
+                                  normFactors,
+                                  membership,
+                                  maxIterations = 10) {
+  # if running for initialization, need to stop after 10 iterations
+
+  dimensionality <- ncol(dataset)
+  nObservations <- nrow(dataset)
+
+
+  # basic initialization performed for parameters
+  mu <- sigma <- isigma <- list()
+  m <- S <- list() # variational parameters
+
+  ###Other intermediate items initialized
+  Sk <- array(0, c(dimensionality, dimensionality, G))
+  mPreviousValue <- GX <- dGX <- zSValue <- list()
+
+
+  piG <- colSums(zValue) / nObservations
+
+  for (g in 1:G) {
+    obs <- which(zValue[ , g] == 1)
+    if(length(obs) > 1) {
+      mu[[g]] <- colMeans(log(dataset[obs, ] + 1 / 6)) # starting value for mu
+      # starting value for sample covariance matrix
+      sigma[[g]] <- cov(log(dataset[obs, ] + 1 / 6))
+      # starting value for inverse of sample covariance matrix
+      # If the inverse is not present for covariance matrix, handle that
+      isigma[[g]] <- tryCatch(solve(sigma[[g]]), error = function(err) NA)
+      if(all(is.na(isigma[[g]]))) {
+        isigma[[g]] <- diag(ncol(dataset[obs, ])) # if error with inverse
+      }
+    } else if(length(obs) == 1) {
+      mu[[g]] <- log(dataset[obs, ] + 1 / 6) # starting value for mu
+      # starting value for sample covariance matrix
+      sigma[[g]] <- diag(ncol(dataset))
+      # starting value for inverse of sample covariance matrix
+      # If the inverse is not present for covariance matrix, handle that
+      isigma[[g]] <- tryCatch(solve(sigma[[g]]), error = function(err) NA)
+      if(all(is.na(isigma[[g]]))) {
+        isigma[[g]] <- diag(ncol(dataset[obs, ])) # if error with inverse
+      }
+    }
+  }
+
+  for (g in 1:G) {
+    # mPreviousValue = starting value for m
+    mPreviousValue[[g]] <- m[[g]] <- log(dataset + 1 / 6)
+    S[[g]] <- list() # starting value for S
+    for (i in 1:nObservations) {
+      S[[g]][[i]] <- diag(dimensionality) * 0.000000001
+    }
+  }
+
+  # Start clustering
+  itOuter <- 1
+  aloglik <- logLikelihood <- NULL
+  checks <- aloglik[c(1, 2, 3)] <- 0
+
+
+  while (checks == 0) {
+
+
+    for (g in 1:G) {
+      GX[[g]] <- list()
+      dGX[[g]] <- list()
+      zSValue[[g]] <- list()
+      for (i in 1:nObservations) {
+        dGX[[g]][[i]] <- diag(exp((log(normFactors) + mPreviousValue[[g]][i, ]) +
+                                    0.5 * diag(S[[g]][[i]])), dimensionality) + isigma[[g]]
+        # update S; will be used for updating sample covariance matrix
+        S[[g]][[i]] <- tryCatch(solve(dGX[[g]][[i]]), error = function(err) NA)
+        if(all(is.na(S[[g]][[i]]))) {
+          S[[g]][[i]] <- diag(ncol(dGX[[g]][[i]])) # if error with inverse
+        }
+
+
+        zSValue[[g]][[i]] <- zValue[i, g] * S[[g]][[i]]
+        GX[[g]][[i]] <- dataset[i, ] - exp(mPreviousValue[[g]][i, ] +
+                                             log(normFactors) + 0.5 * diag(S[[g]][[i]])) -
+          (isigma[[g]]) %*% (mPreviousValue[[g]][i, ] - mu[[g]])
+        m[[g]][i , ] <- mPreviousValue[[g]][i , ] + S[[g]][[i]] %*% GX[[g]][[i]] # update m
+      }
+
+      mPreviousValue[[g]] <- m[[g]]
+
+      # Updating mu
+      mu[[g]] <- colSums(zValue[ , g] * m[[g]]) / sum(zValue[ , g])
+
+      # Updating sample covariance
+      muMatrix <- matrix(rep(mu[[g]], nObservations), nrow = nObservations, byrow = TRUE)
+      res <- m[[g]] - muMatrix
+      # Calculate weighted covariance
+      temp <- stats::cov.wt(res, wt = zValue[ , g], center = FALSE, method = "ML")
+      Sk[ , , g] <- temp$cov
+      sigma[[g]] <- temp$cov + Reduce("+", zSValue[[g]]) / sum(zValue[ , g])
+      isigma[[g]] <- solve(sigma[[g]])
+    }
+
+
+    piG <- colSums(zValue) / nObservations
+
+    # Matrix containing normaization factors
+    normFactorsAsMatrix <- matrix(rep(normFactors, nObservations), nrow = nObservations, byrow = TRUE)
+
+
+    # A useful function
+    zvalueFuncTerm <- function(x, y = isigma[[g]]) {
+      sum(diag(x %*% y))
+    }
+
+    # # Zvalue calculation
+    forz <- matrix(NA, ncol = G, nrow = nObservations)
+
+    for (g in 1:G) {
+      # exp(m_igj + 0.5 S_ig,jj)
+      two <- rowSums(exp(m[[g]] + log(normFactorsAsMatrix) +
+                           0.5 * matrix(unlist(lapply(S[[g]], diag)), ncol = dimensionality, byrow = TRUE)))
+      five <- 0.5 * unlist(lapply(S[[g]], zvalueFuncTerm)) # trace(isigma x S_ig)
+      six <- 0.5 * log(unlist(lapply(S[[g]], det))) # 0.5 * log|S_ig|
+
+      # For zig calculation (the numerator part)
+      forz[ , g] <- piG[g] *
+        exp(rowSums(m[[g]] * dataset) - two - rowSums(lfactorial(dataset)) +
+              rowSums(log(normFactorsAsMatrix) * dataset) -
+              0.5 * mahalanobis(m[[g]], center = mu[[g]], cov = sigma[[g]]) -
+              five + six - 0.5 * log(det(sigma[[g]])) - dimensionality / 2)
+    }
+
+    # Calculate zValue value
+    # check which forz == 0 and rowSums(forz)==0 and which of these
+    # have both equalling to 0 (because 0/0 =NaN)
+    if (G == 1) {
+      errorpossible <- Reduce(intersect,
+                              list(which(forz == 0),
+                                   which(rowSums(forz) == 0)))
+      forz[errorpossible] <- 1e-100
+      zvalue <- forz / rowSums(forz)
+    } else {
+
+      # check for error, if rowsums are zero
+      rowSumsZero <- which(rowSums(forz) == 0)
+      if(length(rowSumsZero) > 0) {
+        forz[rowSumsZero, ] <- mclust::unmap(stats::kmeans(log(dataset + 1 / 6),
+                                                           centers = G,
+                                                           nstart = 100)$cluster)[rowSumsZero, ]
+        zvalue <- forz / rowSums(forz)
+      } else {
+        zvalue <- forz / rowSums(forz)
+      }
+
+      # if z generated has less clusters than numbG, then use random initialization
+      checkClusters <- 0
+      if(length(unique(mclust::map(zvalue))) < G) {
+        while(! checkClusters) {
+          zvalue <- randomInitfunction(gmodel = G, nObservations = nObservations)
+          if(length(unique(mclust::map(zvalue))) == G) {
+            checkClusters <- 1
+            # cat("\n checkClusters", checkClusters)
+          }
+        }
+      }
+
+    }
+
+
+
+    # Calculate log-likelihood
+    logLikelihood[itOuter] <- sum(log(rowSums(forz)))
+
+
+    # Stopping criterion
+    if (itOuter > 2) {
+
+      if ((logLikelihood[itOuter - 1] - logLikelihood[itOuter - 2]) == 0) {
+        checks <-1
+      } else {
+        # Aitken stopping criterion
+        termAitkens <- (logLikelihood[itOuter]- logLikelihood[itOuter - 1]) /
+          (logLikelihood[itOuter - 1] - logLikelihood[itOuter - 2])
+        term2Aitkens <- (1 / (1 - termAitkens) * (logLikelihood[itOuter] - logLikelihood[itOuter - 1]))
+        aloglik[itOuter] <- logLikelihood[itOuter - 1] + term2Aitkens
+        if (abs(aloglik[itOuter] - logLikelihood[itOuter - 1]) < 0.001) {
+          # If this critera, as per Böhning et al., 1994 is achieved
+          # convergence is achieved
+          checks <- 1
+        } else {
+          checks <- checks}
+      }
+    }
+    # print(itOuter)
+    itOuter <- itOuter + 1
+    if (itOuter == maxIterations) {
+      checks <- 1
+    }
+  }
+
+  # Naming parameters
+  names(mu) <- names(sigma) <- paste0(rep("G=", G), 1:G)
+
+  # Saving results for output
+  Results <- list(piG = piG,
+                  mu = mu,
+                  sigma = sigma,
+                  isigma = isigma,
+                  zValue = zvalue,
+                  m = m,
+                  S = S,
+                  clusterlabels = mclust::map(zvalue),
+                  logLikelihood = logLikelihood)
+
+  class(Results) <- "varMPLNInitClustering"
+  return(Results)
+}
+
+
