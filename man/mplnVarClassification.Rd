@@ -27,7 +27,8 @@ membership, assign value zero. E.g., for a dataset with 10 observations,
 and 2 known groups, c(1, 1, 1, 2, 2, 0, 0, 0, 1, 2).}
 
 \item{gmin}{A positive integer specifying the minimum number of components
-to be considered in the clustering run.}
+to be considered in the clustering run. The value should be equal to
+or greater than max(membership).}
 
 \item{gmax}{A positive integer, >= gmin, specifying the maximum number of
 components to be considered in the clustering run.}
@@ -110,12 +111,12 @@ table(membershipInfo)
 #   0   1   2
 # 367 477 156
 
-
+# Run for g = 2:3 groups
 # mplnClassificationResults <- MPLNClust::mplnVarClassification(
 #                                dataset = sampleData$dataset,
 #                                membership = membershipInfo,
-#                                gmin = 1,
-#                                gmax = 2,
+#                                gmin = 2,
+#                                gmax = 3,
 #                                initMethod = "kmeans",
 #                                nInitIterations = 2,
 #                                normalize = "Yes")
@@ -149,6 +150,7 @@ names(mplnResultsMBClust)
 # Using 500 labels from clustering above, classify rest of 500 observations
 membershipInfo <- c(mplnResultsMBClust$BICresults$BICmodelSelectedLabels,
                     rep(0, 500))
+max(mplnResultsMBClust$BICresults$BICmodelSelectedLabels) # 2
 # Assume there maybe 2 to 4 underlying groups
 # mplnClassificationResults <- MPLNClust::mplnVarClassification(
 #                               dataset = Count,
