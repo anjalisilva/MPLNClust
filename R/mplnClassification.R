@@ -86,7 +86,7 @@
 #' membershipInfo[randomNumb] <- 0
 #' table(membershipInfo)
 #' #   0   1   2
-#' # 367 477 156
+#' # 200 593 207
 #'
 #' # Run for g = 2:3 groups
 #' # mplnClassificationResults <- MPLNClust::mplnVarClassification(
@@ -538,12 +538,14 @@ varMPLNClassification <- function(dataset,
       for (i in 1:nObservationsi) {
         dGXi[[g]][[i]] <- diag(exp((log(normFactors) + miPreviousValue[[g]][i, ]) +
                                     0.5 * diag(Si[[g]][[i]])), dimensionality) + isigma[[g]]
-        Si[[g]][[i]] <- solve(dGXi[[g]][[i]]) # update Si
         # update S; will be used for updating sample covariance matrix
-        # S[[g]][[i]] <- tryCatch(solve(dGX[[g]][[i]]), error = function(err) NA)
-        # if(all(is.na(S[[g]][[i]]))) {
-        #   S[[g]][[i]] <- diag(ncol(dGX[[g]][[i]])) # if error with inverse
-        # }
+        Si[[g]][[i]] <- tryCatch(solve(dGXi[[g]][[i]]), error = function(err) NA)
+         if(all(is.na(Si[[g]][[i]]))) {
+           cat("\n", i)
+           Si[[g]][[i]] <- diag(ncol(dGXi[[g]][[i]])) # if error with inverse
+         } else {
+           Si[[g]][[i]] <- solve(dGXi[[g]][[i]]) # update Si
+         }
         zSiValue[[g]][[i]] <- zValuei[i, g] * Si[[g]][[i]] # for updating sample covariance matrix
         GXi[[g]][[i]] <- dataset[i, ] - exp(miPreviousValue[[g]][i, ] +
                                              log(normFactors) + 0.5 * diag(Si[[g]][[i]])) -
@@ -555,12 +557,14 @@ varMPLNClassification <- function(dataset,
       for (i in 1:nObservationsj) {
         dGXj[[g]][[i]] <- diag(exp((log(normFactors) + mjPreviousValue[[g]][i, ]) +
                                      0.5 * diag(Sj[[g]][[i]])), dimensionality) + isigma[[g]]
-        Sj[[g]][[i]] <- solve(dGXj[[g]][[i]]) # update Sj
         # update S; will be used for updating sample covariance matrix
-        # S[[g]][[i]] <- tryCatch(solve(dGX[[g]][[i]]), error = function(err) NA)
-        # if(all(is.na(S[[g]][[i]]))) {
-        #   S[[g]][[i]] <- diag(ncol(dGX[[g]][[i]])) # if error with inverse
-        # }
+        Sj[[g]][[i]] <- tryCatch(solve(dGXj[[g]][[i]]), error = function(err) NA)
+         if(all(is.na(Sj[[g]][[i]]))) {
+           cat("\n", i)
+           Sj[[g]][[i]] <- diag(ncol(dGXj[[g]][[i]])) # if error with inverse
+         } else {
+           Sj[[g]][[i]] <- solve(dGXj[[g]][[i]]) # update Sj
+         }
         zSjValue[[g]][[i]] <- zValuej[i, g] * Sj[[g]][[i]] # for updating sample covariance matrix
         GXj[[g]][[i]] <- dataset[i, ] - exp(mjPreviousValue[[g]][i, ] +
                                               log(normFactors) + 0.5 * diag(Sj[[g]][[i]])) -
@@ -624,17 +628,20 @@ varMPLNClassification <- function(dataset,
 
       # For zig calculation (the numerator part)
       forzi[ , g] <- piG[g] *
-        exp(rowSums(mi[[g]] * dataset[which(membership != 0), ]) - twoi - rowSums(lfactorial(dataset[which(membership != 0), ])) +
+        exp(rowSums(mi[[g]] * dataset[which(membership != 0), ]) -
+              twoi - rowSums(lfactorial(dataset[which(membership != 0), ])) +
               rowSums(log(normFactorsAsMatrixi) * dataset[which(membership != 0), ]) -
               0.5 * mahalanobis(mi[[g]], center = mu[[g]], cov = sigma[[g]]) -
-              fivei + sixi - 0.5 * log(det(sigma[[g]])) - dimensionality / 2)
+              fivei + sixi - 0.5 * log(det(sigma[[g]])) - (dimensionality / 2))
+
 
       # For zjg calculation (the numerator part)
       forzj[ , g] <- piG[g] *
-        exp(rowSums(mj[[g]] * dataset[which(membership == 0), ]) - twoj - rowSums(lfactorial(dataset[which(membership == 0), ])) +
+        exp(rowSums(mj[[g]] * dataset[which(membership == 0), ]) -
+              twoj - rowSums(lfactorial(dataset[which(membership == 0), ])) +
               rowSums(log(normFactorsAsMatrixj) * dataset[which(membership == 0), ]) -
               0.5 * mahalanobis(mj[[g]], center = mu[[g]], cov = sigma[[g]]) -
-              fivej + sixj - 0.5 * log(det(sigma[[g]])) - dimensionality / 2)
+              fivej + sixj - 0.5 * log(det(sigma[[g]])) - (dimensionality / 2))
     }
 
 
@@ -754,9 +761,6 @@ varMPLNClassification <- function(dataset,
   }
 
 }
-
-
-
 
 
 
