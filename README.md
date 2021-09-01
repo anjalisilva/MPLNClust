@@ -4,7 +4,6 @@
 # MPLNClust
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
 ## Description
@@ -15,14 +14,13 @@ et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). It was
 developed for count data, with clustering of RNA sequencing data as a
 motivation. However, the clustering method may be applied to other types
 of count data. The package provides functions for functions for
-parameter estimation via 1) an MCMC-EM framework by [Silva et
-al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a
-variational Gaussian approximation with EM algorithm by [Subedi and
-Browne, 2020](https://arxiv.org/abs/2004.06857). Information criteria
-(AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE, if more
-than 10 models are considered) are offered for model selection. Also
-included are functions for simulating data from this model and
-visualization.
+parameter estimation via 1) an MCMC-EM framework by [Silva et al.,
+2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a variational
+Gaussian approximation with EM algorithm by [Subedi and Browne,
+2020](https://arxiv.org/abs/2004.06857). Information criteria (AIC, BIC,
+AIC3 and ICL) and slope heuristics (Djump and DDSE, if more than 10
+models are considered) are offered for model selection. Also included
+are functions for simulating data from this model and visualization.
 
 ## Installation
 
@@ -75,9 +73,7 @@ An overview of the package is illustrated below:
 <img src="inst/extdata/Overview_MPLNClust.png" width="800" height="450"/>
 
 <div style="text-align:left">
-
 <div style="text-align:left">
-
 <div style="text-align:left">
 
 Alternatively, the Shiny app employing ***mplnVariational*** could be
@@ -92,17 +88,16 @@ MPLNClust::runMPLNClust()
 <img src="inst/extdata/ShinyAppMPLNClust.png" alt="ShinyApp1" width="800" height="450"/>
 
 <div style="text-align:left">
-
 <div style="text-align:left">
 
 ## Details
 
-The MPLN distribution ([Aitchison and
-Ho, 1989](https://www.jstor.org/stable/2336624?seq=1)) is a multivariate
-log normal mixture of independent Poisson distributions. The hidden
-layer of the MPLN distribution is a multivariate Gaussian distribution,
-which allows for the specification of a covariance structure. Further,
-the MPLN distribution can account for overdispersion in count data.
+The MPLN distribution ([Aitchison and Ho,
+1989](https://www.jstor.org/stable/2336624?seq=1)) is a multivariate log
+normal mixture of independent Poisson distributions. The hidden layer of
+the MPLN distribution is a multivariate Gaussian distribution, which
+allows for the specification of a covariance structure. Further, the
+MPLN distribution can account for overdispersion in count data.
 Additionally, the MPLN distribution supports negative and positive
 correlations.
 
@@ -110,10 +105,10 @@ A mixture of MPLN distributions is introduced for clustering count data
 by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/).
 Here, applicability is illustrated using RNA sequencing data. To this
 date, two frameworks have been proposed for parameter estimation: 1) an
-MCMC-EM framework by [Silva et
-al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a
-variational Gaussian approximation with EM algorithm by [Subedi and
-Browne, 2020](https://arxiv.org/abs/2004.06857).
+MCMC-EM framework by [Silva et al.,
+2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a variational
+Gaussian approximation with EM algorithm by [Subedi and Browne,
+2020](https://arxiv.org/abs/2004.06857).
 
 ### MCMC-EM Framework for Parameter Estimation
 
@@ -191,26 +186,26 @@ A BibTeX entry for LaTeX users is
 
 ## References for Package
 
-  - [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019).
+-   [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019).
     A multivariate Poisson-log normal mixture model for clustering
     transcriptome sequencing data. *BMC
     Bioinformatics.*](https://pubmed.ncbi.nlm.nih.gov/31311497/)
 
-  - [Subedi, S., and R. Browne (2020). A parsimonious family of
+-   [Subedi, S., and R. Browne (2020). A parsimonious family of
     multivariate Poisson-lognormal distributions for clustering
     multivariate count data. arXiv preprint
     arXiv:2004.06857.](https://arxiv.org/abs/2004.06857)
 
-  - [Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log
+-   [Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log
     normal distribution.
     *Biometrika.*](https://www.jstor.org/stable/2336624?seq=1)
 
-  - For others, refer to help page of inidividual functions via
+-   For others, refer to help page of inidividual functions via
     `?function` or `help(function)`.
 
 ## Maintainer
 
-  - Anjali Silva (<anjali.silva@uhnresearch.ca>).
+-   Anjali Silva (<anjali@alumni.uoguelph.ca>).
 
 ## Contributions
 
@@ -220,8 +215,8 @@ issues](https://github.com/anjalisilva/MPLNClust/issues).
 
 ## Acknowledgments
 
-  - Dr. Marcelo Ponce, SciNet HPC Consortium, University of Toronto, ON,
+-   Dr. Marcelo Ponce, SciNet HPC Consortium, University of Toronto, ON,
     Canada for all the computational support.
-  - This work was funded by Natural Sciences and Engineering Research
+-   This work was funded by Natural Sciences and Engineering Research
     Council of Canada, Queen Elizabeth II Graduate Scholarship, and
     Arthur Richmond Memorial Scholarship.

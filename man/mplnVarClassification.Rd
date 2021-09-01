@@ -109,7 +109,7 @@ randomNumb <- sample(1:length(membershipInfo), 200, replace = FALSE)
 membershipInfo[randomNumb] <- 0
 table(membershipInfo)
 #   0   1   2
-# 367 477 156
+# 200 593 207
 
 # Run for g = 2:3 groups
 # mplnClassificationResults <- MPLNClust::mplnVarClassification(

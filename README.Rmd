@@ -131,7 +131,7 @@ A BibTeX entry for LaTeX users is
 
 ## Maintainer
 
-* Anjali Silva (anjali.silva@uhnresearch.ca). 
+* Anjali Silva (anjali@alumni.uoguelph.ca). 
 
 
 ## Contributions
