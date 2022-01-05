@@ -8,8 +8,8 @@ Data
 
 <!-- badges: start -->
 <!-- https://www.codefactor.io/repository/github/anjalisilva/MPLNClust/issues -->
+<!-- [![CodeFactor](https://www.codefactor.io/repository/github/anjalisilva/mplnclust/badge)](https://www.codefactor.io/repository/github/anjalisilva/mplnclust)-->
 
-[![CodeFactor](https://www.codefactor.io/repository/github/anjalisilva/mplnclust/badge)](https://www.codefactor.io/repository/github/anjalisilva/mplnclust)
 [![GitHub
 issues](https://img.shields.io/github/issues/anjalisilva/MPLNClust)](https://github.com/anjalisilva/MPLNClust/issues)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
