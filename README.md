@@ -32,7 +32,7 @@ of count data. The package provides functions for functions for
 parameter estimation via 1) an MCMC-EM framework by [Silva et al.,
 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a variational
 Gaussian approximation with EM algorithm by [Subedi and Browne,
-2020](https://arxiv.org/abs/2004.06857). Information criteria (AIC, BIC,
+2020](https://doi.org/10.1002/sta4.310). Information criteria (AIC, BIC,
 AIC3 and ICL) and slope heuristics (Djump and DDSE, if more than 10
 models are considered) are offered for model selection. Also included
 are functions for simulating data from this model and visualization.
@@ -123,7 +123,7 @@ date, two frameworks have been proposed for parameter estimation: 1) an
 MCMC-EM framework by [Silva et al.,
 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a variational
 Gaussian approximation with EM algorithm by [Subedi and Browne,
-2020](https://arxiv.org/abs/2004.06857).
+2020](https://doi.org/10.1002/sta4.310).
 
 ### MCMC-EM Framework for Parameter Estimation
 
@@ -153,7 +153,7 @@ algorithm.
 
 ### Variational-EM Framework for Parameter Estimation
 
-[Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857) proposed a
+[Subedi and Browne, 2020](https://doi.org/10.1002/sta4.310) proposed a
 variational Gaussian approximation that alleviates challenges of MCMC-EM
 algorithm. Here the posterior distribution is approximated by minimizing
 the Kullback-Leibler (KL) divergence between the true and the
@@ -206,10 +206,10 @@ A BibTeX entry for LaTeX users is
     transcriptome sequencing data. *BMC
     Bioinformatics.*](https://pubmed.ncbi.nlm.nih.gov/31311497/)
 
--   [Subedi, S., and R. Browne (2020). A parsimonious family of
-    multivariate Poisson-lognormal distributions for clustering
-    multivariate count data. arXiv preprint
-    arXiv:2004.06857.](https://arxiv.org/abs/2004.06857)
+-   [Subedi, S., R.P. Browne (2020). A family of parsimonious mixtures
+    of multivariate Poisson-lognormal distributions for clustering
+    multivariate count data. *Stat.*
+    9:e310.](https://doi.org/10.1002/sta4.310)
 
 -   [Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log
     normal distribution.
