@@ -166,5 +166,5 @@ distributions for clustering multivariate count data. arXiv preprint arXiv:2004.
 }
 \author{
 {Anjali Silva, \email{a.silva@utoronto.ca}, Sanjeena Dang,
-\email{sdang@math.binghamton.edu}. }
+\email{sanjeenadang@cunet.carleton.ca}. }
 }

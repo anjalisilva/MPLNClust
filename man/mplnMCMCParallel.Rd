@@ -164,5 +164,5 @@ for clustering transcriptome sequencing data. \emph{BMC Bioinformatics} 20.
 }
 \author{
 {Anjali Silva, \email{a.silva@utoronto.ca}, Sanjeena Dang,
-\email{sdang@math.binghamton.edu}. }
+\email{sanjeenadang@cunet.carleton.ca}. }
 }

@@ -103,7 +103,7 @@
 #'                                              numNodes = 2)
 #' }
 #' @author {Anjali Silva, \email{a.silva@utoronto.ca}, Sanjeena Dang,
-#'          \email{sdang@math.binghamton.edu}. }
+#'          \email{sanjeenadang@cunet.carleton.ca}. }
 #'
 #' @references
 #' Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.
@@ -293,7 +293,7 @@ mplnMCMCParallel <- function(dataset,
 
   # Construct a Stan model
   # Stan model was developed with help of Sanjeena Dang
-  # <sdang@math.binghamton.edu>
+  # <sanjeenadang@cunet.carleton.ca>
   stancode <- 'data{int<lower=1> d; // Dimension of theta
   int<lower=0> N; //Sample size
   int y[N,d]; //Array of Y
@@ -584,7 +584,7 @@ mplnMCMCParallel <- function(dataset,
 #' }
 #'
 #' @author {Anjali Silva, \email{a.silva@utoronto.ca}, Sanjeena Dang,
-#'          \email{sdang@math.binghamton.edu}. }
+#'          \email{sanjeenadang@cunet.carleton.ca}. }
 #'
 #' @references
 #' Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.
@@ -759,7 +759,7 @@ mplnMCMCNonParallel <- function(dataset,
 
   # Construct a Stan model
   # Stan model was developed with help of Sanjeena Dang
-  # <sdang@math.binghamton.edu>
+  # <sanjeenadang@cunet.carleton.ca>
   stancode <- 'data{int<lower=1> d; // Dimension of theta
   int<lower=0> N; //Sample size
   int y[N,d]; //Array of Y
@@ -1578,7 +1578,7 @@ stanRun <- function(model,
 #'}
 #'
 #' @author {Anjali Silva, \email{a.silva@utoronto.ca}, Sanjeena Dang,
-#'          \email{sdang@math.binghamton.edu}. }
+#'          \email{sanjeenadang@cunet.carleton.ca}. }
 #'
 #' @references
 #' Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.

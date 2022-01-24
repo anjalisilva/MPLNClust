@@ -60,13 +60,13 @@
 #'                               normalize = "Yes")
 #'
 #'  # Visualize data using alluvial plot
-#'  alluvialPlot<- mplnVisualizeAlluvial (nObservations = nrow(simulatedCounts$dataset),
+#'  alluvialPlot <- mplnVisualizeAlluvial (nObservations = nrow(simulatedCounts$dataset),
 #'                            firstGrouping = MPLNClustResults$BICresults$BICmodelSelectedLabels,
 #'                            secondGrouping = MPLNClustResults$ICLresults$ICLmodelSelectedLabels,
 #'                            thirdGrouping = MPLNClustResults$AIC3results$AIC3modelSelectedLabels,
 #'                            fourthGrouping = MPLNClustResults$AICresults$AICmodelSelectedLabels,
 #'                            fileName = paste0('Plot_',date()),
-#'                            printPlot = TRUE,
+#'                            printPlot = FALSE,
 #'                            format = 'pdf')
 #'
 #' @author Anjali Silva, \email{a.silva@utoronto.ca}
