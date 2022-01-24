@@ -38,21 +38,23 @@
 #' @return An alluvial plot should be returned.
 #'
 #' @examples
+#' # Example 1
+#' # Assign values for parameters
 #' trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 #' trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 #'
 #' trueSigma1 <- diag(6) * 2
 #' trueSigma2 <- diag(6)
 #'
-#' # Generating simulated data
-#' simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
+#' # Generate simulated data for 500 x 6 dataset
+#' simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 500,
 #'                                       dimensionality = 6,
 #'                                       mixingProportions = c(0.79, 0.21),
 #'                                       mu = rbind(trueMu1, trueMu2),
 #'                                       sigma = rbind(trueSigma1, trueSigma2),
 #'                                       produceImage = "No")
 #'
-#'  # Clustering data
+#'  # Clustering data for G = 1:2
 #'  MPLNClustResults <- MPLNClust::mplnVariational(
 #'                               dataset = as.matrix(simulatedCounts$dataset),
 #'                               membership = "none",
@@ -62,8 +64,9 @@
 #'                               nInitIterations = 1,
 #'                               normalize = "Yes")
 #'
-#'  # Visualize data using alluvial plot
-#'  alluvialPlot <- mplnVisualizeAlluvial (nObservations = nrow(simulatedCounts$dataset),
+#'  # Visualize clustering results using alluvial plot
+#'  # Access results using models selected via model selection criteria
+#'  alluvialPlot <- mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
 #'                            firstGrouping = MPLNClustResults$BICresults$BICmodelSelectedLabels,
 #'                            secondGrouping = MPLNClustResults$ICLresults$ICLmodelSelectedLabels,
 #'                            thirdGrouping = MPLNClustResults$AIC3results$AIC3modelSelectedLabels,
@@ -72,11 +75,36 @@
 #'                            printPlot = FALSE,
 #'                            format = 'pdf')
 #'
+#'  # Example 2
+#'  # Perform clustering via K-means with centers = 2
+#'  # Visualize clustering results using alluvial plot for
+#'  # K-means and above MPLNClust results. Note, coloring
+#'  # is set with respect to firstGrouping which is assinged
+#'  # MPLNClust results.
+#'
+#'  set.seed(1234)
+#'  alluvialPlotMPLNClust <- mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
+#'                                firstGrouping = MPLNClustResults$BICresults$BICmodelSelectedLabels,
+#'                                secondGrouping = kmeans(simulatedCounts$dataset, 2)$cluster,
+#'                                fileName = paste0('Plot_',date()),
+#'                                printPlot = FALSE,
+#'                                format = 'pdf')
+#'
+#'  # Note, coloring is set with respect to firstGrouping which is
+#'  # assinged K-means results.
+#'  set.seed(1234)
+#'  alluvialPlotKmeans <- mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
+#'                            firstGrouping = kmeans(simulatedCounts$dataset, 2)$cluster,
+#'                            secondGrouping = MPLNClustResults$BICresults$BICmodelSelectedLabels,
+#'                            fileName = paste0('Plot_',date()),
+#'                            printPlot = FALSE,
+#'                            format = 'pdf')
+#'
 #' @author Anjali Silva, \email{a.silva@utoronto.ca}
 #'
 #' @references
-#' Bojanowski,  M., Edwards, R. (2016). _alluvial: R Package for
-#' Creating Alluvial Diagrams_. R package version: 0.1-2,
+#' Bojanowski,  M., R. Edwards (2016). alluvial: R Package for
+#' Creating Alluvial Diagrams. R package version: 0.1-2,
 #' \href{https://github.com/mbojan/alluvial}{Link}
 #'
 #' @export
@@ -119,22 +147,7 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
   # Obtaining path to save images
   pathNow <- getwd()
 
-  # Setting colors
-  maxValue <- c(max(firstGrouping), max(secondGrouping),
-                max(thirdGrouping), max(fourthGrouping))
-  maxValueToChoose <- which(maxValue == max(maxValue))[1]
-
-  if (maxValueToChoose == 1) {
-    setVectorColor <- firstGrouping
-  } else if (maxValueToChoose == 2) {
-    setVectorColor <- secondGrouping
-  } else if (maxValueToChoose == 3) {
-    setVectorColor <- thirdGrouping
-  } else {
-    setVectorColor <- fourthGrouping
-  }
-
-
+  # Setting colors based on first grouping
   coloursBarPlot <- c('#4363d8', '#f58231', '#911eb4',
                       '#46f0f0', '#f032e6',
                       '#bcf60c', '#fabebe', '#008080',
@@ -142,26 +155,26 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
                       '#fffac8', '#800000', '#aaffc3',
                       '#808000', '#ffd8b1',
                       '#000075', '#808080')
-
-  if(maxValueToChoose == 2) {
+  setVectorColor <- firstGrouping
+  if(max(firstGrouping) == 2) {
     colSetting <- dplyr::case_when(
                     setVectorColor == "1" ~ coloursBarPlot[1],
                     setVectorColor == "2" ~ coloursBarPlot[2],
                     TRUE ~ "orange")
-  } else if (maxValueToChoose == 3) {
+  } else if(max(firstGrouping) == 3) {
     colSetting <- dplyr::case_when(
                       setVectorColor == "1" ~ coloursBarPlot[1],
                       setVectorColor == "2" ~ coloursBarPlot[2],
                       setVectorColor == "3" ~ coloursBarPlot[3],
                       TRUE ~ "orange")
-  } else if (maxValueToChoose == 4) {
+  } else if(max(firstGrouping) == 4) {
     colSetting <- dplyr::case_when(
       setVectorColor == "1" ~ coloursBarPlot[1],
       setVectorColor == "2" ~ coloursBarPlot[2],
       setVectorColor == "2" ~ coloursBarPlot[3],
       setVectorColor == "4" ~ coloursBarPlot[4],
       TRUE ~ "orange")
-  } else if (maxValueToChoose == 5) {
+  } else if(max(firstGrouping) == 5) {
     colSetting <- dplyr::case_when(
       setVectorColor == "1" ~ coloursBarPlot[1],
       setVectorColor == "2" ~ coloursBarPlot[2],
@@ -169,7 +182,7 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
       setVectorColor == "4" ~ coloursBarPlot[4],
       setVectorColor == "5" ~ coloursBarPlot[5],
       TRUE ~ "orange")
-  } else if (maxValueToChoose == 6) {
+  } else if(max(firstGrouping) == 6) {
     colSetting <- dplyr::case_when(
       setVectorColor == "1" ~ coloursBarPlot[1],
       setVectorColor == "2" ~ coloursBarPlot[2],
@@ -178,7 +191,7 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
       setVectorColor == "5" ~ coloursBarPlot[5],
       setVectorColor == "6" ~ coloursBarPlot[6],
       TRUE ~ "orange")
-  } else if (maxValueToChoose == 7) {
+  } else if(max(firstGrouping) == 7) {
     colSetting <- dplyr::case_when(
       setVectorColor == "1" ~ coloursBarPlot[1],
       setVectorColor == "2" ~ coloursBarPlot[2],
@@ -188,7 +201,7 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
       setVectorColor == "6" ~ coloursBarPlot[6],
       setVectorColor == "7" ~ coloursBarPlot[7],
       TRUE ~ "orange")
-  } else if (maxValueToChoose == 8) {
+  } else if(max(firstGrouping) == 8) {
     colSetting <- dplyr::case_when(
       setVectorColor == "1" ~ coloursBarPlot[1],
       setVectorColor == "2" ~ coloursBarPlot[2],
@@ -199,7 +212,7 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
       setVectorColor == "7" ~ coloursBarPlot[7],
       setVectorColor == "8" ~ coloursBarPlot[8],
       TRUE ~ "orange")
-  } else if (maxValueToChoose == 9) {
+  } else if(max(firstGrouping) == 9) {
     colSetting <- dplyr::case_when(
       setVectorColor == "1" ~ coloursBarPlot[1],
       setVectorColor == "2" ~ coloursBarPlot[2],
@@ -211,7 +224,7 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
       setVectorColor == "8" ~ coloursBarPlot[8],
       setVectorColor == "9" ~ coloursBarPlot[9],
       TRUE ~ "orange")
-  } else if (maxValueToChoose == 10) {
+  } else if(max(firstGrouping) == 10) {
     colSetting <- dplyr::case_when(
       setVectorColor == "1" ~ coloursBarPlot[1],
       setVectorColor == "2" ~ coloursBarPlot[2],
@@ -294,15 +307,15 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
   }
 
   # printing plots
-        if (printPlot == TRUE) {
-          if (format == 'png') {
-            grDevices::png(paste0(pathNow, "/AlluvialPlot_", fileName, ".png"))
-          } else {
-            grDevices::pdf(paste0(pathNow, "/AlluvialPlot_", fileName, ".pdf"))
-          }
-          plotAlluvial
-          grDevices::dev.off()
-        }
+  if (printPlot == TRUE) {
+    if (format == 'png') {
+        grDevices::png(paste0(pathNow, "/AlluvialPlot_", fileName, ".png"))
+    } else {
+        grDevices::pdf(paste0(pathNow, "/AlluvialPlot_", fileName, ".pdf"))
+    }
+      plotAlluvial
+      grDevices::dev.off()
+    }
 
   class(plotAlluvial) <- "mplnAlluvialVisual"
   return(plotAlluvial)

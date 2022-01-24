@@ -63,21 +63,23 @@ supported. Colors are assigned based on cluster membership
 assigned for argument 'firstGrouping'.
 }
 \examples{
+# Example 1
+# Assign values for parameters
 trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 
 trueSigma1 <- diag(6) * 2
 trueSigma2 <- diag(6)
 
-# Generating simulated data
-simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
+# Generate simulated data for 500 x 6 dataset
+simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 500,
                                       dimensionality = 6,
                                       mixingProportions = c(0.79, 0.21),
                                       mu = rbind(trueMu1, trueMu2),
                                       sigma = rbind(trueSigma1, trueSigma2),
                                       produceImage = "No")
 
- # Clustering data
+ # Clustering data for G = 1:2
  MPLNClustResults <- MPLNClust::mplnVariational(
                               dataset = as.matrix(simulatedCounts$dataset),
                               membership = "none",
@@ -87,8 +89,9 @@ simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
                               nInitIterations = 1,
                               normalize = "Yes")
 
- # Visualize data using alluvial plot
- alluvialPlot <- mplnVisualizeAlluvial (nObservations = nrow(simulatedCounts$dataset),
+ # Visualize clustering results using alluvial plot
+ # Access results using models selected via model selection criteria
+ alluvialPlot <- mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
                            firstGrouping = MPLNClustResults$BICresults$BICmodelSelectedLabels,
                            secondGrouping = MPLNClustResults$ICLresults$ICLmodelSelectedLabels,
                            thirdGrouping = MPLNClustResults$AIC3results$AIC3modelSelectedLabels,
@@ -97,10 +100,35 @@ simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
                            printPlot = FALSE,
                            format = 'pdf')
 
+ # Example 2
+ # Perform clustering via K-means with centers = 2
+ # Visualize clustering results using alluvial plot for
+ # K-means and above MPLNClust results. Note, coloring
+ # is set with respect to firstGrouping which is assinged
+ # MPLNClust results.
+
+ set.seed(1234)
+ alluvialPlotMPLNClust <- mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
+                               firstGrouping = MPLNClustResults$BICresults$BICmodelSelectedLabels,
+                               secondGrouping = kmeans(simulatedCounts$dataset, 2)$cluster,
+                               fileName = paste0('Plot_',date()),
+                               printPlot = FALSE,
+                               format = 'pdf')
+
+ # Note, coloring is set with respect to firstGrouping which is
+ # assinged K-means results.
+ set.seed(1234)
+ alluvialPlotKmeans <- mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
+                           firstGrouping = kmeans(simulatedCounts$dataset, 2)$cluster,
+                           secondGrouping = MPLNClustResults$BICresults$BICmodelSelectedLabels,
+                           fileName = paste0('Plot_',date()),
+                           printPlot = FALSE,
+                           format = 'pdf')
+
 }
 \references{
-Bojanowski,  M., Edwards, R. (2016). \emph{alluvial: R Package for
-Creating Alluvial Diagrams}. R package version: 0.1-2,
+Bojanowski,  M., R. Edwards (2016). alluvial: R Package for
+Creating Alluvial Diagrams. R package version: 0.1-2,
 \href{https://github.com/mbojan/alluvial}{Link}
 }
 \author{
