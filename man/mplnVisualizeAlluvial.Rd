@@ -5,8 +5,8 @@
 \title{Alluvial Plot of Multiple Clustering Results}
 \usage{
 mplnVisualizeAlluvial(
-  nObservations,
-  firstGrouping,
+  nObservations = 50L,
+  firstGrouping = floor(runif(50, min = 1, max = 8)),
   secondGrouping = vector(mode = "integer", length = 0),
   thirdGrouping = vector(mode = "integer", length = 0),
   fourthGrouping = vector(mode = "integer", length = 0),
@@ -17,10 +17,12 @@ mplnVisualizeAlluvial(
 }
 \arguments{
 \item{nObservations}{An integer specifying the total number of
-observations, N, in the dataset.}
+observations, N, in the dataset. Default value is 50L.}
 
-\item{firstGrouping}{A vector of length N, specifying the cluster
-membership of N observations.}
+\item{firstGrouping}{A vector of length nObservations, specifying the
+cluster membership of observations. This must be provided. Colors
+will be assigned based on cluster membership provided in this
+vector. Default value is a vector of length 50.}
 
 \item{secondGrouping}{A vector of length N, specifying the cluster
 membership of N observations. This could be obtained via another
@@ -57,7 +59,8 @@ an alluvial plot provided multiple clustering results for
 the same group of observations. Up to four varying results
 could be visualized. Minimum, one clustering result for
 visualization is required. Maximum 10 colors (clusters) are
-supported.
+supported. Colors are assigned based on cluster membership
+assigned for argument 'firstGrouping'.
 }
 \examples{
 trueMu1 <- c(6.5, 6, 6, 6, 6, 6)

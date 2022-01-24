@@ -6,12 +6,15 @@
 #' the same group of observations. Up to four varying results
 #' could be visualized. Minimum, one clustering result for
 #' visualization is required. Maximum 10 colors (clusters) are
-#' supported.
+#' supported. Colors are assigned based on cluster membership
+#' assigned for argument 'firstGrouping'.
 #'
 #' @param nObservations An integer specifying the total number of
-#'    observations, N, in the dataset.
-#' @param firstGrouping A vector of length N, specifying the cluster
-#'     membership of N observations.
+#'    observations, N, in the dataset. Default value is 50L.
+#' @param firstGrouping A vector of length nObservations, specifying the
+#'     cluster membership of observations. This must be provided. Colors
+#'     will be assigned based on cluster membership provided in this
+#'     vector. Default value is a vector of length 50.
 #' @param secondGrouping A vector of length N, specifying the cluster
 #'     membership of N observations. This could be obtained via another
 #'     clustering run or from a different model selection criteria.
@@ -83,8 +86,8 @@
 #' @importFrom grDevices png
 #' @importFrom grDevices pdf
 #' @importFrom grDevices dev.off
-mplnVisualizeAlluvial <- function(nObservations,
-                                  firstGrouping,
+mplnVisualizeAlluvial <- function(nObservations = 50L,
+                                  firstGrouping = floor(runif(50, min = 1, max = 8)),
                                   secondGrouping = vector(mode = "integer", length = 0),
                                   thirdGrouping = vector(mode = "integer", length = 0),
                                   fourthGrouping = vector(mode = "integer", length = 0),
@@ -120,6 +123,7 @@ mplnVisualizeAlluvial <- function(nObservations,
   maxValue <- c(max(firstGrouping), max(secondGrouping),
                 max(thirdGrouping), max(fourthGrouping))
   maxValueToChoose <- which(maxValue == max(maxValue))[1]
+
   if (maxValueToChoose == 1) {
     setVectorColor <- firstGrouping
   } else if (maxValueToChoose == 2) {
