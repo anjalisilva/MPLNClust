@@ -67,12 +67,21 @@ simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 100,
                               nInitIterations = 1,
                               normalize = "Yes")
 
- # Visualize data via a Heatmap
+ # Visualize data via a Heatmap for G = 2
  MPLNVisuals <- MPLNClust::mplnVisualizeHeatmap(dataset = simulatedCounts$dataset,
                                          MPLNClustResults$allResults$`G=2`$probaPost,
                                          clusterMembershipVector =
                                          MPLNClustResults$allResults$`G=2`$clusterlabels,
                                          fileName = 'TwoClusterModel',
+                                         printPlot = FALSE,
+                                         format = 'png')
+
+ # Visualize data via a Heatmap for G = 3
+ MPLNVisuals <- MPLNClust::mplnVisualizeHeatmap(dataset = simulatedCounts$dataset,
+                                         MPLNClustResults$allResults$`G=3`$probaPost,
+                                         clusterMembershipVector =
+                                         MPLNClustResults$allResults$`G=3`$clusterlabels,
+                                         fileName = 'ThreeClusterModel',
                                          printPlot = FALSE,
                                          format = 'png')
 
