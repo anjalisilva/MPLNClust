@@ -881,10 +881,8 @@ barPlotFunction <- function(tableProbabilitiesMelt,
 #'                               nInitIterations = 1,
 #'                               normalize = "Yes")
 #'
-#'  # Visualize data
-#'  MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
-#'                                          plots = 'all',
-#'                                          probabilities =
+#'  # Visualize data via a Heatmap
+#'  MPLNVisuals <- MPLNClust::mplnVisualizeHeatmap(dataset = simulatedCounts$dataset,
 #'                                          MPLNClustResults$allResults$`G=2`$probaPost,
 #'                                          clusterMembershipVector =
 #'                                          MPLNClustResults$allResults$`G=2`$clusterlabels,
@@ -907,8 +905,7 @@ barPlotFunction <- function(tableProbabilitiesMelt,
 #' @importFrom gplots heatmap.2
 #' @importFrom gplots redgreen
 #' @importFrom reshape melt
-mplnVisualize <- function(dataset,
-                          probabilities = NA,
+mplnVisualizeHeatmap <- function(dataset,
                           clusterMembershipVector = NA,
                           fileName = paste0('Plot_',date()),
                           printPlot = TRUE,
