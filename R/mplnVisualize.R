@@ -388,8 +388,6 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
 #'
 #'  # Visualize data using line plot
 #'  MPLNVisuals <- MPLNClust::mplnVisualizeLine(dataset = simulatedCounts$dataset,
-#'                                          probabilities =
-#'                                          MPLNClustResults$allResults$`G=2`$probaPost,
 #'                                          clusterMembershipVector =
 #'                                          MPLNClustResults$allResults$`G=2`$clusterlabels,
 #'                                          fileName = 'TwoClusterModel',
