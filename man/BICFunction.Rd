@@ -92,5 +92,5 @@ Schwarz, G. (1978). Estimating the dimension of a model. \emph{The Annals of Sta
 6.
 }
 \author{
-{Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
+{Anjali Silva, \email{a.silva@utoronto.ca}}
 }

@@ -96,5 +96,5 @@ simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
 
 }
 \author{
-Anjali Silva, \email{anjali.silva@uhnresearch.ca}
+Anjali Silva, \email{a.silva@utoronto.ca}
 }

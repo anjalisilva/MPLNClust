@@ -73,8 +73,8 @@
 #'
 #' @references
 #' Bojanowski,  M., Edwards, R. (2016). _alluvial: R Package for
-#' Creating Alluvial Diagrams_. R package version: 0.1-2, \href{
-#' https://github.com/mbojan/alluvial}
+#' Creating Alluvial Diagrams_. R package version: 0.1-2,
+#' \href{https://github.com/mbojan/alluvial}{Link}
 #'
 #' @export
 #' @import graphics

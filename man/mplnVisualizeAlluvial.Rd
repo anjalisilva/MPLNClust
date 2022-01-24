@@ -97,8 +97,8 @@ simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 70,
 }
 \references{
 Bojanowski,  M., Edwards, R. (2016). \emph{alluvial: R Package for
-Creating Alluvial Diagrams}. R package version: 0.1-2, \href{
-https://github.com/mbojan/alluvial}
+Creating Alluvial Diagrams}. R package version: 0.1-2,
+\href{https://github.com/mbojan/alluvial}{Link}
 }
 \author{
 Anjali Silva, \email{a.silva@utoronto.ca}

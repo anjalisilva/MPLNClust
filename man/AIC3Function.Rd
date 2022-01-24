@@ -93,5 +93,5 @@ Conference on the Frontiers of Statistical Modeling: An Informational Approach:
 Volume 2 Multivariate Statistical Modeling}, pp. 69–113. Dordrecht: Springer Netherlands.
 }
 \author{
-{Anjali Silva, \email{anjali.silva@uhnresearch.ca}}
+{Anjali Silva, \email{a.silva@utoronto.ca}}
 }
