@@ -29,20 +29,16 @@ directory. Default TRUE. Options TRUE or FALSE.}
 
 \item{format}{Character string indicating the format of the image to
 be produced. Default 'pdf'. Options 'pdf' or 'png'.}
-
-\item{probabilities}{A matrix of size N x C, such that rows correspond
-to N observations and columns correspond to C clusters. Each row
-should sum to 1. Default is NA.}
 }
 \value{
-Plotting function provides the possibility for line and heatmap
-plots.
+A heatmap of data with cluster memberships are provided.
 }
 \description{
 A function to produce heatmaps of data with clustering results.
 }
 \examples{
 # Example 1
+# Setting the parameters
 trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
 trueMu2 <- c(2, 2.5, 2, 2, 2, 2)
 
@@ -62,14 +58,13 @@ simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 100,
                               dataset = as.matrix(simulatedCounts$dataset),
                               membership = "none",
                               gmin = 1,
-                              gmax = 2,
+                              gmax = 3,
                               initMethod = "kmeans",
                               nInitIterations = 1,
                               normalize = "Yes")
 
  # Visualize data via a Heatmap for G = 2
- MPLNVisuals <- MPLNClust::mplnVisualizeHeatmap(dataset = simulatedCounts$dataset,
-                                         MPLNClustResults$allResults$`G=2`$probaPost,
+ MPLNHeatmap2 <- MPLNClust::mplnVisualizeHeatmap(dataset = simulatedCounts$dataset,
                                          clusterMembershipVector =
                                          MPLNClustResults$allResults$`G=2`$clusterlabels,
                                          fileName = 'TwoClusterModel',
@@ -77,8 +72,7 @@ simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 100,
                                          format = 'png')
 
  # Visualize data via a Heatmap for G = 3
- MPLNVisuals <- MPLNClust::mplnVisualizeHeatmap(dataset = simulatedCounts$dataset,
-                                         MPLNClustResults$allResults$`G=3`$probaPost,
+ MPLNHeatmap3 <- MPLNClust::mplnVisualizeHeatmap(dataset = simulatedCounts$dataset,
                                          clusterMembershipVector =
                                          MPLNClustResults$allResults$`G=3`$clusterlabels,
                                          fileName = 'ThreeClusterModel',
