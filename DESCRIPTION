@@ -15,10 +15,12 @@ Depends: R (>= 3.4.0),
          Rcpp (>= 0.12.0)
 biocViews: Software, StatisticalMethod
 Imports: 
+    alluvial,
     coda,
     capushe,
     cluster,
     clusterGeneration,
+    dplyr,
     edgeR,
     gplots,
     ggplot2,

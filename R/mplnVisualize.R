@@ -223,9 +223,7 @@ mplnVisualizeAlluvial <- function(nObservations,
   }
 
 
-
   # Saving cluster membership for each observation
-
   if(length(secondGrouping) == 0) {
     toVisualize <- data.frame(Observation = c(1:nObservations),
                               Method1 = firstGrouping,
