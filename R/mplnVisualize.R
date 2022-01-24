@@ -1,11 +1,12 @@
 #' Alluvial Plot of Multiple Clustering Results
 #'
-#' A function to visualize clustering results via alluvial plots.
-#' The function produces an alluvial plot provided multiple
-#' clustering results for the same group of observations. Up to
-#' four varying results could be visualized. Minimum, one
-#' clustering result for visualization is required. Maximum 10
-#' colors are supported.
+#' A function to visualize clustering results via alluvial plots,
+#' using the alluvial::alluvial() function. The function produces
+#' an alluvial plot provided multiple clustering results for
+#' the same group of observations. Up to four varying results
+#' could be visualized. Minimum, one clustering result for
+#' visualization is required. Maximum 10 colors (clusters) are
+#' supported.
 #'
 #' @param nObservations An integer specifying the total number of
 #'    observations, N, in the dataset.
@@ -58,32 +59,30 @@
 #'                               nInitIterations = 1,
 #'                               normalize = "Yes")
 #'
-#'  # Visualize data
-#'  MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
-#'                                          plots = 'all',
-#'                                          probabilities =
-#'                                          MPLNClustResults$allResults$`G=2`$probaPost,
-#'                                          clusterMembershipVector =
-#'                                          MPLNClustResults$allResults$`G=2`$clusterlabels,
-#'                                          fileName = 'TwoClusterModel',
-#'                                          printPlot = FALSE,
-#'                                          format = 'png')
+#'  # Visualize data using alluvial plot
+#'  alluvialPlot<- mplnVisualizeAlluvial (nObservations = nrow(simulatedCounts$dataset),
+#'                            firstGrouping = MPLNClustResults$BICresults$BICmodelSelectedLabels,
+#'                            secondGrouping = MPLNClustResults$ICLresults$ICLmodelSelectedLabels,
+#'                            thirdGrouping = MPLNClustResults$AIC3results$AIC3modelSelectedLabels,
+#'                            fourthGrouping = MPLNClustResults$AICresults$AICmodelSelectedLabels,
+#'                            fileName = paste0('Plot_',date()),
+#'                            printPlot = TRUE,
+#'                            format = 'pdf')
 #'
-#' @author Anjali Silva, \email{anjali.silva@uhnresearch.ca}
+#' @author Anjali Silva, \email{a.silva@utoronto.ca}
+#'
+#' @references
+#' Bojanowski,  M., Edwards, R. (2016). _alluvial: R Package for
+#' Creating Alluvial Diagrams_. R package version: 0.1-2, \href{
+#' https://github.com/mbojan/alluvial}
 #'
 #' @export
 #' @import graphics
-#' @import ggplot2
+#' @import alluvial
+#' @importFrom dplyr case_when
 #' @importFrom grDevices png
 #' @importFrom grDevices pdf
 #' @importFrom grDevices dev.off
-#' @importFrom RColorBrewer brewer.pal.info
-#' @importFrom RColorBrewer brewer.pal
-#' @importFrom randomcoloR distinctColorPalette
-#' @importFrom pheatmap pheatmap
-#' @importFrom gplots heatmap.2
-#' @importFrom gplots redgreen
-#' @importFrom reshape melt
 mplnVisualizeAlluvial <- function(nObservations,
                                   firstGrouping,
                                   secondGrouping = vector(mode = "integer", length = 0),
@@ -303,5 +302,6 @@ mplnVisualizeAlluvial <- function(nObservations,
           grDevices::dev.off()
         }
 
+  class(plotAlluvial) <- "mplnAlluvialVisual"
   return(plotAlluvial)
 }
