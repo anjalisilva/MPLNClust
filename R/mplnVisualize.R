@@ -35,7 +35,9 @@
 #' @param format Character string indicating the format of the image to
 #'    be produced. Default 'pdf'. Options 'pdf' or 'png'.
 #'
-#' @return An alluvial plot should be returned.
+#' @return An alluvial plot should be returned. The x-axis values
+#'    are in the order of vectors assigned (if any) to firstGrouping,
+#'    secondGrouping, thirdGrouping and fourthGrouping, respectively.
 #'
 #' @examples
 #' # Example 1
@@ -79,8 +81,8 @@
 #'  # Perform clustering via K-means with centers = 2
 #'  # Visualize clustering results using alluvial plot for
 #'  # K-means and above MPLNClust results. Note, coloring
-#'  # is set with respect to firstGrouping which is assinged
-#'  # MPLNClust results.
+#'  # is set with respect to argument firstGrouping, which is
+#'  # assinged MPLNClust results.
 #'
 #'  set.seed(1234)
 #'  alluvialPlotMPLNClust <- mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
@@ -90,8 +92,8 @@
 #'                                printPlot = FALSE,
 #'                                format = 'pdf')
 #'
-#'  # Note, coloring is set with respect to firstGrouping which is
-#'  # assinged K-means results.
+#'  # Note, coloring is set with respect to argument firstGrouping,
+#'  # which is assinged K-means results.
 #'  set.seed(1234)
 #'  alluvialPlotKmeans <- mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
 #'                            firstGrouping = kmeans(simulatedCounts$dataset, 2)$cluster,
@@ -104,8 +106,12 @@
 #'
 #' @references
 #' Bojanowski,  M., R. Edwards (2016). alluvial: R Package for
-#' Creating Alluvial Diagrams. R package version: 0.1-2,
+#' Creating Alluvial Diagrams. R package version 0.1-2.
 #' \href{https://github.com/mbojan/alluvial}{Link}
+#'
+#' Wickham, H., R. François, L. Henry and K. Müller (2021).
+#' dplyr: A Grammar of Data Manipulation. R package version
+#' 1.0.7. \href{https://CRAN.R-project.org/package=dplyr}{Link}
 #'
 #' @export
 #' @import graphics
@@ -320,3 +326,4 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
   class(plotAlluvial) <- "mplnAlluvialVisual"
   return(plotAlluvial)
 }
+# [END]
