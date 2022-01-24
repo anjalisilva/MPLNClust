@@ -77,7 +77,7 @@ simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 100,
                               normalize = "Yes")
 
  # Visualize data using line plot
- MPLNVisuals <- MPLNClust::mplnVisualizeLine(dataset = simulatedCounts$dataset,
+ MPLNLineBlack <- MPLNClust::mplnVisualizeLine(dataset = simulatedCounts$dataset,
                                          clusterMembershipVector =
                                          MPLNClustResults$allResults$`G=2`$clusterlabels,
                                          fileName = 'TwoClusterModel',
@@ -86,7 +86,7 @@ simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 100,
 
  # Visualize data using line plot with multicolours
  # Use navigation buttons to see previous plots
- MPLNVisuals <- MPLNClust::mplnVisualizeLine(dataset = simulatedCounts$dataset,
+ MPLNLineColor <- MPLNClust::mplnVisualizeLine(dataset = simulatedCounts$dataset,
                                          clusterMembershipVector =
                                          MPLNClustResults$allResults$`G=2`$clusterlabels,
                                          fileName = 'TwoClusterModel',
@@ -98,7 +98,7 @@ simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 100,
  # Carry out K-means clustering for same dataset as above
  # Use navigation buttons to see previous plots
  set.seed(1234)
- MPLNVisuals <- MPLNClust::mplnVisualizeLine(dataset = simulatedCounts$dataset,
+ KmeansLineColor <- MPLNClust::mplnVisualizeLine(dataset = simulatedCounts$dataset,
                                          clusterMembershipVector = kmeans(simulatedCounts$dataset, 3)$cluster,
                                          fileName = 'ThreeClusterKmeansModel',
                                          LinePlotColours = "multicolour",
