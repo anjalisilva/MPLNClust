@@ -331,8 +331,10 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
 #' Visualize Clustered Results Via Line Plots
 #'
 #' A function to visualize clustering results via line plots.
-#' Each cluster will have its own plot with mean of the
-#' data in each cluster shown via a yellow line.
+#' Each cluster will have its own plot.Data is log-transformed
+#' prior to visualizing. Values for each sample are connected
+#' by dashed lines to illustrate the trends (log counts). The
+#' yellow line shows the mean value (log counts) for each cluster.
 #'
 #' @param dataset A dataset of class matrix and type integer such that
 #'    rows correspond to observations and columns correspond to variables.

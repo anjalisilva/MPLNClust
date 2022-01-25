@@ -41,8 +41,10 @@ plots.
 }
 \description{
 A function to visualize clustering results via line plots.
-Each cluster will have its own plot with mean of the
-data in each cluster shown via a yellow line.
+Each cluster will have its own plot.Data is log-transformed
+prior to visualizing. Values for each sample are connected
+by dashed lines to illustrate the trends (log counts). The
+yellow line shows the mean value (log counts) for each cluster.
 }
 \examples{
 # Example 1

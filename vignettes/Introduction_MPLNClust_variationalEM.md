@@ -5,7 +5,9 @@
 
 ## Introduction
 
-**MPLNClust** is an R package for model-based clustering based on finite multivariate Poisson-log normal mixture modelling proposed by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). It provides functions for parameter estimation via  1) an MCMC-EM framework by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a variational Gaussian approximation with EM algorithm by [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857). Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE, if more than 10 models are considered) are offered for model selection. Also included is a function for simulating data from this model. An additional functionality is available for displaying and visualizing clustering results. **This document gives a tour of MPLNClust (version 0.1.0) functionalities, here looking at methods of parameter estimation via 2) a variational Gaussian approximation with EM algorithm** by [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857). It was written in R Markdown, using the [knitr](https://cran.r-project.org/package=knitr) package for production. For MPLNClust functionalities via 1) an MCMC-EM framework, see the other vignette: A tour of MPLNClust with MCMC-EM. 
+**MPLNClust** is an R package for model-based clustering based on finite multivariate Poisson-log normal mixture modelling proposed by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). It provides functions for parameter estimation via  1) an MCMC-EM framework by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a variational Gaussian approximation with EM algorithm by [Subedi and Browne,
+2020](https://doi.org/10.1002/sta4.310). Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE, if more than 10 models are considered) are offered for model selection. Also included is a function for simulating data from this model. An additional functionality is available for displaying and visualizing clustering results. **This document gives a tour of MPLNClust (version 0.1.0) functionalities, here looking at methods of parameter estimation via 2) a variational Gaussian approximation with EM algorithm** by [Subedi and Browne,
+2020](https://doi.org/10.1002/sta4.310). It was written in R Markdown, using the [knitr](https://cran.r-project.org/package=knitr) package for production. For MPLNClust functionalities via 1) an MCMC-EM framework, see the other vignette: A tour of MPLNClust with MCMC-EM. 
 
 
 See `help(package = "MPLNClust")` for further details and references provided by `citation("MPLNClust")`. To download **MPLNClust**, use the following commands:
@@ -17,7 +19,7 @@ library("MPLNClust")
 ```
 To list all functions available in the package:
 ``` r
-lsf.str("package:MPLNClust")
+ls("package:MPLNClust")
 ```
 
 <br>
@@ -91,7 +93,8 @@ pairs(sampleData$dataset, col = sampleData$trueMembership + 1,
 
 <div style="text-align:left">
   
-Once the count data is available, clustering can be performed using the *mplnVariational* function. See *?mplnVariational* for more information, an example, and references. The variational Gaussian approximation proposed by [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857) alleviates challenges of MCMC-EM algorithm, originally used in [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). Therefore, *mplnVariational* may perform better for large datasets compared to *mplnMCMCParallel* or *mplnMCMCNonParallel*.
+Once the count data is available, clustering can be performed using the *mplnVariational* function. See *?mplnVariational* for more information, an example, and references. The variational Gaussian approximation proposed by [Subedi and Browne,
+2020](https://doi.org/10.1002/sta4.310) alleviates challenges of MCMC-EM algorithm, originally used in [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). Therefore, *mplnVariational* may perform better for large datasets compared to *mplnMCMCParallel* or *mplnMCMCNonParallel*.
 
 The applicability of MPLNClust was originally illustrated using RNAseq data. Therefore, normalization is performed to account for library size differences. Currently, normalization factors are calculated using trimmed mean of M values (TMM) method of edgeR package.
 
@@ -139,17 +142,16 @@ If a range of components/clusters > 10 is considered (e.g., gmin = 1; gmax = 12)
 
 ## Results Visualization
 
-Clustering results can be viewed as heatmaps and line plots. If a matrix of probabilities for the observations belonging to each cluster is provided, the option to produce a barplot of probabilities is also available.
+Clustering results can be viewed using multiple plots, including heatmaps, line plots, alluvial plots and barplots. 
 
 ``` r
-#  Visualizing line plots for model with 3 components provided probabilities
-MPLNVisuals <- MPLNClust::mplnVisualize(dataset = sampleData$dataset,
-                                         plots = 'all',
+#  Visualizing line plots for model with 3 components 
+MPLNVisuals <- MPLNClust::mplnVisualizeLine(dataset = sampleData$dataset,
                                          probabilities =  mplnResults$allResults[[3]]$probaPost,
                                          clusterMembershipVector =
                                          mplnResults$allResults[[3]]$clusterlabels,
                                          LinePlotColours = "multicolour",
-                                         fileName = 'AllPlotsWithProbability',
+                                         fileName = 'LinePlot',
                                          format = 'png')
 ```
 

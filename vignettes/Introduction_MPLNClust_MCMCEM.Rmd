@@ -31,7 +31,9 @@ set.seed(1) # for exact reproducibility
        
 ## Introduction
 
-**MPLNClust** is an R package for model-based clustering based on finite multivariate Poisson-log normal mixture modelling proposed by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). It provides functions for parameter estimation via  1) an MCMC-EM framework by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a variational Gaussian approximation with EM algorithm by [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857). Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE, if more than 10 models are considered) are offered for model selection. Also included is a function for simulating data from this model. An additional functionality is available for displaying and visualizing clustering results. **This document gives a tour of MPLNClust (version 0.1.0) functionalities, here looking at methods of parameter estimation via  1) an MCMC-EM framework**. It was written in R Markdown, using the [knitr](https://cran.r-project.org/package=knitr) package for production. For MPLNClust (version 0.1.0) functionalities via 2) a variational Gaussian approximation with EM algorithm by [Subedi and Browne, 2020](https://arxiv.org/abs/2004.06857), see the other vignette: A tour of MPLNClust with variational-EM. 
+**MPLNClust** is an R package for model-based clustering based on finite multivariate Poisson-log normal mixture modelling proposed by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). It provides functions for parameter estimation via  1) an MCMC-EM framework by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a variational Gaussian approximation with EM algorithm by [Subedi and Browne,
+2020](https://doi.org/10.1002/sta4.310). Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE, if more than 10 models are considered) are offered for model selection. Also included is a function for simulating data from this model. An additional functionality is available for displaying and visualizing clustering results. **This document gives a tour of MPLNClust (version 0.1.0) functionalities, here looking at methods of parameter estimation via  1) an MCMC-EM framework**. It was written in R Markdown, using the [knitr](https://cran.r-project.org/package=knitr) package for production. For MPLNClust (version 0.1.0) functionalities via 2) a variational Gaussian approximation with EM algorithm by [Subedi and Browne,
+2020](https://doi.org/10.1002/sta4.310), see the other vignette: A tour of MPLNClust with variational-EM. 
 
 See `help(package = "MPLNClust")` for further details and references provided by `citation("MPLNClust")`. To download **MPLNClust**, use the following commands:
 
@@ -42,7 +44,7 @@ library("MPLNClust")
 ```
 To list all functions available in the package:
 ``` r
-lsf.str("package:MPLNClust")
+ls("package:MPLNClust")
 ```
 
 <br>
@@ -130,7 +132,7 @@ mplnResults <- MPLNClust::mplnMCMCParallel(dataset = sampleData$dataset,
                                            normalize = "Yes")
 ```
 
-The model selected by BIC for this dataset can be viewed as follows.
+The model selected by BIC for this dataset can be viewed as follows. This should return value of 2. 
 
 ``` r
 mplnResults$BICresults$BICmodelselected
@@ -141,6 +143,8 @@ Tabulation of labels for the model selected by BIC:
 ``` r
 table(mplnResults$BICresults$BICmodelSelectedLabels)
 ```
+ 1  2 <br>
+17 83 <br>
 
 Labels from BIC compared with true labels:
 ``` r
@@ -176,59 +180,79 @@ mplnResultsNonParallel <- MPLNClust::mplnMCMCNonParallel(dataset = sampleData$da
 
 ## Results Visualization
 
-Clustering results can be viewed as heatmaps and line plots. If a matrix of probabilities for the observations belonging to each cluster is provided, the option to produce a barplot of probabilities is also available.
+Clustering results can be viewed via multiple plots. 
 
 ``` r
- # Visualizing results for model selected by BIC using all plots; no probabilities provided
- MPLNVisuals <- MPLNClust::mplnVisualize(dataset = sampleData$dataset,
-                                         plots = 'all',
+ # Visualizing results for model selected by BIC via heatmaps
+ MPLNVisuals <- MPLNClust::mplnVisualizeHeatmap(dataset = sampleData$dataset,
                                          clusterMembershipVector =
-                                          mplnResults$BICresults$BICmodelSelectedLabels,
+                                         mplnResults$BICresults$BICmodelSelectedLabels,
                                          fileName = 'BICModel', 
-                                         format = 'png')
+                                         printPlot = FALSE)
+                                         
+ # Visualizing results for model selected by BIC via line plot
+ MPLNVisuals <- MPLNClust::mplnVisualizeLine(dataset = sampleData$dataset,
+                                         clusterMembershipVector =
+                                         mplnResults$BICresults$BICmodelSelectedLabels,
+                                         fileName = 'BICModel', 
+                                         printPlot = FALSE)                                         
+                                         
 ```
-
-<img src="MCMCEM_heatmap1_BICModel.png" alt="MCMCEM_heatmap1_BICModel" width="250"/>
-<img src="MCMCEM_heatmap2_BICModel.png" alt="MCMCEM_heatmap2_BICModel" width="190"/>
+<div style="text-align:center">
+<img src="MCMCEM_heatmap1_BICModel.png" alt="MCMCEM_heatmap1_BICModel" width="350"/>
+<br>
 <img src="MCMCEM_LinePlot_Cluster1_BICModel.png" alt="MCMCEM_LinePlot_Cluster1_BICModel" width="200"/>
 <img src="MCMCEM_LinePlot_Cluster2_BICModel.png" alt="MCMCEM_LinePlot_Cluster2_BICModel" width="200"/>
 
-The two images (above, left) show heatmaps of counts in the input dataset, with observations (e.g., genes) along rows and samples along the columns. The group membership based on clusters are shown to the left of heatmap. The last two images (above, right) show line plots of each cluster. Values for each sample are connected by dashed lines to illustrate the trends of expression (log counts). The yellow line shows the mean value (log counts) for each cluster. 
+<div style="text-align:left">
+The top image shows heatmap of counts in the input dataset, with observations (e.g., genes) along rows and samples along the columns. The group membership based on clusters are shown to the left of heatmap. The last two images above show line plots of each cluster. Values for each sample are connected by dashed lines to illustrate the trends of expression (log counts). The yellow line shows the mean value (log counts) for each cluster. 
 
 <br>
 
+<div style="text-align:left">
 Rather than visualizing model selected by information criteria, labels for a specific component/cluster size can also be visualized. In the below example, the results for G = 2 model is visualized. Remember to alter file name to avoid overwriting. 
 
 ``` r
  # Visualizing line plots for model with 2 components
- MPLNVisuals <- MPLNClust::mplnVisualize(dataset = sampleData$dataset,
-                                         plots = 'line',
-                                         clusterMembershipVector =
-                                         mplnResults$allResults[[2]]$allResults$clusterlabels,
-                                         fileName = 'TwoComponentModel', 
-                                         format = 'png')
+ MPLNVisuals <- MPLNClust::mplnVisualizeLine(dataset = sampleData$dataset,
+                                             plots = 'line',
+                                             clusterMembershipVector =
+                                             mplnResults$allResults[[2]]$allResults$clusterlabels,
+                                             fileName = 'TwoComponentModel', 
+                                             format = 'png')
 ```
 <br>
 
+<div style="text-align:left">
+The line plot can be viewed by setting argument, *LinePlotColours = "multicolour"*. 
+
+``` r
+ # Visualizing line plots for model with 2 components provided probabilities
+ MPLNVisuals <- MPLNClust::mplnVisualizeLine(dataset = sampleData$dataset,
+                                            clusterMembershipVector =
+                                            mplnResults$allResults[[2]]$allResults$clusterlabels,
+                                            LinePlotColours = "multicolour",
+                                            fileName = 'LinePlot',
+                                            format = 'png')
+```
+<div style="text-align:center">
+<img src="MCMCEM_LinePlot_Cluster1_BICModel_Coloured.png" alt="MCMCEM_LinePlot_Cluster1_BICModel_Coloured" width="200"/>
+<img src="MCMCEM_LinePlot_Cluster2_BICModel_Coloured.png" alt="MCMCEM_LinePlot_Cluster2_BICModel_Coloured" width="200"/>
+
+<br>
+
+<div style="text-align:left">
 By providing a matrix of probabilities for the observations belonging to each cluster, a barplot of probabilities can be produced.
 
 ``` r
  #  Visualizing line plots for model with 2 components provided probabilities
- MPLNVisuals <- MPLNClust::mplnVisualize(dataset = sampleData$dataset,
-                                         plots = 'all',
-                                         probabilities = mplnResults$allResults[[2]]$allResults$probaPost,
-                                         clusterMembershipVector =
-                                         mplnResults$allResults[[2]]$allResults$clusterlabels,
-                                         LinePlotColours = "multicolour",
-                                         fileName = 'AllPlotsWithProbability',
-                                         format = 'png')
+ MPLNVisuals <- MPLNClust::mplnVisualizeBar(dataset = sampleData$dataset,
+                                            probabilities = mplnResults$allResults[[2]]$allResults$probaPost,
+                                            clusterMembershipVector =
+                                            mplnResults$allResults[[2]]$allResults$clusterlabels,
+                                            fileName = 'PlotsWithProbability')
 ```
 <div style="text-align:center"><img src="MCMCEM_barplot_AllPlotsWithProbability.png" alt="MCMCEM_barplot_AllPlotsWithProbability" width="500"/>
-
-Since argument *LinePlotColours = "multicolour"* was set, the line plots now can be visualized in color. 
-
-<img src="MCMCEM_LinePlot_Cluster1_BICModel_Coloured.png" alt="MCMCEM_LinePlot_Cluster1_BICModel_Coloured" width="200"/>
-<img src="MCMCEM_LinePlot_Cluster2_BICModel_Coloured.png" alt="MCMCEM_LinePlot_Cluster2_BICModel_Coloured" width="200"/>
 
 
 <div style="text-align:left">
@@ -243,6 +267,39 @@ In an alternative case (not tested here), which resulted in the below bar plot, 
 
 <br>
 
+<div style="text-align:left">
+
+Finally, the different clustering results in terms of membership can be viewed via alluvial plots. Here, results for G=1 and G=2 for the same dataset are visualized. The coloring is provided with respect to group membership vector assigned to argument 'firstGrouping'.
+``` r
+ #  Visualizing clustering results using alluvial plots 
+                                            
+MPLNVisualsAlluvial <- MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(sampleData$dataset),
+                                  firstGrouping = mplnResults$allResults[[1]]$allResults$clusterlabels,
+                                  secondGrouping = mplnResults$allResults[[2]]$allResults$clusterlabels,
+                                  printPlot = FALSE)                                            
+```
+
+<div style="text-align:center">
+<img src="MCMCEM_Alluvial_G1and2.png" alt="MCMCEM_Alluvial_G1and2.png" width="500"/>
+
+
+<div style="text-align:left">
+Alternatively, models selected by BIC, ICL, AIC and AIC3 can be visualized. The x-axis shows BIC, ICL, AIC and AIC3 results, respectively.
+``` r
+ #  Visualizing clustering results using alluvial plots 
+                                            
+MPLNVisualsAlluvial <- MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(sampleData$dataset),
+                                  firstGrouping = mplnResults$BICresults$BICmodelSelectedLabels,
+                                  secondGrouping = mplnResults$ICLresults$ICLmodelSelectedLabels,
+                                  thirdGrouping =  mplnResults$AICresults$AICmodelSelectedLabels,
+                                  fourthGrouping = mplnResults$AIC3results$AIC3modelSelectedLabels,
+                                  printPlot = FALSE)   
+```
+
+<div style="text-align:center">
+<img src="MCMCEM_Alluvial_BIC_ICL_AIC_AIC3.png" alt="MCMCEM_Alluvial_BIC_ICL_AIC_AIC3.png" width="500"/>
+
+<div style="text-align:left">
 <div style="text-align:left">
 ## Package References
 
@@ -273,11 +330,3 @@ In an alternative case (not tested here), which resulted in the below bar plot, 
 ```{r}
 sessionInfo()
 ```
-
----
-# This document was created based on the format used in mclust.rmd 
-# Scrucca L., Fop M., Murphy T. B. and Raftery A. E. (2016) mclust 5:
-#   clustering, classification and density estimation using Gaussian finite
-#   mixture models The R Journal 8/1, pp. 205-233
-# https://cran.r-project.org/web/packages/mclust/vignettes/mclust.html
---- 
