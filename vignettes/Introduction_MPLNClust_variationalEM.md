@@ -1,13 +1,11 @@
 # A tour of MPLNClust with variational-EM
 
 ### Anjali Silva
-### 25 Aug 2020
+### 8 Feb 2022
 
 ## Introduction
 
-**MPLNClust** is an R package for model-based clustering based on finite multivariate Poisson-log normal mixture modelling proposed by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). It provides functions for parameter estimation via  1) an MCMC-EM framework by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a variational Gaussian approximation with EM algorithm by [Subedi and Browne,
-2020](https://doi.org/10.1002/sta4.310). Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE, if more than 10 models are considered) are offered for model selection. Also included is a function for simulating data from this model. An additional functionality is available for displaying and visualizing clustering results. **This document gives a tour of MPLNClust (version 0.1.0) functionalities, here looking at methods of parameter estimation via 2) a variational Gaussian approximation with EM algorithm** by [Subedi and Browne,
-2020](https://doi.org/10.1002/sta4.310). It was written in R Markdown, using the [knitr](https://cran.r-project.org/package=knitr) package for production. For MPLNClust functionalities via 1) an MCMC-EM framework, see the other vignette: A tour of MPLNClust with MCMC-EM. 
+**MPLNClust** is an R package for model-based clustering based on finite multivariate Poisson-log normal mixture modelling proposed by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). It provides functions for parameter estimation via  1) an MCMC-EM framework by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a variational Gaussian approximation with EM algorithm by [Subedi and Browne, 2020](https://doi.org/10.1002/sta4.310). Information criteria (AIC, BIC, AIC3 and ICL) and slope heuristics (Djump and DDSE, if more than 10 models are considered) are offered for model selection. Also included is a function for simulating data from this model. An additional functionality is available for displaying and visualizing clustering results. **This document gives a tour of MPLNClust (version 0.1.0) functionalities, here looking at methods of parameter estimation via 2) a variational Gaussian approximation with EM algorithm by [Subedi and Browne, 2020](https://doi.org/10.1002/sta4.310)**. It was written in R Markdown, using the [knitr](https://cran.r-project.org/package=knitr) package for production. For MPLNClust functionalities via 1) an MCMC-EM framework, see the other vignette: A tour of MPLNClust with MCMC-EM. 
 
 
 See `help(package = "MPLNClust")` for further details and references provided by `citation("MPLNClust")`. To download **MPLNClust**, use the following commands:
@@ -90,11 +88,8 @@ pairs(sampleData$dataset, col = sampleData$trueMembership + 1,
 
 
 ## Clustering via variational-EM
-
 <div style="text-align:left">
-  
-Once the count data is available, clustering can be performed using the *mplnVariational* function. See *?mplnVariational* for more information, an example, and references. The variational Gaussian approximation proposed by [Subedi and Browne,
-2020](https://doi.org/10.1002/sta4.310) alleviates challenges of MCMC-EM algorithm, originally used in [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). Therefore, *mplnVariational* may perform better for large datasets compared to *mplnMCMCParallel* or *mplnMCMCNonParallel*.
+Once the count data is available, clustering can be performed using the *mplnVariational* function. See *?mplnVariational* for more information, an example, and references. The variational Gaussian approximation proposed by [Subedi and Browne, 2020](https://doi.org/10.1002/sta4.310) alleviates challenges of MCMC-EM algorithm, originally used in [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). Therefore, *mplnVariational* may perform better for large datasets compared to *mplnMCMCParallel* or *mplnMCMCNonParallel*.
 
 The applicability of MPLNClust was originally illustrated using RNAseq data. Therefore, normalization is performed to account for library size differences. Currently, normalization factors are calculated using trimmed mean of M values (TMM) method of edgeR package.
 
@@ -142,38 +137,61 @@ If a range of components/clusters > 10 is considered (e.g., gmin = 1; gmax = 12)
 
 ## Results Visualization
 
-Clustering results can be viewed using multiple plots, including heatmaps, line plots, alluvial plots and barplots. 
+Clustering results can be viewed as heatmaps and line plots. The two images below show heatmaps of counts in the input dataset, with observations (e.g., genes) along rows and samples along the columns. The group membership based on clusters are shown to the left of heatmap.
 
 ``` r
-#  Visualizing line plots for model with 3 components 
-MPLNVisuals <- MPLNClust::mplnVisualizeLine(dataset = sampleData$dataset,
-                                         probabilities =  mplnResults$allResults[[3]]$probaPost,
-                                         clusterMembershipVector =
-                                         mplnResults$allResults[[3]]$clusterlabels,
-                                         LinePlotColours = "multicolour",
-                                         fileName = 'LinePlot',
-                                         format = 'png')
+#  Visualizing line plots for model with 3 components provided probabilities
+MPLNVisuals <- MPLNClust::mplnVisualizeBar(dataset = sampleData$dataset,
+                                            probabilities = mplnResults$allResults[[3]]$allResults$probaPost,
+                                            clusterMembershipVector =
+                                            mplnResults$allResults[[3]]$allResults$clusterlabels,
+                                            fileName = 'PlotsWithProbability')
 ```
 
-
+<div style="text-align:center">
 <img src="varEM_heatmap1_AllPlotsWithProbability.png" alt="varEM_heatmap1_AllPlotsWithProbability" width="250"/>
 <img src="varEM_heatmap2_AllPlotsWithProbability.png" alt="varEM_heatmap2_AllPlotsWithProbability" width="190"/>
+
+<br>
+
+<div style="text-align:left">
+Another type of plot available is a line plot, as shown below. 
+
+``` r
+ # Visualizing line plots for model with 3 components
+ MPLNVisuals <- MPLNClust::mplnVisualizeLine(dataset = sampleData$dataset,
+                                             plots = 'line',
+                                             clusterMembershipVector =
+                                             mplnResults$allResults[[3]]$allResults$clusterlabels,
+                                             fileName = 'ThreeComponentModel', 
+                                             format = 'png')
+```
+
+<div style="text-align:center">
 <img src="varEM_LinePlot_Cluster1_AllPlotsWithProbability.png" alt="varEM_LinePlot_Cluster1_AllPlotsWithProbability" width="150"/>
 <img src="varEM_LinePlot_Cluster2_AllPlotsWithProbability.png" alt="varEM_LinePlot_Cluster2_AllPlotsWithProbability" width="150"/>
 <img src="varEM_LinePlot_Cluster3_AllPlotsWithProbability.png" alt="varEM_LinePlot_Cluster3_AllPlotsWithProbability" width="150"/>
 
-The two images (above, left) show heatmaps of counts in the input dataset, with observations (e.g., genes) along rows and samples along the columns. The group membership based on clusters are shown to the left of heatmap. The last three images (above, right) show line plots of each cluster. Values for each sample are connected by dashed lines to illustrate the trends of expression (log counts). The yellow line shows the mean value (log counts) for each cluster. 
+<div style="text-align:left">
+Three images above show line plots for each cluster. The values for each sample are connected by dashed lines to illustrate the trends of expression (log counts). The yellow line shows the mean value (log counts) for each cluster. If a matrix of probabilities for the observations belonging to each cluster is provided, the option to produce a barplot of probabilities is also available. Such a barplot is shown below. 
+
+``` r
+ #  Visualizing line plots for model with 3 components provided probabilities
+ MPLNVisuals <- MPLNClust::mplnVisualizeBar(dataset = sampleData$dataset,
+                                            probabilities = mplnResults$allResults[[3]]$allResults$probaPost,
+                                            clusterMembershipVector =
+                                            mplnResults$allResults[[3]]$allResults$clusterlabels,
+                                            fileName = 'PlotWithProbability')
+```
 
 <br>
-
 <div style="text-align:center"><img src="varEM_barplot_AllPlotsWithProbability.png" alt="varEM_barplot_AllPlotsWithProbability" width="500"/>
 
 <div style="text-align:left">
-  
 The above plot illustrates, for each observation, the probability of belonging to component/cluster 1 (P1), to component/cluster 2 (P2) or to component/cluster 3 (P3). In this example, there were 200 observations in the dataset. The bar for each observation look monotone, indicating high confidence in belonging to the indicated component/cluster. 
 
 <br>
-
+<div style="text-align:left">
 In an alternative case (not tested here), which resulted in the below bar plot, indicates variability in probability of belonging to a component/cluster for a given observation. Here there are 2 clusters/components. As an example, for the first observation there is about 0.41 probability (P1) of belonging to component/cluster 1 and about a 0.59 probability (P2) of belonging to component/cluster 2. Therefore, it is assigned to component/cluster 2. Alternatively, for the 25th observation there is about 0.99 probability (P1) of belonging to component/cluster 1 and about 0.01 probability (P2) of belonging to component/cluster 2.  Therefore, it is assigned to component/cluster 1. 
 
 <div style="text-align:center"><img src="MCMCEM_barplot_AllPlotsWithProbability_LowConf.png" alt="MCMCEM_barplot_AllPlotsWithProbability_LowConf" width="500"/>
@@ -182,9 +200,7 @@ In an alternative case (not tested here), which resulted in the below bar plot, 
 <br>
 
 <div style="text-align:left">
-  
 ## Clustering Other Data
-
 Here, an example dataset available in the package *MBCluster.Seq* is used.
 ``` r
 # Obtain data available in package MBCluster.Seq
@@ -193,7 +209,7 @@ data("Count")
 dim(Count) # 1000    8
 
 mplnResultsMBCluster <- MPLNClust::mplnVariational(dataset = Count,
-                                          membership = "none,
+                                          membership = "none",
                                           gmin = 1,
                                           gmax = 5,
                                           initMethod = "kmeans",
@@ -212,17 +228,17 @@ Log-likelihood and BIC value at each run can be plotted as follows.
 
 ``` r
 par(mfrow = c(1, 2))
-graphics::matplot(mplnResultsMBCluster$logLikelihood, xlab = "Run",
+graphics::matplot(mplnResultsMBCluster$logLikelihood, xlab = "G",
                   ylab = "logL", type = c("b"), pch = 1, lty = 2) 
 ICvalues <- matrix(c(mplnResultsMBCluster$BICresults$allBICvalues,
               mplnResultsMBCluster$ICLresults$allICLvalues,
               mplnResultsMBCluster$AICresults$allAICvalues,
               mplnResultsMBCluster$AIC3results$allAIC3values),
               ncol=4) 
-graphics::matplot(ICvalues, xlab = "Run", ylab = "Information criteria value", 
-                  type = c("b"), pch = 1, col = 1:4) 
-legend("top", inset = c(- 0.4, 0), legend = c("BIC", "ICL", "AIC", "AIC3"), 
-        col = 1:4, pch = 1, horiz = TRUE, bty = "n")
+              
+graphics::matplot(ICvalues, xlab = "G", ylab = "Information criteria value", type = c("b"), pch = 1, col = 1:4) 
+
+legend("top", inset = c(- 0.4, 0), legend = c("BIC", "ICL", "AIC", "AIC3"), col = 1:4, pch = 1, horiz = TRUE, bty = "n")
 ```
 
 <div style="text-align:center"><img src="varEM_MBClusterSeqRun.png" alt="varEM_MBClusterSeqRun" width="800"/>
@@ -232,12 +248,30 @@ legend("top", inset = c(- 0.4, 0), legend = c("BIC", "ICL", "AIC", "AIC3"),
 
 <div style="text-align:left">
 
+Finally, the different clustering results in terms of membership can be viewed via alluvial plots. Here, models selected by BIC, ICL, AIC and AIC3 can be visualized. The x-axis will show BIC, ICL, AIC and AIC3 results, respectively. Below is a plot of results saved in 'mplnResultsMBCluster'. The coloring is provided with respect to group membership vector assigned to argument 'firstGrouping', in this case those from BIC selected results. 
+``` r
+ #  Visualizing clustering results using alluvial plots 
+                                            
+MPLNVisualsAlluvial <- MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(Count),
+                                  firstGrouping = mplnResultsMBCluster$BICresults$BICmodelSelectedLabels,
+                                  secondGrouping = mplnResultsMBCluster$ICLresults$ICLmodelSelectedLabels,
+                                  thirdGrouping =  mplnResultsMBCluster$AICresults$AICmodelSelectedLabels,
+                                  fourthGrouping = mplnResultsMBCluster$AIC3results$AIC3modelSelectedLabels,
+                                  printPlot = FALSE)   
+```
+
+<div style="text-align:center">
+<img src="varEM_Alluvial_BIC_ICL_AIC_AIC3.png" alt="varEM_Alluvial_BIC_ICL_AIC_AIC3.png" width="600"/>
+
+<div style="text-align:left">
+<div style="text-align:left">
+
 ## Package References
 
 [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A multivariate Poisson-log normal mixture model for clustering transcriptome sequencing data. *BMC Bioinformatics* 20. ](https://pubmed.ncbi.nlm.nih.gov/31311497/)
 
 
-[Subedi, S., and R. Browne (2020). A parsimonious family of multivariate Poisson-lognormal distributions for clustering multivariate count data. arXiv preprint arXiv:2004.06857.](https://arxiv.org/abs/2004.06857)
+[Subedi, S., and R. Browne (2020). A parsimonious family of multivariate Poisson-lognormal distributions for clustering multivariate count data. *Stat* 9:e310.](https://doi.org/10.1002/sta4.310)
 
 
 ## Other References
