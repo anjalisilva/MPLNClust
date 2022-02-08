@@ -104,14 +104,15 @@ test_that("Data clustering error upon invalid user input", {
                                             mplnResults$allResults[[2]]$allResults$clusterlabels,
                                             LinePlotColours = "multicolour",
                                             fileName = 'LinePlot',
-                                            format = 'png'))
+                                            printPlot = FALSE))
 
   # Dataset provided as wrong character
   expect_error(MPLNClust::mplnVisualizeBar(dataset = "mplnVariationalResults$dataset",
-                                             probabilities = mplnVariationalResults$allResults[[2]]$probaPost,
-                                             clusterMembershipVector =
-                                             mplnVariationalResults$allResults[[2]]$clusterlabels,
-                                             fileName = 'PlotsWithProbability'))
+                                           probabilities = mplnVariationalResults$allResults[[2]]$probaPost,
+                                           clusterMembershipVector =
+                                           mplnVariationalResults$allResults[[2]]$clusterlabels,
+                                           fileName = 'PlotsWithProbability',
+                                           printPlot = FALSE))
 
 
   # clusterMembershipVector less than nObervations
@@ -119,7 +120,8 @@ test_that("Data clustering error upon invalid user input", {
                                            probabilities = mplnVariationalResults$allResults[[2]]$probaPost,
                                            clusterMembershipVector =
                                            mplnVariationalResults$allResults[[2]]$clusterlabels[-1],
-                                           fileName = 'PlotsWithProbability'))
+                                           fileName = 'PlotsWithProbability',
+                                           printPlot = FALSE))
 
 
   # probabilities less than nObervations
@@ -127,7 +129,8 @@ test_that("Data clustering error upon invalid user input", {
                                            probabilities = mplnVariationalResults$allResults[[2]]$probaPost[-1, ],
                                            clusterMembershipVector =
                                            mplnVariationalResults$allResults[[2]]$clusterlabels,
-                                           fileName = 'PlotsWithProbability'))
+                                           fileName = 'PlotsWithProbability',
+                                           printPlot = FALSE))
 
 })
 # [END]
