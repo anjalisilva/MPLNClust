@@ -31,7 +31,7 @@ directory. Default TRUE. Options TRUE or FALSE.}
 be produced. Default 'pdf'. Options 'pdf' or 'png'.}
 }
 \value{
-A heatmap of data with cluster memberships are provided.
+A heatmap of data with cluster memberships.
 }
 \description{
 A function to produce heatmaps of data with clustering results.

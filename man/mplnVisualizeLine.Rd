@@ -36,8 +36,7 @@ directory. Default TRUE. Options TRUE or FALSE.}
 be produced. Default 'pdf'. Options 'pdf' or 'png'.}
 }
 \value{
-Plotting function provides the possibility for line and heatmap
-plots.
+Plotting function provides the possibility for line plots.
 }
 \description{
 A function to visualize clustering results via line plots.
@@ -96,7 +95,8 @@ simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 100,
  # Use navigation buttons to see previous plots
  set.seed(1234)
  KmeansLineColor <- MPLNClust::mplnVisualizeLine(dataset = simulatedCounts$dataset,
-                                         clusterMembershipVector = kmeans(simulatedCounts$dataset, 3)$cluster,
+                                         clusterMembershipVector =
+                                         kmeans(simulatedCounts$dataset, 3)$cluster,
                                          fileName = 'ThreeClusterKmeansModel',
                                          LinePlotColours = "multicolour",
                                          printPlot = FALSE,

@@ -35,9 +35,11 @@
 #' @param format Character string indicating the format of the image to
 #'    be produced. Default 'pdf'. Options 'pdf' or 'png'.
 #'
-#' @return An alluvial plot should be returned. The x-axis values
-#'    are in the order of vectors assigned (if any) to firstGrouping,
+#' @return An alluvial plot is returned. The x-axis values are in
+#'    the order of vectors assigned (if any) to firstGrouping,
 #'    secondGrouping, thirdGrouping and fourthGrouping, respectively.
+#'    Colors will be assigned based on cluster membership provided
+#'    for argument, firstGrouping.
 #'
 #' @examples
 #' # Example 1
@@ -352,8 +354,7 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
 #' @param format Character string indicating the format of the image to
 #'    be produced. Default 'pdf'. Options 'pdf' or 'png'.
 #'
-#' @return Plotting function provides the possibility for line and heatmap
-#'    plots.
+#' @return Plotting function provides the possibility for line plots.
 #'
 #' @examples
 #' # Example 1
@@ -405,7 +406,8 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
 #'  # Use navigation buttons to see previous plots
 #'  set.seed(1234)
 #'  KmeansLineColor <- MPLNClust::mplnVisualizeLine(dataset = simulatedCounts$dataset,
-#'                                          clusterMembershipVector = kmeans(simulatedCounts$dataset, 3)$cluster,
+#'                                          clusterMembershipVector =
+#'                                          kmeans(simulatedCounts$dataset, 3)$cluster,
 #'                                          fileName = 'ThreeClusterKmeansModel',
 #'                                          LinePlotColours = "multicolour",
 #'                                          printPlot = FALSE,
@@ -851,7 +853,7 @@ barPlotFunction <- function(tableProbabilitiesMelt,
 #' @param format Character string indicating the format of the image to
 #'    be produced. Default 'pdf'. Options 'pdf' or 'png'.
 #'
-#' @return A heatmap of data with cluster memberships are provided.
+#' @return A heatmap of data with cluster memberships.
 #'
 #' @examples
 #' # Example 1

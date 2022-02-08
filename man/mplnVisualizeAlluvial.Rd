@@ -50,9 +50,11 @@ directory. Default TRUE. Options TRUE or FALSE.}
 be produced. Default 'pdf'. Options 'pdf' or 'png'.}
 }
 \value{
-An alluvial plot should be returned. The x-axis values
-are in the order of vectors assigned (if any) to firstGrouping,
+An alluvial plot is returned. The x-axis values are in
+the order of vectors assigned (if any) to firstGrouping,
 secondGrouping, thirdGrouping and fourthGrouping, respectively.
+Colors will be assigned based on cluster membership provided
+for argument, firstGrouping.
 }
 \description{
 A function to visualize clustering results via alluvial plots,
