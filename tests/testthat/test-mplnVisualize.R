@@ -1,7 +1,7 @@
 context("Checking for mplnVisualize performance")
 library(MPLNClust)
 
-test_that("Checking visualization", {
+test_that("Checking visualization via alluvial plot", {
 
   # Generating simulated data
   trueMu1 <- c(6.5, 6, 6, 6, 6, 6)
@@ -25,20 +25,19 @@ test_that("Checking visualization", {
                                                        initMethod = "kmeans",
                                                        normalize = "Yes")
 
-  MPLNVisuals <- MPLNClust::mplnVisualize(dataset = simulatedCounts$dataset,
-                                          plots = 'all',
-                                          probabilities = mplnVariationalResults$allResults$`G=2`$probaPost,
-                                          clusterMembershipVector =
-                                            mplnVariationalResults$allResults$`G=2`$clusterlabels,
-                                          fileName = 'TwoClusterModel',
-                                          printPlot = FALSE,
-                                          format = 'png')
+  MPLNVisuals <- MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(mplnVariationalResults$dataset),
+                                                  firstGrouping = mplnVariationalResults$BICresults$BICmodelSelectedLabels,
+                                                  secondGrouping = mplnVariationalResults$ICLresults$ICLmodelSelectedLabels,
+                                                  thirdGrouping = mplnVariationalResults$AIC3results$AIC3modelSelectedLabels,
+                                                  fourthGrouping = mplnVariationalResults$AICresults$AICmodelSelectedLabels,
+                                                  fileName = paste0('Plot_',date()),
+                                                  printPlot = FALSE)
 
   expect_type(MPLNVisuals, "list")
-  expect_length(MPLNVisuals, 4)
+  expect_length(MPLNVisuals, 1)
 })
 
-context("Checking for invalid user input")
+context("Checking for invalid user input for all plots")
 test_that("Data clustering error upon invalid user input", {
 
   # Generating simulated data
@@ -65,54 +64,70 @@ test_that("Data clustering error upon invalid user input", {
                                                        normalize = "Yes")
 
   # Dataset provided as character
-  expect_error(mplnVisualize(dataset = "mplnVariationalResults$dataset",
-                             plots = 'all',
-                             probabilities = mplnVariationalResults$allResults$`G=2`$probaPost,
-                             clusterMembershipVector =
-                               mplnVariationalResults$allResults$`G=2`$clusterlabels,
-                             fileName = 'TwoClusterModel',
-                             printPlot = FALSE,
-                             format = 'png'))
+  expect_error(MPLNClust::mplnVisualizeAlluvial(nObservations = "nrow(mplnVariationalResults$dataset)",
+                                   firstGrouping = mplnVariationalResults$BICresults$BICmodelSelectedLabels,
+                                   secondGrouping = mplnVariationalResults$ICLresults$ICLmodelSelectedLabels,
+                                   thirdGrouping = mplnVariationalResults$AIC3results$AIC3modelSelectedLabels,
+                                   fourthGrouping = mplnVariationalResults$AICresults$AICmodelSelectedLabels,
+                                   fileName = paste0('Plot_',date()),
+                                   printPlot = FALSE))
 
-  # Plots provided as logical
-  expect_error(mplnVisualize(dataset = mplnVariationalResults$dataset,
-                             plots = TRUE,
-                             probabilities = mplnVariationalResults$allResults$`G=2`$probaPost,
-                             clusterMembershipVector =
-                               mplnVariationalResults$allResults$`G=2`$clusterlabels,
-                             fileName = 'TwoClusterModel',
-                             printPlot = FALSE,
-                             format = 'png'))
 
-  # Plots provided as wrong character
-  expect_error(mplnVisualize(dataset = mplnVariationalResults$dataset,
-                             plots = "allplots",
-                             probabilities = mplnVariationalResults$allResults$`G=2`$probaPost,
-                             clusterMembershipVector =
-                               mplnVariationalResults$allResults$`G=2`$clusterlabels,
-                             fileName = 'TwoClusterModel',
-                             printPlot = FALSE,
-                             format = 'png'))
+  # firstGrouping argument provided as logical
+  expect_error(MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(mplnVariationalResults$dataset),
+                                                firstGrouping = TRUE,
+                                                secondGrouping = mplnVariationalResults$ICLresults$ICLmodelSelectedLabels,
+                                                thirdGrouping = mplnVariationalResults$AIC3results$AIC3modelSelectedLabels,
+                                                fourthGrouping = mplnVariationalResults$AICresults$AICmodelSelectedLabels,
+                                                fileName = paste0('Plot_',date()),
+                                                printPlot = FALSE))
+
+
+  # Dataset provided as wrong character
+  expect_error(MPLNClust::mplnVisualizeHeatmap(dataset = "nrow(mplnVariationalResults$dataset)",
+                                               clusterMembershipVector =
+                                               mplnVariationalResults$BICresults$BICmodelSelectedLabels,
+                                               fileName = 'BICModel',
+                                               printPlot = FALSE))
+
+
+  # clusterMembershipVector length is larger than number of observations
+  expect_error(MPLNClust::mplnVisualizeHeatmap(dataset = mplnVariationalResults$dataset,
+                                               clusterMembershipVector =
+                                               c(mplnVariationalResults$BICresults$BICmodelSelectedLabels, 1),
+                                               fileName = 'BICModel',
+                                               printPlot = FALSE))
+
+  # Dataset provided as wrong character
+  expect_error(MPLNClust::mplnVisualizeLine(dataset = "mplnVariationalResults$dataset",
+                                            clusterMembershipVector =
+                                            mplnResults$allResults[[2]]$allResults$clusterlabels,
+                                            LinePlotColours = "multicolour",
+                                            fileName = 'LinePlot',
+                                            format = 'png'))
+
+  # Dataset provided as wrong character
+  expect_error(MPLNClust::mplnVisualizeBar(dataset = "mplnVariationalResults$dataset",
+                                             probabilities = mplnVariationalResults$allResults[[2]]$probaPost,
+                                             clusterMembershipVector =
+                                             mplnVariationalResults$allResults[[2]]$clusterlabels,
+                                             fileName = 'PlotsWithProbability'))
+
 
   # clusterMembershipVector less than nObervations
-  expect_error(mplnVisualize(dataset = mplnVariationalResults$dataset,
-                             plots = "heatmaps",
-                             probabilities = mplnVariationalResults$allResults$`G=2`$probaPost,
-                             clusterMembershipVector =
-                               mplnVariationalResults$allResults$`G=2`$clusterlabels[-1],
-                             fileName = 'TwoClusterModel',
-                             printPlot = FALSE,
-                             format = 'png'))
+  expect_error(MPLNClust::mplnVisualizeBar(dataset = mplnVariationalResults$dataset,
+                                           probabilities = mplnVariationalResults$allResults[[2]]$probaPost,
+                                           clusterMembershipVector =
+                                           mplnVariationalResults$allResults[[2]]$clusterlabels[-1],
+                                           fileName = 'PlotsWithProbability'))
+
 
   # probabilities less than nObervations
-  expect_error(mplnVisualize(dataset = mplnVariationalResults$dataset,
-                             plots = "heatmaps",
-                             probabilities = mplnVariationalResults$allResults$`G=2`$probaPost[-1, ],
-                             clusterMembershipVector =
-                               mplnVariationalResults$allResults$`G=2`$clusterlabels,
-                             fileName = 'TwoClusterModel',
-                             printPlot = FALSE,
-                             format = 'png'))
+  expect_error(MPLNClust::mplnVisualizeBar(dataset = mplnVariationalResults$dataset,
+                                           probabilities = mplnVariationalResults$allResults[[2]]$probaPost[-1, ],
+                                           clusterMembershipVector =
+                                           mplnVariationalResults$allResults[[2]]$clusterlabels,
+                                           fileName = 'PlotsWithProbability'))
 
 })
 # [END]
