@@ -25,16 +25,15 @@ test_that("Checking visualization via alluvial plot", {
                                                        initMethod = "kmeans",
                                                        normalize = "Yes")
 
-  MPLNVisuals <- MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(mplnVariationalResults$dataset),
-                                                  firstGrouping = mplnVariationalResults$BICresults$BICmodelSelectedLabels,
-                                                  secondGrouping = mplnVariationalResults$ICLresults$ICLmodelSelectedLabels,
-                                                  thirdGrouping = mplnVariationalResults$AIC3results$AIC3modelSelectedLabels,
-                                                  fourthGrouping = mplnVariationalResults$AICresults$AICmodelSelectedLabels,
-                                                  fileName = paste0('Plot_',date()),
-                                                  printPlot = FALSE)
+  MPLNVisuals <- MPLNClust::mplnVisualizeBar(dataset = mplnVariationalResults$dataset,
+                                             probabilities = mplnVariationalResults$allResults[[2]]$probaPost,
+                                             clusterMembershipVector =
+                                               mplnVariationalResults$allResults[[2]]$clusterlabels,
+                                             fileName = 'PlotsWithProbability',
+                                             printPlot = FALSE)
 
   expect_type(MPLNVisuals, "list")
-  expect_length(MPLNVisuals, 1)
+  expect_length(MPLNVisuals, 9)
 })
 
 context("Checking for invalid user input for all plots")
@@ -65,12 +64,12 @@ test_that("Data clustering error upon invalid user input", {
 
   # Dataset provided as character
   expect_error(MPLNClust::mplnVisualizeAlluvial(nObservations = "nrow(mplnVariationalResults$dataset)",
-                                   firstGrouping = mplnVariationalResults$BICresults$BICmodelSelectedLabels,
-                                   secondGrouping = mplnVariationalResults$ICLresults$ICLmodelSelectedLabels,
-                                   thirdGrouping = mplnVariationalResults$AIC3results$AIC3modelSelectedLabels,
-                                   fourthGrouping = mplnVariationalResults$AICresults$AICmodelSelectedLabels,
-                                   fileName = paste0('Plot_',date()),
-                                   printPlot = FALSE))
+                                                firstGrouping = mplnVariationalResults$BICresults$BICmodelSelectedLabels,
+                                                secondGrouping = mplnVariationalResults$ICLresults$ICLmodelSelectedLabels,
+                                                thirdGrouping = mplnVariationalResults$AIC3results$AIC3modelSelectedLabels,
+                                                fourthGrouping = mplnVariationalResults$AICresults$AICmodelSelectedLabels,
+                                                fileName = paste0('Plot_',date()),
+                                                printPlot = FALSE))
 
 
   # firstGrouping argument provided as logical
@@ -86,7 +85,7 @@ test_that("Data clustering error upon invalid user input", {
   # Dataset provided as wrong character
   expect_error(MPLNClust::mplnVisualizeHeatmap(dataset = "nrow(mplnVariationalResults$dataset)",
                                                clusterMembershipVector =
-                                               mplnVariationalResults$BICresults$BICmodelSelectedLabels,
+                                                 mplnVariationalResults$BICresults$BICmodelSelectedLabels,
                                                fileName = 'BICModel',
                                                printPlot = FALSE))
 
@@ -94,14 +93,14 @@ test_that("Data clustering error upon invalid user input", {
   # clusterMembershipVector length is larger than number of observations
   expect_error(MPLNClust::mplnVisualizeHeatmap(dataset = mplnVariationalResults$dataset,
                                                clusterMembershipVector =
-                                               c(mplnVariationalResults$BICresults$BICmodelSelectedLabels, 1),
+                                                 c(mplnVariationalResults$BICresults$BICmodelSelectedLabels, 1),
                                                fileName = 'BICModel',
                                                printPlot = FALSE))
 
   # Dataset provided as wrong character
   expect_error(MPLNClust::mplnVisualizeLine(dataset = "mplnVariationalResults$dataset",
                                             clusterMembershipVector =
-                                            mplnResults$allResults[[2]]$allResults$clusterlabels,
+                                              mplnResults$allResults[[2]]$allResults$clusterlabels,
                                             LinePlotColours = "multicolour",
                                             fileName = 'LinePlot',
                                             printPlot = FALSE))
@@ -110,7 +109,7 @@ test_that("Data clustering error upon invalid user input", {
   expect_error(MPLNClust::mplnVisualizeBar(dataset = "mplnVariationalResults$dataset",
                                            probabilities = mplnVariationalResults$allResults[[2]]$probaPost,
                                            clusterMembershipVector =
-                                           mplnVariationalResults$allResults[[2]]$clusterlabels,
+                                             mplnVariationalResults$allResults[[2]]$clusterlabels,
                                            fileName = 'PlotsWithProbability',
                                            printPlot = FALSE))
 
@@ -119,7 +118,7 @@ test_that("Data clustering error upon invalid user input", {
   expect_error(MPLNClust::mplnVisualizeBar(dataset = mplnVariationalResults$dataset,
                                            probabilities = mplnVariationalResults$allResults[[2]]$probaPost,
                                            clusterMembershipVector =
-                                           mplnVariationalResults$allResults[[2]]$clusterlabels[-1],
+                                             mplnVariationalResults$allResults[[2]]$clusterlabels[-1],
                                            fileName = 'PlotsWithProbability',
                                            printPlot = FALSE))
 
@@ -128,9 +127,10 @@ test_that("Data clustering error upon invalid user input", {
   expect_error(MPLNClust::mplnVisualizeBar(dataset = mplnVariationalResults$dataset,
                                            probabilities = mplnVariationalResults$allResults[[2]]$probaPost[-1, ],
                                            clusterMembershipVector =
-                                           mplnVariationalResults$allResults[[2]]$clusterlabels,
+                                             mplnVariationalResults$allResults[[2]]$clusterlabels,
                                            fileName = 'PlotsWithProbability',
                                            printPlot = FALSE))
 
 })
+
 # [END]
