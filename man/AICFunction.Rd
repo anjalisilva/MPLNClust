@@ -88,5 +88,5 @@ principle. In \emph{Second International Symposium on Information Theory}, New Y
 USA, pp. 267–281. Springer Verlag.
 }
 \author{
-{Anjali Silva, \email{a.silva@utoronto.ca}}
+{Anjali Silva, \email{anjali@alumni.uoguelph.ca}}
 }

@@ -99,5 +99,5 @@ clustering with the integrated classification likelihood. \emph{IEEE Transaction
 on Pattern Analysis and Machine Intelligence} 22.
 }
 \author{
-{Anjali Silva, \email{a.silva@utoronto.ca}}
+{Anjali Silva, \email{anjali@alumni.uoguelph.ca}}
 }

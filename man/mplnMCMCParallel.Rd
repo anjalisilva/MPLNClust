@@ -163,6 +163,6 @@ for clustering transcriptome sequencing data. \emph{BMC Bioinformatics} 20.
 \href{https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2916-0}{Link}
 }
 \author{
-{Anjali Silva, \email{a.silva@utoronto.ca}, Sanjeena Dang,
+{Anjali Silva, \email{anjali@alumni.uoguelph.ca}, Sanjeena Dang,
 \email{sanjeenadang@cunet.carleton.ca}. }
 }

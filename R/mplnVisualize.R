@@ -104,7 +104,7 @@
 #'                            printPlot = FALSE,
 #'                            format = 'pdf')
 #'
-#' @author Anjali Silva, \email{a.silva@utoronto.ca}
+#' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
 #' @references
 #' Bojanowski,  M., R. Edwards (2016). alluvial: R Package for
@@ -164,7 +164,11 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
                       '#808000', '#ffd8b1',
                       '#000075', '#808080')
   setVectorColor <- firstGrouping
-  if(max(firstGrouping) == 2) {
+  if(max(firstGrouping) == 1) {
+    colSetting <- dplyr::case_when(
+                   setVectorColor == "1" ~ coloursBarPlot[1],
+                   TRUE ~ "orange")
+  } else if(max(firstGrouping) == 2) {
     colSetting <- dplyr::case_when(
                     setVectorColor == "1" ~ coloursBarPlot[1],
                     setVectorColor == "2" ~ coloursBarPlot[2],
@@ -413,7 +417,7 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
 #'                                          printPlot = FALSE,
 #'                                          format = 'png')
 #'
-#' @author Anjali Silva, \email{a.silva@utoronto.ca}
+#' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
 #' @export
 #' @import graphics
@@ -674,7 +678,7 @@ linePlotMonoCol <- function(dataset,
 #'                                             printPlot = FALSE,
 #'                                             format = 'png')
 #'
-#' @author Anjali Silva, \email{a.silva@utoronto.ca}
+#' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
 #' @export
 #' @import graphics
@@ -897,7 +901,7 @@ barPlotFunction <- function(tableProbabilitiesMelt,
 #'                                          printPlot = FALSE,
 #'                                          format = 'png')
 #'
-#' @author Anjali Silva, \email{a.silva@utoronto.ca}
+#' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
 #' @export
 #' @import graphics

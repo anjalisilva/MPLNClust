@@ -102,7 +102,7 @@
 #'                                              normalize = "Yes",
 #'                                              numNodes = 2)
 #' }
-#' @author {Anjali Silva, \email{a.silva@utoronto.ca}, Sanjeena Dang,
+#' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}, Sanjeena Dang,
 #'          \email{sanjeenadang@cunet.carleton.ca}. }
 #'
 #' @references
@@ -583,7 +583,7 @@ mplnMCMCParallel <- function(dataset,
 #'                                                normalize = "Yes")
 #' }
 #'
-#' @author {Anjali Silva, \email{a.silva@utoronto.ca}, Sanjeena Dang,
+#' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}, Sanjeena Dang,
 #'          \email{sanjeenadang@cunet.carleton.ca}. }
 #'
 #' @references
@@ -1380,7 +1380,7 @@ mplnCluster <- function(dataset,
 
 
 # Calculate and remove rows with zeros
-#' @author {Anjali Silva, \email{a.silva@utoronto.ca}}
+#' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}}
 removeZeroCounts <- function(dataset,
                              membership = "none") {
 
@@ -1577,7 +1577,7 @@ stanRun <- function(model,
 #'
 #'}
 #'
-#' @author {Anjali Silva, \email{a.silva@utoronto.ca}, Sanjeena Dang,
+#' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}, Sanjeena Dang,
 #'          \email{sanjeenadang@cunet.carleton.ca}. }
 #'
 #' @references
@@ -2532,7 +2532,7 @@ randomInitfunction <- function(gmodel, nObservations) {
 #'                          gmax = mplnResults$gmax,
 #'                          parallel = FALSE)
 #'
-#' @author {Anjali Silva, \email{a.silva@utoronto.ca}}
+#' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}}
 #'
 #' @references
 #'
@@ -2678,7 +2678,7 @@ AICFunction <- function(logLikelihood,
 #'                            gmax = mplnResults$gmax,
 #'                            parallel = FALSE)
 #'
-#' @author {Anjali Silva, \email{a.silva@utoronto.ca}}
+#' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}}
 #'
 #' @references
 #'
@@ -2829,7 +2829,7 @@ AIC3Function <- function(logLikelihood,
 #'                          gmax = mplnResults$gmax,
 #'                          parallel = FALSE)
 #'
-#' @author {Anjali Silva, \email{a.silva@utoronto.ca}}
+#' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}}
 #'
 #' @references
 #'
@@ -2981,7 +2981,7 @@ BICFunction <- function(logLikelihood,
 #'                                    gmax = mplnResults$gmax,
 #'                                    parallel = FALSE)
 #'
-#' @author {Anjali Silva, \email{a.silva@utoronto.ca}}
+#' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}}
 #'
 #' @references
 #'
@@ -3168,7 +3168,7 @@ ICLFunction <- function(logLikelihood,
 #'                                            produceImage = "No",
 #'                                            ImageName = "TwoComponents")
 #'
-#' @author Anjali Silva, \email{a.silva@utoronto.ca}
+#' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
 #' @references
 #' Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.

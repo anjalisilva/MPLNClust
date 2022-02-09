@@ -140,5 +140,5 @@ dplyr: A Grammar of Data Manipulation. R package version
 1.0.7. \href{https://CRAN.R-project.org/package=dplyr}{Link}
 }
 \author{
-Anjali Silva, \email{a.silva@utoronto.ca}
+Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 }
