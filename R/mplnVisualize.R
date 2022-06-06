@@ -1082,7 +1082,7 @@ heatmapFunctionTwo <- function(dataset,
                                      annotation_row = annotation_row,
                                      annotation_colors = list(Cluster = heatMap2RowAnnotation[
                                        sort(unique(clusterMembershipVector))]),
-                                     fontface = "italic", legend = TRUE, scale ="row",
+                                     legend = TRUE, scale ="row",
                                      border_color = "black", cluster_row = FALSE,
                                      cluster_col = FALSE,
                                      color =  rev(gplots::redgreen(1000)) )
