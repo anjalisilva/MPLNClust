@@ -11,19 +11,19 @@
 #'
 #' @param nObservations An integer specifying the total number of
 #'    observations, N, in the dataset. Default value is 50L.
-#' @param firstGrouping A vector of length nObservations, specifying the
-#'     cluster membership of observations. This must be provided. Colors
+#' @param firstGrouping An integer vector of length nObservations (N), specifying
+#'     the cluster membership of observations. This must be provided. Colors
 #'     will be assigned based on cluster membership provided in this
 #'     vector. Default value is a vector of length 50.
-#' @param secondGrouping A vector of length N, specifying the cluster
+#' @param secondGrouping An integer vector of length nObservations (N), specifying the cluster
 #'     membership of N observations. This could be obtained via another
 #'     clustering run or from a different model selection criteria.
 #'     Default value is an empty vector.
-#' @param thirdGrouping A vector of length N, specifying the cluster
+#' @param thirdGrouping An integer vector of length nObservations (N), specifying the cluster
 #'     membership of N observations. This could be obtained via another
 #'     clustering run or from a different model selection criteria.
 #'     Default value is an empty vector.
-#' @param fourthGrouping A vector of length N, specifying the cluster
+#' @param fourthGrouping An integer vector of length nObservations (N), specifying the cluster
 #'     membership of N observations. This could be obtained via another
 #'     clustering run or from a different model selection criteria.
 #'     Default value is an empty vector.
@@ -138,18 +138,30 @@ mplnVisualizeAlluvial <- function(nObservations = 50L,
 
   if (is.vector(firstGrouping) != TRUE) {
     stop("\n firstGrouping should be a vector")
+  } else if (length(firstGrouping) != nObservations) {
+    stop("\n firstGrouping should be a vector of
+         length nObservations (N).")
   }
 
   if (is.vector(secondGrouping) != TRUE) {
     stop("\n secondGrouping should be a vector")
+  } else if (length(secondGrouping) != nObservations) {
+    stop("\n secondGrouping should be a vector of
+         length nObservations (N).")
   }
 
   if (is.vector(thirdGrouping) != TRUE) {
     stop("\n thirdGrouping should be a vector")
+  } else if (length(thirdGrouping) != nObservations) {
+    stop("\n thirdGrouping should be a vector of
+         length nObservations (N).")
   }
 
   if (is.vector(fourthGrouping) != TRUE) {
     stop("\n fourthGrouping should be a vector")
+  } else if (length(fourthGrouping) != nObservations) {
+    stop("\n fourthGrouping should be a vector of
+         length nObservations (N).")
   }
 
   # Obtaining path to save images

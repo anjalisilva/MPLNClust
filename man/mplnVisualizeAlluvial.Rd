@@ -19,22 +19,22 @@ mplnVisualizeAlluvial(
 \item{nObservations}{An integer specifying the total number of
 observations, N, in the dataset. Default value is 50L.}
 
-\item{firstGrouping}{A vector of length nObservations, specifying the
-cluster membership of observations. This must be provided. Colors
+\item{firstGrouping}{An integer vector of length nObservations (N), specifying
+the cluster membership of observations. This must be provided. Colors
 will be assigned based on cluster membership provided in this
 vector. Default value is a vector of length 50.}
 
-\item{secondGrouping}{A vector of length N, specifying the cluster
+\item{secondGrouping}{An integer vector of length nObservations (N), specifying the cluster
 membership of N observations. This could be obtained via another
 clustering run or from a different model selection criteria.
 Default value is an empty vector.}
 
-\item{thirdGrouping}{A vector of length N, specifying the cluster
+\item{thirdGrouping}{An integer vector of length nObservations (N), specifying the cluster
 membership of N observations. This could be obtained via another
 clustering run or from a different model selection criteria.
 Default value is an empty vector.}
 
-\item{fourthGrouping}{A vector of length N, specifying the cluster
+\item{fourthGrouping}{An integer vector of length nObservations (N), specifying the cluster
 membership of N observations. This could be obtained via another
 clustering run or from a different model selection criteria.
 Default value is an empty vector.}
