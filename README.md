@@ -82,8 +82,8 @@ Framework of ***mplnVariational*** makes it computationally efficient
 and faster compared to ***mplnMCMCParallel*** or
 ***mplnMCMCNonParallel***. Therefore, ***mplnVariational*** may perform
 better for large datasets. The Shiny app employing ***mplnVariational***
-could be run and results could be visualized using ***runMPLNClust()***
-. For more information, see details section below.
+could be run and results could be visualized using ***runMPLNClust***.
+For more information, see details section below.
 
 An overview of the package is illustrated below:
 
