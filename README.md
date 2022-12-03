@@ -186,7 +186,7 @@ MPLNClust::runMPLNClust()
 
 <div style="text-align:center">
 
-<img src="inst/extdata/ShinyAppMPLNClust.png" alt="ShinyApp1" width="800" height="450"/>
+<img src="inst/extdata/ShinyAppMPLNClust1.png" alt="ShinyApp1" width="800" height="450"/>
 
 <div style="text-align:left">
 <div style="text-align:left">

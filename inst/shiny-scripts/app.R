@@ -13,20 +13,27 @@ ui <- fluidPage(
     # Sidebar panel for inputs ----
     sidebarPanel(
 
-      tags$p("Description: This is a simple Shiny App that is part of the MPLNClust package.
-             Most of the functions available via the package are made
+      tags$p("Description: This is a Shiny App that is part of the MPLNClust R package
+             (Silva et al., 2019). Most of the functions available via the package are made
              available with Shiny App. The MPLNClust is an R package for performing
              clustering using mixtures of multivariate Poisson-log normal
-             (MPLN) distribution provided a count dataset."),
+             (MPLN) distribution provided a count dataset. The observations of the
+             dataset will be clustered into subgroups. The app permits to calculate
+             Bayesian information criterion (BIC), Integrated Complete Likelihood (ICL)
+             criterion, and Akaike Information Criterion (AIC) values, given log-likelihood,
+             number of clusters, dimension of dataset, number of observations, and the
+             probability. Provided the original dataset of counts, the dataset could
+             be visualized."),
 
       # br() element to introduce extra vertical spacing ----
       br(),
       br(),
 
       # input
-      tags$b("Instructions: Below, enter or select values required to perform the analysis.
-              Default values are shown. Then press 'Run'. Navigate through
-              the different tabs to the right to explore the results."),
+      tags$b("Instructions: Below, upload a count dataset, and enter or select
+              values to perform cluster analysis. Default values are
+              shown. Then press 'Run'. Navigate through the different tabs
+              to the right to explore the results."),
 
       # br() element to introduce extra vertical spacing ----
       br(),
@@ -41,23 +48,35 @@ ui <- fluidPage(
       actionButton(inputId = "data2",
                    label = "Dataset 2 Details"),
       fileInput(inputId = "file1",
-                label = "Select a count dataset to visualize. File should be in .csv format with rows corresponding to genes and columns to samples.",
+                label = "Dataset: Select a count dataset to analyze. File should be
+                in comma-separated value (.csv) format with rows corresponding
+                to observations (e.g., genes) and columns to variables (e.g.,
+                samples). You may download an example dataset above and explore first.",
                 accept = c(".csv")),
       textInput(inputId = "ngmin",
-                label = "Enter the minimum value of components or clusters, gmin:", "1"),
+                label = "ngmin: Enter the minimum value of components or clusters
+                for clustering. This should be a positive integer.", "1"),
       textInput(inputId = "ngmax",
-                label = "Enter the maximum value of components or clusters, gmax:", "2"),
+                label = "ngmax: Enter the maximum value of components or clusters.
+                for clustering. This should be a positive integer, bigger
+                than ngmin and less than or equal to number of total observations
+                in the dataset.", "2"),
       selectInput(inputId = 'typeinitMethod',
-                  label = 'Select the initialization method, initMethod:',
+                  label = 'initMethod: Select the initialization method.',
                   choices = c("kmeans",
                               "random",
                               "medoids",
                               "clara",
                               "fanny")),
       textInput(inputId = "nInitIterations",
-                label = "Enter the number of initial iterations, nInitIterations:", "1"),
+                label = "nInitIterations: Enter the number of initial iterations.
+                This should be a positive integer.", "1"),
       selectInput(inputId = 'typenormalize',
-                  label = 'Select whether to perform normalization or not:',
+                  label = 'Normalization: Select whether to perform normalization
+                  or not. Currently, normalization is performed using
+                  calculting normalization factors via TMM method of edgeR
+                   package (Robinson, et al., 2010). The option Yes is recommended
+                   for raw RNA sequencing count data.',
                   choices = c("'Yes' ",
                               "'No' ")),
 
@@ -105,7 +124,8 @@ ui <- fluidPage(
                   tabPanel("Heatmap",
                            h3("Instructions: Enter values and click 'Run' at the bottom left side."),
                            h3("Heatmap of Input Dataset with Clusters:"),
-                           h5("Note, the plots are in the order of models selected by: BIC (top, left), ICL (top, right) and AIC (bottom, left), AIC3 (bottom, right)."),
+                           h5("Note, the plots are in the order of models selected by: BIC (top, left), ICL (top, right) and AIC (bottom, left), AIC3 (bottom, right).
+                              The cluster membership is indicated by the color legend to the left."),
                            br(),
                            fluidRow(
                              splitLayout(cellWidths = c("50%", "50%"), plotOutput("heatmapBIC"), plotOutput('heatmapICL')),
@@ -117,7 +137,18 @@ ui <- fluidPage(
                            h5("Note, the x-axis values are in the order of BIC, ICL, AIC, AIC3.
                               Colors are assigned based on cluster membership of model selected via BIC."),
                            br(),
-                           plotOutput("alluvialPlot")),
+                           fluidRow(
+                             splitLayout(cellWidths = c("100%"), plotOutput("alluvialPlot")),
+                             h5("Note, the x-axis values are in the order of ICL, BIC, AIC, AIC3.
+                              Colors are assigned based on cluster membership of model selected via ICL."),
+                             splitLayout(cellWidths = c("100%"), plotOutput("alluvialPlot2")),
+                             h5("Note, the x-axis values are in the order of AIC3, ICL, BIC, AIC
+                              Colors are assigned based on cluster membership of model selected via AIC3."),
+                             splitLayout(cellWidths = c("100%"), plotOutput("alluvialPlot3")),
+                             h5("Note, the x-axis values are in the order of AIC, AIC3, ICL, BIC
+                              Colors are assigned based on cluster membership of model selected via AIC."),
+                             splitLayout(cellWidths = c("100%"), plotOutput("alluvialPlot4")),
+                           )),
                   tabPanel("Barplot",
                            h3("Instructions: Enter values and click 'Run' at the bottom left side."),
                            h3("Barplot of Posterior Probabilities with Clusters:"),
@@ -510,9 +541,68 @@ server <- function(input, output) {
                             printPlot = FALSE)
   })
 
+  alluvialPlotting2 <- eventReactive(eventExpr = input$button2, {
+    if (!is.null(startclustering))
+      mplnVisualizeAlluvial(nObservations = nrow(matrixInput()),
+                            firstGrouping =
+                              as.numeric(startclustering()$ICLresults$ICLmodelSelectedLabels),
+                            secondGrouping =
+                              as.numeric(startclustering()$BICresults$BICmodelSelectedLabels),
+                            thirdGrouping =
+                              as.numeric(startclustering()$AICresults$AICmodelSelectedLabels),
+                            fourthGrouping =
+                              as.numeric(startclustering()$AIC3results$AIC3modelSelectedLabels),
+                            fileName = 'alluvial',
+                            printPlot = FALSE)
+  })
+
+  alluvialPlotting3 <- eventReactive(eventExpr = input$button2, {
+    if (!is.null(startclustering))
+      mplnVisualizeAlluvial(nObservations = nrow(matrixInput()),
+                            firstGrouping =
+                              as.numeric(startclustering()$AIC3results$AIC3modelSelectedLabels),
+                            secondGrouping =
+                              as.numeric(startclustering()$ICLresults$ICLmodelSelectedLabels),
+                            thirdGrouping =
+                              as.numeric(startclustering()$BICresults$BICmodelSelectedLabels),
+                            fourthGrouping =
+                              as.numeric(startclustering()$AICresults$AICmodelSelectedLabels),
+                            fileName = 'alluvial',
+                            printPlot = FALSE)
+  })
+
+
+  alluvialPlotting4 <- eventReactive(eventExpr = input$button2, {
+    if (!is.null(startclustering))
+      mplnVisualizeAlluvial(nObservations = nrow(matrixInput()),
+                            firstGrouping =
+                              as.numeric(startclustering()$AICresults$AICmodelSelectedLabels),
+                            secondGrouping =
+                              as.numeric(startclustering()$AIC3results$AIC3modelSelectedLabels),
+                            thirdGrouping =
+                              as.numeric(startclustering()$ICLresults$ICLmodelSelectedLabels),
+                            fourthGrouping =
+                              as.numeric(startclustering()$BICresults$BICmodelSelectedLabels),
+                            fileName = 'alluvial',
+                            printPlot = FALSE)
+  })
+
+
   # Alluvial Plot
   output$alluvialPlot <- renderPlot({
     alluvialPlotting()
+  })
+
+  output$alluvialPlot2 <- renderPlot({
+    alluvialPlotting2()
+  })
+
+  output$alluvialPlot3 <- renderPlot({
+    alluvialPlotting3()
+  })
+
+  output$alluvialPlot4 <- renderPlot({
+    alluvialPlotting4()
   })
 
 
