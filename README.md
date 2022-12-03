@@ -175,7 +175,7 @@ the successful operation of this algorithm. There maybe issues with
 singularity, in which case altering starting values or initialization
 method may help.
 
-## Shiny app
+## Shiny App
 
 The Shiny app employing ***mplnVariational*** could be run and results
 could be visualized:

@@ -96,7 +96,7 @@ Starting values (argument: *initMethod*) and the number of iterations for each c
 the successful operation of this algorithm. There maybe issues with singularity, in which case altering starting values or initialization
 method may help.
 
-## Shiny app
+## Shiny App
 
 The Shiny app employing __*mplnVariational*__ could be run and results could be visualized:
 ``` r
