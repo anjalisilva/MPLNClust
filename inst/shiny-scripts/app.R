@@ -134,18 +134,18 @@ ui <- fluidPage(
                   tabPanel("Alluvial Plot",
                            h3("Instructions: Enter values and click 'Run' at the bottom left side."),
                            h3("Alluvial Plot of Input Dataset:"),
-                           h5("Note, the x-axis values are in the order of BIC, ICL, AIC, AIC3.
+                           h5("Note, below the x-axis values are in the order of BIC, ICL, AIC, AIC3.
                               Colors are assigned based on cluster membership of model selected via BIC."),
                            br(),
                            fluidRow(
                              splitLayout(cellWidths = c("100%"), plotOutput("alluvialPlot")),
-                             h5("Note, the x-axis values are in the order of ICL, BIC, AIC, AIC3.
+                             h5("Note, below the x-axis values are in the order of ICL, BIC, AIC, AIC3.
                               Colors are assigned based on cluster membership of model selected via ICL."),
                              splitLayout(cellWidths = c("100%"), plotOutput("alluvialPlot2")),
-                             h5("Note, the x-axis values are in the order of AIC3, ICL, BIC, AIC
+                             h5("Note, below the x-axis values are in the order of AIC3, ICL, BIC, AIC
                               Colors are assigned based on cluster membership of model selected via AIC3."),
                              splitLayout(cellWidths = c("100%"), plotOutput("alluvialPlot3")),
-                             h5("Note, the x-axis values are in the order of AIC, AIC3, ICL, BIC
+                             h5("Note, below the x-axis values are in the order of AIC, AIC3, ICL, BIC
                               Colors are assigned based on cluster membership of model selected via AIC."),
                              splitLayout(cellWidths = c("100%"), plotOutput("alluvialPlot4")),
                            )),
