@@ -439,7 +439,7 @@ mplnMCMCParallel <- function(dataset,
       should be examined to ensure that sufficiently complex
       models have been considered.")
     mat <- cbind(Kchoice, nParameters / nObservations, nParameters / nObservations, - logLikelihood)
-    ResCapushe <- capushe ::capushe(mat, nObservations)
+    ResCapushe <- capushe::capushe(mat, nObservations)
     DDSEmodel<- ResCapushe@DDSE@model
     Djumpmodel<- ResCapushe@Djump@model
     final <- proc.time() - ptm

@@ -148,11 +148,10 @@ for *mplnMCMCNonParallel*.
 To check the convergence of MCMC chains, the potential scale reduction
 factor and the effective number of samples are used. The Heidelberger
 and Welch’s convergence diagnostic (Heidelberger and Welch, 1983) is
-used to check the convergence of the MCMC-EM algorithm. The AIC, BIC,
-AIC3 and ICL are used for model selection. Starting values (argument:
-initMethod) and the number of iterations for each chain (argument:
-nIterations) play an important role for the successful operation of this
-algorithm.
+used to check the convergence of the MCMC-EM algorithm. Starting values
+(argument: *initMethod*) and the number of iterations for each chain
+(argument: *nIterations*) play an important role for the successful
+operation of this algorithm.
 
 ### Variational-EM Framework for Parameter Estimation
 
@@ -163,6 +162,22 @@ the Kullback-Leibler (KL) divergence between the true and the
 approximating densities. A variational-EM based framework is used for
 parameter estimation. This algorithm is implemented in the function
 ***mplnVariational***.
+
+## Model Selection and Other Details
+
+Four model selection criteria are offered, which include the Akaike
+information criterion (AIC; Akaike, 1973), the Bayesian information
+criterion (BIC; Schwarz, 1978), a variation of the AIC used by Bozdogan
+(1994) called AIC3, and the integrated completed likelihood (ICL;
+Biernacki et al., 2000). Slope heuristics (Djump and DDSE; Arlot et al.,
+2016) could be used for model selection if more than 10 models are
+considered.
+
+Starting values (argument: *initMethod*) and the number of iterations
+for each chain (argument: *nInitIterations*) play an important role to
+the successful operation of this algorithm. There maybe issues with
+singularity, in which case altering starting values or initialization
+method may help.
 
 ## Tutorials
 
@@ -202,28 +217,66 @@ A BibTeX entry for LaTeX users is
   }
 ```
 
-## References for Package
+## Package References
 
--   [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019).
-    A multivariate Poisson-log normal mixture model for clustering
-    transcriptome sequencing data. *BMC
-    Bioinformatics.*](https://pubmed.ncbi.nlm.nih.gov/31311497/)
+- [Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A
+  multivariate Poisson-log normal mixture model for clustering
+  transcriptome sequencing data. *BMC
+  Bioinformatics.*](https://pubmed.ncbi.nlm.nih.gov/31311497/)
 
--   [Subedi, S., R.P. Browne (2020). A family of parsimonious mixtures
-    of multivariate Poisson-lognormal distributions for clustering
-    multivariate count data. *Stat.*
-    9:e310.](https://doi.org/10.1002/sta4.310)
+- [Subedi, S., R.P. Browne (2020). A family of parsimonious mixtures of
+  multivariate Poisson-lognormal distributions for clustering
+  multivariate count data. *Stat.*
+  9:e310.](https://doi.org/10.1002/sta4.310)
 
--   [Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log
-    normal distribution.
-    *Biometrika.*](https://www.jstor.org/stable/2336624?seq=1)
+## Other References
 
--   For others, refer to help page of inidividual functions via
-    `?function` or `help(function)`.
+- [Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log
+  normal distribution.
+  *Biometrika.*](https://www.jstor.org/stable/2336624?seq=1)
+
+- [Akaike, H. (1973). Information theory and an extension of the maximum
+  likelihood principle. In *Second International Symposium on
+  Information Theory*, New York, NY, USA, pp. 267–281. Springer
+  Verlag.](https://link.springer.com/chapter/10.1007/978-1-4612-1694-0_15)
+
+- [Arlot, S., Brault, V., Baudry, J., Maugis, C., Michel, B. (2016).
+  *capushe: CAlibrating Penalities Using Slope HEuristics*. R package
+  version 1.1.1](https://CRAN.R-project.org/package=capushe)
+
+- [Biernacki, C., G. Celeux, and G. Govaert (2000). Assessing a mixture
+  model for clustering with the integrated classification likelihood.
+  *IEEE Transactions on Pattern Analysis and Machine Intelligence*
+  22.](https://hal.inria.fr/inria-00073163/document)
+
+- [Bozdogan, H. (1994). Mixture-model cluster analysis using model
+  selection criteria and a new informational measure of complexity. In
+  *Proceedings of the First US/Japan Conference on the Frontiers of
+  Statistical Modeling: An Informational Approach: Volume 2 Multivariate
+  Statistical Modeling*, pp.69–113. Dordrecht: Springer
+  Netherlands.](https://link.springer.com/chapter/10.1007/978-94-011-0800-3_3)
+
+- [Ghahramani, Z. and Beal, M. (1999). Variational inference for
+  bayesian mixtures of factor analysers. *Advances in neural information
+  processing systems*
+  12.](https://cse.buffalo.edu/faculty/mbeal/papers/nips99.pdf)
+
+- [Robinson, M.D., and Oshlack, A. (2010). A scaling normalization
+  method for differential expression analysis of RNA-seq data. *Genome
+  Biology* 11,
+  R25.](https://genomebiology.biomedcentral.com/articles/10.1186/gb-2010-11-3-r25)
+
+- [Schwarz, G. (1978). Estimating the dimension of a model. *The Annals
+  of Statistics* 6.](https://www.jstor.org/stable/2958889?seq=1)
+
+- [Wainwright, M. J. and Jordan, M. I. (2008). Graphical models,
+  exponential families, and variational inference. *Foundations and
+  Trends® in Machine Learning*
+  1.](https://onlinelibrary.wiley.com/doi/abs/10.1002/sta4.310)
 
 ## Maintainer
 
--   Anjali Silva (<anjali@alumni.uoguelph.ca>).
+- Anjali Silva (<anjali@alumni.uoguelph.ca>).
 
 ## Contributions
 
@@ -233,8 +286,9 @@ issues](https://github.com/anjalisilva/MPLNClust/issues).
 
 ## Acknowledgments
 
--   Dr. Marcelo Ponce, SciNet HPC Consortium, University of Toronto, ON,
-    Canada for all the computational support.
--   This work was funded by Natural Sciences and Engineering Research
-    Council of Canada, Queen Elizabeth II Graduate Scholarship, and
-    Arthur Richmond Memorial Scholarship.
+- Dr. Marcelo Ponce, SciNet HPC Consortium, University of Toronto, ON,
+  Canada for all the computational support.
+
+- This work was funded by Natural Sciences and Engineering Research
+  Council of Canada, Queen Elizabeth II Graduate Scholarship, and Arthur
+  Richmond Memorial Scholarship.
