@@ -70,7 +70,7 @@
 #'
 #'  # Visualize clustering results using alluvial plot
 #'  # Access results using models selected via model selection criteria
-#'  alluvialPlot <- mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
+#'  alluvialPlot <- MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
 #'                            firstGrouping = MPLNClustResults$BICresults$BICmodelSelectedLabels,
 #'                            secondGrouping = MPLNClustResults$ICLresults$ICLmodelSelectedLabels,
 #'                            thirdGrouping = MPLNClustResults$AIC3results$AIC3modelSelectedLabels,
@@ -82,27 +82,31 @@
 #'  # Example 2
 #'  # Perform clustering via K-means with centers = 2
 #'  # Visualize clustering results using alluvial plot for
-#'  # K-means and above MPLNClust results. Note, coloring
-#'  # is set with respect to argument firstGrouping, which is
-#'  # assinged MPLNClust results.
+#'  # K-means and above MPLNClust results for BIC, ICL and AIC3.
+#'  # Note, coloring is set with respect to argument
+#'  # firstGrouping, which is assinged MPLNClust results.
 #'
 #'  set.seed(1234)
-#'  alluvialPlotMPLNClust <- mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
+#'  alluvialPlotMPLNClust <- MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
 #'                                firstGrouping = MPLNClustResults$BICresults$BICmodelSelectedLabels,
-#'                                secondGrouping = kmeans(simulatedCounts$dataset, 2)$cluster,
+#'                                secondGrouping = MPLNClustResults$ICLresults$ICLmodelSelectedLabels,
+#'                                thirdGrouping = MPLNClustResults$AIC3results$AIC3modelSelectedLabels,
+#'                                fourthGrouping = kmeans(simulatedCounts$dataset, 2)$cluster,
 #'                                fileName = paste0('Plot_',date()),
 #'                                printPlot = FALSE,
 #'                                format = 'pdf')
 #'
-#'  # Note, coloring is set with respect to argument firstGrouping,
+#'  # Note, coloring is now set with respect to argument firstGrouping,
 #'  # which is assinged K-means results.
 #'  set.seed(1234)
-#'  alluvialPlotKmeans <- mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
-#'                            firstGrouping = kmeans(simulatedCounts$dataset, 2)$cluster,
-#'                            secondGrouping = MPLNClustResults$BICresults$BICmodelSelectedLabels,
-#'                            fileName = paste0('Plot_',date()),
-#'                            printPlot = FALSE,
-#'                            format = 'pdf')
+#'  alluvialPlotKmeans <- MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
+#'                                firstGrouping = kmeans(simulatedCounts$dataset, 2)$cluster,
+#'                                secondGrouping = MPLNClustResults$BICresults$BICmodelSelectedLabels,
+#'                                thirdGrouping = MPLNClustResults$ICLresults$ICLmodelSelectedLabels,
+#'                                fourthGrouping = MPLNClustResults$AIC3results$AIC3modelSelectedLabels,
+#'                                fileName = paste0('Plot_',date()),
+#'                                printPlot = FALSE,
+#'                                format = 'pdf')
 #'
 #' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
