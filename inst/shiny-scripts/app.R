@@ -20,10 +20,12 @@ ui <- fluidPage(
              (MPLN) distribution provided a count dataset. The observations of the
              dataset will be clustered into subgroups. The app permits to calculate
              Bayesian information criterion (BIC), Integrated Complete Likelihood (ICL)
-             criterion, and Akaike Information Criterion (AIC) values, given log-likelihood,
-             number of clusters, dimension of dataset, number of observations, and the
-             probability. Provided the original dataset of counts, the dataset could
-             be visualized."),
+             criterion, and Akaike Information Criterion (AIC) values. If more than
+             10 models are considered, slope heuristics (Djump and DDSE) will
+             can be used for model selection. Results will be available as dotted
+             line plots of information criteria value versus cluster size, heatmaps
+             of input datset with cluster membership information, alluvial plot of
+             observations by cluster, and barplot of posterior probabilities."),
 
       # br() element to introduce extra vertical spacing ----
       br(),
@@ -123,7 +125,7 @@ ui <- fluidPage(
                            )),
                   tabPanel("Heatmap",
                            h3("Instructions: Enter values and click 'Run' at the bottom left side."),
-                           h3("Heatmap of Input Dataset with Clusters:"),
+                           h3("Heatmap of Input Dataset with Cluster Membership:"),
                            h5("Note, the plots are in the order of models selected by: BIC (top, left), ICL (top, right) and AIC (bottom, left), AIC3 (bottom, right).
                               The cluster membership is indicated by the color legend to the left."),
                            br(),
@@ -133,7 +135,7 @@ ui <- fluidPage(
                            )),
                   tabPanel("Alluvial Plot",
                            h3("Instructions: Enter values and click 'Run' at the bottom left side."),
-                           h3("Alluvial Plot of Input Dataset:"),
+                           h3("Alluvial Plot Showing Observation Memberships by Information Criteria for Input Dataset:"),
                            h5("Note, below the x-axis values are in the order of BIC, ICL, AIC, AIC3.
                               Colors are assigned based on cluster membership of model selected via BIC."),
                            br(),
@@ -151,7 +153,7 @@ ui <- fluidPage(
                            )),
                   tabPanel("Barplot",
                            h3("Instructions: Enter values and click 'Run' at the bottom left side."),
-                           h3("Barplot of Posterior Probabilities with Clusters:"),
+                           h3("Barplot of Posterior Probabilities with Cluster Memberships:"),
                            h5("Note, the plots are in the order of models selected by: BIC (top, left), ICL (top, right) and AIC (bottom, left), AIC3 (bottom, right)."),
                            br(),
                            fluidRow(
