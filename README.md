@@ -81,25 +81,15 @@ under construction, ***mplnVarClassification***.
 Framework of ***mplnVariational*** makes it computationally efficient
 and faster compared to ***mplnMCMCParallel*** or
 ***mplnMCMCNonParallel***. Therefore, ***mplnVariational*** may perform
-better for large datasets. For more information, see details section
-below.
+better for large datasets. The Shiny app employing ***mplnVariational***
+could be run and results could be visualized using ***runMPLNClust()***
+. For more information, see details section below.
 
 An overview of the package is illustrated below:
 
 <div style="text-align:center">
 
 <img src="inst/extdata/Overview_MPLNClust.png" width="800" height="450"/>
-
-<div style="text-align:left">
-<div style="text-align:left">
-<div style="text-align:left">
-
-Alternatively, the Shiny app employing ***mplnVariational*** could be
-run and results could be visualized:
-
-``` r
-MPLNClust::runMPLNClust()
-```
 
 <div style="text-align:left">
 <div style="text-align:left">
