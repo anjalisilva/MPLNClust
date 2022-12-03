@@ -175,6 +175,23 @@ the successful operation of this algorithm. There maybe issues with
 singularity, in which case altering starting values or initialization
 method may help.
 
+## Shiny app
+
+The Shiny app employing ***mplnVariational*** could be run and results
+could be visualized:
+
+``` r
+MPLNClust::runMPLNClust()
+```
+
+<div style="text-align:center">
+
+<img src="inst/extdata/ShinyAppMPLNClust.png" alt="ShinyApp1" width="800" height="450"/>
+
+<div style="text-align:left">
+<div style="text-align:left">
+
+
 ## Tutorials
 
 For tutorials and plot interpretation, refer to the vignette:
