@@ -643,6 +643,9 @@ linePlotMonoCol <- function(dataset,
 #' @param vectorObservations A vector of length observations (N), that
 #'    contains either integers or characters, specifying the observations.
 #'    E.g., c(1:100) for 100 different observations or c("a", "b", ...).
+#' @param probabilities A matrix of numeric probabilities containing N
+#'    (observation) rows and G (number of maximum clusters) columns.
+#'    Row sums should be 1. Default value is NA.
 #' @param clusterMembershipVector A numeric vector of length nrow(dataset)
 #'    containing the cluster membership of each observation. Default is NA.
 #' @param printPlot Logical indicating if plot(s) should be saved in local

@@ -18,6 +18,10 @@ mplnVisualizeBar(
 contains either integers or characters, specifying the observations.
 E.g., c(1:100) for 100 different observations or c("a", "b", ...).}
 
+\item{probabilities}{A matrix of numeric probabilities containing N
+(observation) rows and G (number of maximum clusters) columns.
+Row sums should be 1. Default value is NA.}
+
 \item{clusterMembershipVector}{A numeric vector of length nrow(dataset)
 containing the cluster membership of each observation. Default is NA.}
 
