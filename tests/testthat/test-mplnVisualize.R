@@ -25,7 +25,7 @@ test_that("Checking visualization via alluvial plot", {
                                                        initMethod = "kmeans",
                                                        normalize = "Yes")
 
-  MPLNVisuals <- MPLNClust::mplnVisualizeBar(dataset = mplnVariationalResults$dataset,
+  MPLNVisuals <- MPLNClust::mplnVisualizeBar(vectorObservations = 1:nrow(mplnVariationalResults$dataset),
                                              probabilities = mplnVariationalResults$allResults[[2]]$probaPost,
                                              clusterMembershipVector =
                                                mplnVariationalResults$allResults[[2]]$clusterlabels,
@@ -106,7 +106,7 @@ test_that("Data clustering error upon invalid user input", {
                                             printPlot = FALSE))
 
   # Dataset provided as wrong character
-  expect_error(MPLNClust::mplnVisualizeBar(dataset = "mplnVariationalResults$dataset",
+  expect_error(MPLNClust::mplnVisualizeBar(vectorObservations = "mplnVariationalResults$dataset",
                                            probabilities = mplnVariationalResults$allResults[[2]]$probaPost,
                                            clusterMembershipVector =
                                              mplnVariationalResults$allResults[[2]]$clusterlabels,
@@ -115,7 +115,7 @@ test_that("Data clustering error upon invalid user input", {
 
 
   # clusterMembershipVector less than nObervations
-  expect_error(MPLNClust::mplnVisualizeBar(dataset = mplnVariationalResults$dataset,
+  expect_error(MPLNClust::mplnVisualizeBar(vectorObservations = 1:nrow(mplnVariationalResults$dataset),
                                            probabilities = mplnVariationalResults$allResults[[2]]$probaPost,
                                            clusterMembershipVector =
                                              mplnVariationalResults$allResults[[2]]$clusterlabels[-1],
@@ -124,7 +124,7 @@ test_that("Data clustering error upon invalid user input", {
 
 
   # probabilities less than nObervations
-  expect_error(MPLNClust::mplnVisualizeBar(dataset = mplnVariationalResults$dataset,
+  expect_error(MPLNClust::mplnVisualizeBar(vectorObservations = 1:nrow(mplnVariationalResults$dataset),
                                            probabilities = mplnVariationalResults$allResults[[2]]$probaPost[-1, ],
                                            clusterMembershipVector =
                                              mplnVariationalResults$allResults[[2]]$clusterlabels,
