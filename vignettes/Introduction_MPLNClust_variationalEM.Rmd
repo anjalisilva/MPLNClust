@@ -168,7 +168,7 @@ Clustering results can be viewed as heatmaps and line plots. The two images belo
 
 ``` r
 #  Visualizing line plots for model with 3 components provided probabilities
-MPLNVisuals <- MPLNClust::mplnVisualizeBar(dataset = sampleData$dataset,
+MPLNVisuals <- MPLNClust::mplnVisualizeBar(vectorObservations = 1:nrow(sampleData$dataset),
                                             probabilities = mplnResults$allResults[[3]]$allResults$probaPost,
                                             clusterMembershipVector =
                                             mplnResults$allResults[[3]]$allResults$clusterlabels,
@@ -204,7 +204,7 @@ Three images above show line plots for each cluster. The values for each sample 
 
 ``` r
  #  Visualizing line plots for model with 3 components provided probabilities
- MPLNVisuals <- MPLNClust::mplnVisualizeBar(dataset = sampleData$dataset,
+ MPLNVisuals <- MPLNClust::mplnVisualizeBar(vectorObservations = 1:nrow(sampleData$dataset),
                                             probabilities = mplnResults$allResults[[3]]$allResults$probaPost,
                                             clusterMembershipVector =
                                             mplnResults$allResults[[3]]$allResults$clusterlabels,

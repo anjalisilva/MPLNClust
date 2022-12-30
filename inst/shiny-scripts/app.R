@@ -364,14 +364,14 @@ server <- function(input, output) {
     if (!is.null(startclustering))
       if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
         mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:nrow(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$BICresults$BICmodelSelectedLabels),
           printPlot = FALSE)
       } else {
         modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$BICresults$BICmodelselected)
         mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:nrow(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$BICresults$BICmodelSelectedLabels),
           printPlot = FALSE)
@@ -409,14 +409,14 @@ server <- function(input, output) {
     if (!is.null(startclustering))
       if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
         mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:nrow(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$ICLresults$ICLmodelSelectedLabels),
           printPlot = FALSE)
       } else {
         modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$ICLresults$ICLmodelselected)
         mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:nrow(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$ICLresults$ICLmodelSelectedLabels),
           printPlot = FALSE)
@@ -458,14 +458,14 @@ server <- function(input, output) {
     if (!is.null(startclustering))
       if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
         mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:nrow(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$AICresults$AICmodelSelectedLabels),
           printPlot = FALSE)
       } else {
         modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$AICresults$AICmodelselected)
         mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:nrow(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$AICresults$AICmodelSelectedLabels),
           printPlot = FALSE)
@@ -506,14 +506,14 @@ server <- function(input, output) {
     if (!is.null(startclustering))
       if ((as.numeric(input$ngmax) - as.numeric(input$ngmin) + 1) == 1) {
         mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:nrow(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[1]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$AIC3results$AIC3modelSelectedLabels),
           printPlot = FALSE)
       } else {
         modelSelect <- which(seq(as.numeric(input$ngmin), as.numeric(input$ngmax), 1) == startclustering()$AIC3results$AIC3modelselected)
         mplnVisualizeBar(
-          dataset = matrixInput(),
+          vectorObservations = 1:nrow(matrixInput()),
           probabilities = as.matrix(startclustering()$allResults[[as.numeric(modelSelect)]]$probaPost),
           clusterMembershipVector = as.numeric(startclustering()$AIC3results$AIC3modelSelectedLabels),
           printPlot = FALSE)

@@ -640,11 +640,9 @@ linePlotMonoCol <- function(dataset,
 #' for each observation, after clustering via mixtures of
 #' multivariate Poisson-log normal (MPLN) model.
 #'
-#' @param dataset A dataset of class matrix and type integer such that
-#'    rows correspond to observations (N) and columns (C) correspond to variables.
-#' @param probabilities A matrix of size N x C, such that rows correspond
-#'    to N observations and columns correspond to C clusters. Each row
-#'    should sum to 1. Default is NA.
+#' @param vectorObservations A vector of length observations (N), that
+#'    contains either integers or characters, specifying the observations.
+#'    E.g., c(1:100) for 100 different observations or c("a", "b", ...).
 #' @param clusterMembershipVector A numeric vector of length nrow(dataset)
 #'    containing the cluster membership of each observation. Default is NA.
 #' @param printPlot Logical indicating if plot(s) should be saved in local
@@ -685,7 +683,7 @@ linePlotMonoCol <- function(dataset,
 #'                               normalize = "Yes")
 #'
 #'  # Visualize posterior probabilities via a bar plot
-#'  MPLNVisuals <- MPLNClust::mplnVisualizeBar(dataset = simulatedCounts$dataset,
+#'  MPLNVisuals <- MPLNClust::mplnVisualizeBar(vectorObservations = 1:nrow(simulatedCounts$dataset),
 #'                                             probabilities =
 #'                                             MPLNClustResults$allResults$`G=2`$probaPost,
 #'                                             clusterMembershipVector =
@@ -706,30 +704,27 @@ linePlotMonoCol <- function(dataset,
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom randomcoloR distinctColorPalette
 #' @importFrom reshape melt
-mplnVisualizeBar <- function(dataset,
-                          probabilities = NA,
-                          clusterMembershipVector = NA,
-                          fileName = paste0('Plot_',date()),
-                          printPlot = TRUE,
-                          format = 'pdf') {
+mplnVisualizeBar <- function(vectorObservations,
+                             probabilities = NA,
+                             clusterMembershipVector = NA,
+                             fileName = paste0('Plot_',date()),
+                             printPlot = TRUE,
+                             format = 'pdf') {
 
   # Checking user input
-  if (typeof(dataset) != "double" & typeof(dataset) != "integer") {
-    stop("\n Dataset type needs to be integer")
+  if (typeof(vectorObservations) != "double" & typeof(vectorObservations) != "integer" & typeof(vectorObservations) != "character") {
+    stop("\n vectorObservations type needs to be double, integer, or character only")
   }
 
-  if (is.matrix(dataset) != TRUE) {
-    stop("\n Dataset needs to be a matrix")
-  }
 
   if (is.logical(clusterMembershipVector) == TRUE) {
     cat("\n clusterMembershipVector is not provided.")
-    clusterMembershipVector <- rep(1, nrow(dataset))
+    clusterMembershipVector <- rep(1, length(vectorObservations))
 
   } else if (is.numeric(clusterMembershipVector) == TRUE) {
-    if (nrow(dataset) != length(clusterMembershipVector)) {
+    if (length(vectorObservations) != length(clusterMembershipVector)) {
       stop("\n length(clusterMembershipVector) should match
-          nrow(dataset)")
+          nrow(vectorObservations)")
     }
   }
 
@@ -737,7 +732,7 @@ mplnVisualizeBar <- function(dataset,
     cat("\n Probabilities are not provided. Barplot of probabilities will not be produced.")
   } else if (is.matrix(probabilities) == TRUE) {
     if (nrow(probabilities) != length(clusterMembershipVector)) {
-      stop("\n length(probabilities) should match nrow(dataset)")
+      stop("\n length(probabilities) should match nrow(vectorObservations)")
     }
     if (any(rowSums(probabilities) >= 1.01)) {
       stop("\n rowSums(probabilities) reveals at least
@@ -753,17 +748,15 @@ mplnVisualizeBar <- function(dataset,
   pathNow <- getwd()
 
   # Saving cluster membership for each observation
-  DataPlusLabs <- cbind(dataset, clusterMembershipVector)
+  DataPlusLabs <- cbind(vectorObservations, clusterMembershipVector)
   ordervector <- anothervector <- list()
 
   # Divide observations into each cluster based on membership
   for (i in 1:max(clusterMembershipVector)) {
-    ordervector[[i]] <- which(DataPlusLabs[,
-                                           ncol(dataset) + 1] == i)
+    ordervector[[i]] <- which(DataPlusLabs[, 2] == i)
     # divide observations as an integer based on cluster membership
     anothervector[[i]] <- rep(i,
-                              length(which(DataPlusLabs[,
-                                                        ncol(dataset) + 1] == i)))
+                              length(which(DataPlusLabs[, 2] == i)))
   }
 
   vec <- unlist(ordervector) # put observations in order of cluster membership
@@ -835,16 +828,17 @@ barPlotFunction <- function(tableProbabilitiesMelt,
   barPlot <-
     barPlot +
     ggplot2::geom_bar(position = "fill", stat = "identity") +
-    scale_fill_manual(values = coloursBarPlot,
-                      name = "Cluster") + theme_bw() +
-    theme(text = element_text(size = 10),
+    ggplot2::scale_fill_manual(values = coloursBarPlot,
+                      name = "Cluster") +
+    ggplot2::theme_bw() +
+    ggplot2::theme(text = ggplot2::element_text(size = 10),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
           axis.text.x = element_text(face = "bold"),
           axis.text.y = element_text(face = "bold")) +
-    coord_cartesian(ylim = c(0, 1), xlim = c(1, nrow(probabilities))) +
-    labs(x = "Observation") +
-    scale_y_continuous(name = "Posterior probability", limits = c(0: 1))
+    ggplot2::coord_cartesian(ylim = c(0, 1), xlim = c(1, nrow(probabilities))) +
+    ggplot2::labs(x = "Observation") +
+    ggplot2::scale_y_continuous(name = "Posterior probability", limits = c(0: 1))
 
   return(barPlot)
 }

@@ -246,7 +246,7 @@ By providing a matrix of probabilities for the observations belonging to each cl
 
 ``` r
  #  Visualizing line plots for model with 2 components provided probabilities
- MPLNVisuals <- MPLNClust::mplnVisualizeBar(dataset = sampleData$dataset,
+ MPLNVisuals <- MPLNClust::mplnVisualizeBar(vectorObservations = 1:nrow(sampleData$dataset),
                                             probabilities = mplnResults$allResults[[2]]$allResults$probaPost,
                                             clusterMembershipVector =
                                             mplnResults$allResults[[2]]$allResults$clusterlabels,

@@ -5,7 +5,7 @@
 \title{Visualize Posterior Probabilities via Bar Plot}
 \usage{
 mplnVisualizeBar(
-  dataset,
+  vectorObservations,
   probabilities = NA,
   clusterMembershipVector = NA,
   fileName = paste0("Plot_", date()),
@@ -14,12 +14,9 @@ mplnVisualizeBar(
 )
 }
 \arguments{
-\item{dataset}{A dataset of class matrix and type integer such that
-rows correspond to observations (N) and columns (C) correspond to variables.}
-
-\item{probabilities}{A matrix of size N x C, such that rows correspond
-to N observations and columns correspond to C clusters. Each row
-should sum to 1. Default is NA.}
+\item{vectorObservations}{A vector of length observations (N), that
+contains either integers or characters, specifying the observations.
+E.g., c(1:100) for 100 different observations or c("a", "b", ...).}
 
 \item{clusterMembershipVector}{A numeric vector of length nrow(dataset)
 containing the cluster membership of each observation. Default is NA.}
@@ -70,7 +67,7 @@ simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 100,
                               normalize = "Yes")
 
  # Visualize posterior probabilities via a bar plot
- MPLNVisuals <- MPLNClust::mplnVisualizeBar(dataset = simulatedCounts$dataset,
+ MPLNVisuals <- MPLNClust::mplnVisualizeBar(vectorObservations = 1:nrow(simulatedCounts$dataset),
                                             probabilities =
                                             MPLNClustResults$allResults$`G=2`$probaPost,
                                             clusterMembershipVector =
