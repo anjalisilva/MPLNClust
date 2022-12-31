@@ -727,7 +727,7 @@ mplnVisualizeBar <- function(vectorObservations,
   } else if (is.numeric(clusterMembershipVector) == TRUE) {
     if (length(vectorObservations) != length(clusterMembershipVector)) {
       stop("\n length(clusterMembershipVector) should match
-          nrow(vectorObservations)")
+          length(vectorObservations)")
     }
   }
 
