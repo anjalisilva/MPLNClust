@@ -237,11 +237,13 @@ server <- function(input, output) {
         if(as.numeric(input$ngmax) == 1) { # check if only one value is because gmax = 1
           plot(c(startclustering()$logLikelihood), type = "p",
                xlab = "G", ylab = "logL",
-               main = paste("G vs log-likelihood"))
+               main = paste("G vs log-likelihood"), xaxt="n")
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
           plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$logLikelihood),
                type = "p", xlab = "G", ylab = "logL",
-               main = paste("G vs log-likelihood"))
+               main = paste("G vs log-likelihood"), xaxt="n")
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         }
       } else { # ff more than one value
         plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
@@ -259,11 +261,13 @@ server <- function(input, output) {
         if(as.numeric(input$ngmax) == 1) { # check if only one value is because gmax = 1
           plot(c(startclustering()$ICLresults$allICLvalues), type = "p",
                xlab = "G", ylab = "ICL value",
-               main = paste("G vs ICL value"))
+               main = paste("G vs ICL value"), xaxt = "n")
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
           plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$ICLresults$allICLvalues),
                type = "p", xlab = "G", ylab = "ICL value",
-               main = paste("G vs ICL value"))
+               main = paste("G vs ICL value"), xaxt = "n")
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         }
       } else { # ff more than one value
         plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
@@ -282,17 +286,19 @@ server <- function(input, output) {
         if(as.numeric(input$ngmax) == 1) { # check if only one value is because gmax = 1
           plot(c(startclustering()$BICresults$allBICvalues), type = "p",
                xlab = "G", ylab = "BIC value",
-               main = paste("G vs BIC value"))
+               main = paste("G vs BIC value"), xaxt = "n")
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
           plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$BICresults$allBICvalues),
                type = "p", xlab = "G", ylab = "BIC value",
-               main = paste("G vs BIC value"))
+               main = paste("G vs BIC value"), xaxt = "n")
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         }
       } else { # ff more than one value
         plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
              y = startclustering()$BICresults$allBICvalues, type = "l",
              lty = 2, xlab = "G", ylab = "BIC value",
-             main = paste("G vs BIC value"), xaxt="n")
+             main = paste("G vs BIC value"), xaxt = "n")
         axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
       }
   })
@@ -304,11 +310,13 @@ server <- function(input, output) {
         if(as.numeric(input$ngmax) == 1) { # check if only one value is because gmax = 1
           plot(c(startclustering()$AICresults$allAICvalues), type = "p",
                xlab = "G", ylab = "AIC value",
-               main = paste("G vs AIC value"))
+               main = paste("G vs AIC value"), xaxt = "n")
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
           plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$AICresults$allAICvalues),
                type = "p", xlab = "G", ylab = "AIC value",
-               main = paste("G vs AIC value"))
+               main = paste("G vs AIC value"), xaxt = "n")
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         }
       } else { # ff more than one value
         plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
@@ -326,17 +334,19 @@ server <- function(input, output) {
         if(as.numeric(input$ngmax) == 1) { # check if only one value is because gmax = 1
           plot(c(startclustering()$AIC3results$allAIC3values), type = "p",
                xlab = "G", ylab = "AIC3 value",
-               main = paste("G vs AIC3 value"))
+               main = paste("G vs AIC3 value"), xaxt = "n")
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         } else { # check if only one value is because only one model is tested e.g., gmin = 4, gmax = 4
           plot(c(rep(NA, as.numeric(input$ngmax) - 1), startclustering()$AIC3results$allAIC3values),
                type = "p", xlab = "G", ylab = "AIC3 value",
-               main = paste("G vs AIC3 value"))
+               main = paste("G vs AIC3 value"), xaxt = "n")
+          axis(1, at = seq(as.numeric(0), as.numeric(input$ngmax), by = 1))
         }
       } else { # ff more than one value
         plot(x = c(as.numeric(input$ngmin):as.numeric(input$ngmax)),
              y = startclustering()$AIC3results$allAIC3values, type = "l",
              lty = 2, xlab = "G", ylab = "AIC3 value",
-             main = paste("G vs AIC3 value"), xaxt="n")
+             main = paste("G vs AIC3 value"), xaxt = "n")
         axis(1, at = seq(as.numeric(input$ngmin), as.numeric(input$ngmax), by = 1))
       }
   })

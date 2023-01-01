@@ -112,7 +112,8 @@ simulatedCounts <- MPLNClust::mplnDataGenerator(nObservations = 500,
  # firstGrouping, which is assinged MPLNClust results.
 
  set.seed(1234)
- alluvialPlotMPLNClust <- MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
+ alluvialPlotMPLNClust <- MPLNClust::mplnVisualizeAlluvial(
+                               nObservations = nrow(simulatedCounts$dataset),
                                firstGrouping = MPLNClustResults$BICresults$BICmodelSelectedLabels,
                                secondGrouping = MPLNClustResults$ICLresults$ICLmodelSelectedLabels,
                                thirdGrouping = MPLNClustResults$AIC3results$AIC3modelSelectedLabels,
