@@ -3,8 +3,8 @@
 
 # MPLNClust
 
-Mixtures of Multivariate Poisson-Log Normal Model for Clustering Count
-Data
+Finite Mixtures of Multivariate Poisson-Log Normal Model for Clustering
+Count Data
 
 <!-- badges: start -->
 <!-- https://www.codefactor.io/repository/github/anjalisilva/MPLNClust/issues -->
