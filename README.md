@@ -61,31 +61,39 @@ To list all functions available in the package:
 ls("package:MPLNClust")
 ```
 
-`MPLNClust` contains 14 functions. For carrying out clustering of count
-data using mixtures of MPLN via variational expectation-maximization
-(EM): ***mplnVariational***. Functions ***mplnMCMCParallel*** or
-***mplnMCMCNonParallel*** uses a Markov chain Monte Carlo
-expectation-maximization algorithm (MCMC-EM) for parameter estimation.
-Function *mplnMCMCParallel* uses MCMC-EM with parallelization while
-*mplnMCMCNonParallel* uses MCMC-EM with no parallelization. For the
-purpose of generating simlulation data via mixtures of MPLN:
-***mplnDataGenerator***. For visualizing clustering results:
-***mplnVisualizeAlluvial***, ***mplnVisualizeBar***,
-***mplnVisualizeHeatmap***, and ***mplnVisualizeLine***. Information
-criteria are offered for model selection: ***AICFunction***,
-***BICFunction***, ***AIC3Function***, ***ICLFunction***. The shiny
-implementation of *mplnVariational* is available via :
-***runMPLNClust***. An implementation for classification is currently
-under construction, ***mplnVarClassification***.
+`MPLNClust` contains 14 functions.
+
+1.  ***mplnVariational*** for carrying out clustering of count data
+    using mixtures of MPLN via variational expectation-maximization
+2.  ***mplnMCMCParallel*** for carrying out clustering of count data
+    using mixtures of MPLN via a Markov chain Monte Carlo
+    expectation-maximization algorithm (MCMC-EM) with parallelization
+3.  ***mplnMCMCNonParallel*** for carrying out clustering of count data
+    using mixtures of MPLN via a Markov chain Monte Carlo
+    expectation-maximization algorithm (MCMC-EM) with no parallelization
+4.  ***mplnDataGenerator*** for the purpose of generating simlulation
+    data via mixtures of MPLN
+5.  ***mplnVisualizeAlluvial*** for visualizing clustering results as
+    Alluvial plots
+6.  ***mplnVisualizeBar*** for visualizing clustering results as bar
+    plots
+7.  ***mplnVisualizeHeatmap*** for visualizing clustering results as
+    heatmaps
+8.  ***mplnVisualizeLine*** for visualizing clustering results as line
+    plots
+9.  ***AICFunction*** for model selection
+10. ***AIC3Function*** for model selection
+11. ***BICFunction*** for model selection
+12. ***ICLFunction*** for model selection
+13. ***runMPLNClust*** is the shiny implementation of *mplnVariational*
+14. ***mplnVarClassification*** is an implementation for classification
+    is currently under construction
 
 Framework of ***mplnVariational*** makes it computationally efficient
 and faster compared to ***mplnMCMCParallel*** or
 ***mplnMCMCNonParallel***. Therefore, ***mplnVariational*** may perform
-better for large datasets. The Shiny app employing ***mplnVariational***
-could be run and results could be visualized using ***runMPLNClust***.
-For more information, see details section below.
-
-An overview of the package is illustrated below:
+better for large datasets. For more information, see details section
+below. An overview of the package is illustrated below:
 
 <div style="text-align:center">
 
