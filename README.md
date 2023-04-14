@@ -23,12 +23,12 @@ count](https://img.shields.io/github/languages/count/anjalisilva/MPLNClust)
 
 ## Description
 
-`MPLNClust` is an R package for performing clustering using mixtures of
-multivariate Poisson-log normal (MPLN) distribution proposed by [Silva
-et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). It was
-developed for count data, with clustering of RNA sequencing data as a
-motivation. However, the clustering method may be applied to other types
-of count data. The package provides functions for functions for
+`MPLNClust` is an R package for performing clustering using finite
+mixtures of multivariate Poisson-log normal (MPLN) distribution proposed
+by [Silva et al., 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/). It
+was developed for count data, with clustering of RNA sequencing data as
+a motivation. However, the clustering method may be applied to other
+types of count data. The package provides functions for functions for
 parameter estimation via 1) an MCMC-EM framework by [Silva et al.,
 2019](https://pubmed.ncbi.nlm.nih.gov/31311497/) and 2) a variational
 Gaussian approximation with EM algorithm by [Subedi and Browne,
