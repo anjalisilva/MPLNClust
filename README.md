@@ -211,7 +211,7 @@ citation("MPLNClust")
 
 Silva, A., S. J. Rothstein, P. D. McNicholas, and S. Subedi (2019). A
 multivariate Poisson-log normal mixture model for clustering
-transcriptome sequencing data. *BMC Bioinformatics*. 2019;20(1):394.
+transcriptome sequencing data. *BMC Bioinformatics*. 20(1):394.
 
 ``` r
 A BibTeX entry for LaTeX users is
