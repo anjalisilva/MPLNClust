@@ -142,8 +142,8 @@
 #'
 #'}
 #'
-#' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
-#'          \email{sdang@math.binghamton.edu}. }
+#' @author {Anjali Silva, \email{anjali@alumni.uoguelph.ca}, Sanjeena Dang,
+#'          \email{sanjeena.dang@carleton.ca}. }
 #'
 #' @references
 #' Aitchison, J. and C. H. Ho (1989). The multivariate Poisson-log normal distribution.

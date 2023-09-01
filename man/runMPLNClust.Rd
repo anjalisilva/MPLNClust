@@ -31,5 +31,5 @@ distributions for clustering multivariate count data. arXiv preprint arXiv:2004.
 \href{https://arxiv.org/pdf/2004.06857.pdf}{Link}
 }
 \author{
-Anjali Silva, \email{anjali.silva@uhnresearch.ca}
+Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 }

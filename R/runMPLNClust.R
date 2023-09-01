@@ -12,7 +12,7 @@
 #' runMPLNClust()
 #' }
 #'
-#' @author Anjali Silva, \email{anjali.silva@uhnresearch.ca}
+#' @author Anjali Silva, \email{anjali@alumni.uoguelph.ca}
 #'
 #' @references
 #' Silva, A. et al. (2019). A multivariate Poisson-log normal mixture model

@@ -23,8 +23,8 @@
 #' }
 #' For a quick introduction to MPLNClust see the vignettes.
 #'
-#' @author {Anjali Silva, \email{anjali.silva@uhnresearch.ca}, Sanjeena Dang,
-#'          \email{sdang@math.binghamton.edu}. }
+#' @author {Anjali Silva, \email{anjal@alumni.uoguelph.ca}, Sanjeena Dang,
+#'          \email{sanjeena.dang@carleton.ca}. }
 #'
 #' @examples
 #' # Generating simulated data
