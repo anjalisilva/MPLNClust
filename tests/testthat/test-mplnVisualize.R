@@ -33,7 +33,7 @@ test_that("Checking visualization via alluvial plot", {
                                              printPlot = FALSE)
 
   expect_type(MPLNVisuals, "list")
-  expect_length(MPLNVisuals, 9)
+  expect_length(MPLNVisuals, 11)
 })
 
 context("Checking for invalid user input for all plots")
