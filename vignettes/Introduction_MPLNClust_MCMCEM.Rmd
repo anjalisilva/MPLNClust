@@ -55,7 +55,7 @@ ls("package:MPLNClust")
 The function *mplnDataGenerator* permits to simulate data from a mixture of MPLN distributions. See *?mplnDataGenerator* for more information, an example, and references. To simulate a dataset from a mixture of MPLN with 100 observations and a dimensionality of 6, with two components, each with a mixing proportion of 0.79 and 0.21, respectively, let us use *mplnDataGenerator*. This also requires the mean and covariance matrix for each component, respectively. 
 
 ```r 
-nObservations <- 100 # Biological samples e.g., genes
+nObservations <- 100 # Samples e.g., genes
 dimensionality <- 6 # Dimensionality e.g., conditions * replicates = total samples 
 pig <- c(0.79, 0.21) # Mixing proportions for two components
 

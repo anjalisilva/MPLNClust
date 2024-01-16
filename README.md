@@ -155,7 +155,10 @@ algorithm. Here the posterior distribution is approximated by minimizing
 the Kullback-Leibler (KL) divergence between the true and the
 approximating densities. A variational-EM based framework is used for
 parameter estimation. This algorithm is implemented in the function
-***mplnVariational***.
+***mplnVariational***. The parsimonious family of models implemented by
+considering eigen-decomposition of covariance matrix in [Subedi and
+Browne, 2020](https://doi.org/10.1002/sta4.310) is not yet available
+with this package.
 
 ## Model Selection and Other Details
 
@@ -188,8 +191,7 @@ MPLNClust::runMPLNClust()
 
 <div style="text-align:left">
 <div style="text-align:left">
-
-
+&#10;
 ## Tutorials
 
 For tutorials and plot interpretation, refer to the vignette:
@@ -197,11 +199,6 @@ For tutorials and plot interpretation, refer to the vignette:
 ``` r
 browseVignettes("MPLNClust")
 ```
-
-or see [A tour of MPLNClust with
-MCMC-EM](https://github.com/anjalisilva/MPLNClust/blob/master/vignettes/Introduction_MPLNClust_MCMCEM.md)
-and [A tour of MPLNClust with
-variational-EM](https://github.com/anjalisilva/MPLNClust/blob/master/vignettes/Introduction_MPLNClust_variationalEM.md).
 
 ## Citation for Package
 
