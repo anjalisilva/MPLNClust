@@ -191,7 +191,10 @@ MPLNClust::runMPLNClust()
 
 <div style="text-align:left">
 <div style="text-align:left">
-&#10;
+
+In simple, the ***runMPLNClust*** is a web applications available with
+`MPLNClust`.
+
 ## Tutorials
 
 For tutorials and plot interpretation, refer to the vignette:

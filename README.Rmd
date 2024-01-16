@@ -109,11 +109,12 @@ MPLNClust::runMPLNClust()
 ```
 
 <div style="text-align:center"><img src="inst/extdata/ShinyAppMPLNClust1.png" alt="ShinyApp1" width="650" height="400"/>
-  
+ 
 <div style="text-align:left">
 <div style="text-align:left">
 
-  
+In simple, the __*runMPLNClust*__ is a web applications available with `MPLNClust`.
+   
 ## Tutorials  
   
 For tutorials and plot interpretation, refer to the vignette:
