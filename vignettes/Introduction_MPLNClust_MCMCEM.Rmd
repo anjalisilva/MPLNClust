@@ -118,7 +118,7 @@ Here, clustering will be performed using the above generated dataset.
 
 #### MCMC-EM Parallel Clustering
 
-Coarse grain parallelization is employed in *mplnMCMCParallel*, such that when a range of components/clusters (g = 1,...,G) are considered, each component/cluster size is run on a different processor. This can be performed because each component/cluster (G) size is independent from another. All components/clusters in the range to be tested have been parallelized to run on a seperate core using the *parallel* R package. The number of cores used for clustering is internally determined using *parallel::detectCores() - 1*.
+Coarse grain parallelization is employed in *mplnMCMCParallel*, such that when a range of components/clusters (g = 1,...,G) are considered, each component/cluster size is run on a different processor. This can be performed because each component/cluster (G) size is independent from another. All components/clusters in the range to be tested have been parallelized to run on a separate core using the *parallel* R package. The number of cores used for clustering is internally determined using *parallel::detectCores() - 1*.
 
 ``` r
 mplnResults <- MPLNClust::mplnMCMCParallel(dataset = sampleData$dataset,
