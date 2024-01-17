@@ -204,10 +204,10 @@ Another type of plot available is a line plot, as shown below.
 <img src="varEM_LinePlot_Cluster3_AllPlotsWithProbability.png" alt="varEM_LinePlot_Cluster3_AllPlotsWithProbability" width="150"/>
 
 <div style="text-align:left">
-Three images above show line plots for each cluster. The values for each sample are connected by dashed lines to illustrate the trends of expression (log counts). The yellow line shows the mean value (log counts) for each cluster. If a matrix of probabilities for the observations belonging to each cluster is provided, the option to produce a barplot of probabilities is also available. Such a barplot is shown below. 
+Three images above show line plots for each cluster. The values for each sample are connected by dashed lines to illustrate the trends of expression (log counts). The yellow line shows the mean value (log counts) for each cluster. If a matrix of probabilities for the observations belonging to each cluster is provided, the option to produce a barplot of posterior probabilities is also available. Such a barplot is shown below. 
 
 ``` r
- #  Visualizing line plots for model with 3 components provided probabilities
+ #  Visualizing bar plots for model with 3 components provided probabilities
  MPLNVisuals <- MPLNClust::mplnVisualizeBar(
                    vectorObservations = 1:nrow(sampleData$dataset),
                    probabilities =     
