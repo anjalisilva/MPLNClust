@@ -83,12 +83,13 @@ trueSigma3 <- clusterGeneration::genPositiveDefMat("unifcorrmat",
 trueSigma <- rbind(trueSigma1, trueSigma2, trueSigma3)
 
 # Generate data 
-sampleData <- MPLNClust::mplnDataGenerator(nObservations = nObservations,
-                                          dimensionality = dimensionality,
-                                          mixingProportions = pig,
-                                          mu = trueMus,
-                                          sigma = trueSigma,
-                                          produceImage = "Yes")
+sampleData <- MPLNClust::mplnDataGenerator(
+                 nObservations = nObservations,
+                 dimensionality = dimensionality,
+                 mixingProportions = pig,
+                 mu = trueMus,
+                 sigma = trueSigma,
+                 produceImage = "Yes")
 
 ```
 <br>
@@ -123,16 +124,16 @@ The applicability of MPLNClust was originally illustrated using RNAseq data. The
 Here, clustering will be performed using the above generated dataset. 
 
 ``` r
- mplnResults <- MPLNClust::mplnVariational(dataset = sampleData$dataset,
-                                           membership = sampleData$trueMembership,
-                                           gmin = 1,
-                                           gmax = 4,
-                                           initMethod = "kmeans",
-                                           nInitIterations = 1,
-                                           normalize = "Yes")
+ mplnResults <- MPLNClust::mplnVariational(
+                  dataset = sampleData$dataset,
+                  membership = sampleData$trueMembership,
+                  gmin = 1,
+                  gmax = 4,
+                  initMethod = "kmeans",
+                  nInitIterations = 1,
+                  normalize = "Yes")
 ```
-
-The model selected by BIC for this dataset can be viewed as follows.
+Package offers Bayesian information criterion (BIC; Schwarz, 1978), Akaike information criterion (AIC; Akaike, 1973), Akaike information criterion 3 (AIC3; Bozdogan, 1994), and the integrated completed likelihood (ICL; Biernacki et al., 2000) for model selection. The model selected by BIC for this dataset can be viewed as follows. This should return a value of 3. 
 
 ``` r
 mplnResults$BICresults$BICmodelselected
@@ -149,7 +150,8 @@ table(mplnResults$BICresults$BICmodelSelectedLabels)
 Labels from BIC compared with true labels:
 ``` r
 # Cross tabulation of BIC selected model labels with true lables
-table(mplnResults$BICresults$BICmodelSelectedLabels, sampleData$trueMembership)
+table(mplnResults$BICresults$BICmodelSelectedLabels, 
+      sampleData$trueMembership)
 ```
 1   2   3 <br>
 1 130   0   0 <br>
@@ -167,12 +169,13 @@ If a range of components/clusters > 10 is considered (e.g., gmin = 1; gmax = 12)
 Clustering results can be viewed as heatmaps and line plots. The two images below show heatmaps of counts in the input dataset, with observations (e.g., genes) along rows and samples along the columns. The group membership based on clusters are shown to the left of heatmap.
 
 ``` r
-#  Visualizing line plots for model with 3 components provided probabilities
-MPLNVisuals <- MPLNClust::mplnVisualizeBar(vectorObservations = 1:nrow(sampleData$dataset),
-                                            probabilities = mplnResults$allResults[[3]]$allResults$probaPost,
-                                            clusterMembershipVector =
-                                            mplnResults$allResults[[3]]$allResults$clusterlabels,
-                                            fileName = 'PlotsWithProbability')
+ dev.off() # To remove any exisiting plots on the viewer                    
+ # Visualizing results for model selected by BIC via heatmaps
+ MPLNVisuals <- MPLNClust::mplnVisualizeHeatmap(
+                    dataset = sampleData$dataset,
+                    clusterMembershipVector =                                                            mplnResults$BICresults$BICmodelSelectedLabels,
+                    fileName = 'BICModel', 
+                    printPlot = FALSE)                      
 ```
 
 <div style="text-align:center">
@@ -186,12 +189,13 @@ Another type of plot available is a line plot, as shown below.
 
 ``` r
  # Visualizing line plots for model with 3 components
- MPLNVisuals <- MPLNClust::mplnVisualizeLine(dataset = sampleData$dataset,
-                                             plots = 'line',
-                                             clusterMembershipVector =
-                                             mplnResults$allResults[[3]]$allResults$clusterlabels,
-                                             fileName = 'ThreeComponentModel', 
-                                             format = 'png')
+ MPLNVisuals <- MPLNClust::mplnVisualizeLine(
+                   dataset = sampleData$dataset,
+                   plots = 'line',
+                   clusterMembershipVector =
+                      mplnResults$allResults[[3]]$allResults$clusterlabels,
+                   fileName = 'ThreeComponentModel', 
+                   format = 'png')
 ```
 
 <div style="text-align:center">
@@ -204,11 +208,13 @@ Three images above show line plots for each cluster. The values for each sample 
 
 ``` r
  #  Visualizing line plots for model with 3 components provided probabilities
- MPLNVisuals <- MPLNClust::mplnVisualizeBar(vectorObservations = 1:nrow(sampleData$dataset),
-                                            probabilities = mplnResults$allResults[[3]]$allResults$probaPost,
-                                            clusterMembershipVector =
-                                            mplnResults$allResults[[3]]$allResults$clusterlabels,
-                                            fileName = 'PlotWithProbability')
+ MPLNVisuals <- MPLNClust::mplnVisualizeBar(
+                   vectorObservations = 1:nrow(sampleData$dataset),
+                   probabilities =     
+                      mplnResults$allResults[[3]]$allResults$probaPost,
+                   clusterMembershipVector =
+                      mplnResults$allResults[[3]]$allResults$clusterlabels,
+                   fileName = 'PlotWithProbability')
 ```
 
 <br>
@@ -235,13 +241,14 @@ library(MBCluster.Seq)
 data("Count")
 dim(Count) # 1000    8
 
-mplnResultsMBCluster <- MPLNClust::mplnVariational(dataset = Count,
-                                          membership = "none",
-                                          gmin = 1,
-                                          gmax = 5,
-                                          initMethod = "kmeans",
-                                          nInitIterations = 1,
-                                          normalize = "Yes")
+mplnResultsMBCluster <- MPLNClust::mplnVariational(
+                          dataset = Count,
+                          membership = "none",
+                          gmin = 1,
+                          gmax = 5,
+                          initMethod = "kmeans",
+                          nInitIterations = 1,
+                          normalize = "Yes")
 
 ```
 
@@ -279,12 +286,17 @@ Finally, the different clustering results in terms of membership can be viewed v
 ``` r
  #  Visualizing clustering results using alluvial plots 
                                             
-MPLNVisualsAlluvial <- MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(Count),
-                                  firstGrouping = mplnResultsMBCluster$BICresults$BICmodelSelectedLabels,
-                                  secondGrouping = mplnResultsMBCluster$ICLresults$ICLmodelSelectedLabels,
-                                  thirdGrouping =  mplnResultsMBCluster$AICresults$AICmodelSelectedLabels,
-                                  fourthGrouping = mplnResultsMBCluster$AIC3results$AIC3modelSelectedLabels,
-                                  printPlot = FALSE)   
+MPLNVisualsAlluvial <- MPLNClust::mplnVisualizeAlluvial(
+                          nObservations = nrow(Count),
+                          firstGrouping = 
+                             mplnResultsMBCluster$BICresults$BICmodelSelectedLabels,
+                          secondGrouping = 
+                             mplnResultsMBCluster$ICLresults$ICLmodelSelectedLabels,
+                          thirdGrouping =  
+                             mplnResultsMBCluster$AICresults$AICmodelSelectedLabels,
+                          fourthGrouping = 
+                             mplnResultsMBCluster$AIC3results$AIC3modelSelectedLabels,
+                          printPlot = FALSE)   
 ```
 
 <div style="text-align:center">
