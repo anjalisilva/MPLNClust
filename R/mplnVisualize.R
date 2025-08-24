@@ -100,11 +100,17 @@
 #'  # Note, coloring is now set with respect to argument firstGrouping,
 #'  # which is assinged K-means results.
 #'  set.seed(1234)
-#'  alluvialPlotKmeans <- MPLNClust::mplnVisualizeAlluvial(nObservations = nrow(simulatedCounts$dataset),
-#'                                firstGrouping = kmeans(simulatedCounts$dataset, 2)$cluster,
-#'                                secondGrouping = MPLNClustResults$BICresults$BICmodelSelectedLabels,
-#'                                thirdGrouping = MPLNClustResults$ICLresults$ICLmodelSelectedLabels,
-#'                                fourthGrouping = MPLNClustResults$AIC3results$AIC3modelSelectedLabels,
+#'  alluvialPlotKmeans <- MPLNClust::mplnVisualizeAlluvial(
+#'                                nObservations =
+#'                                   nrow(simulatedCounts$dataset),
+#'                                firstGrouping =
+#'                                   kmeans(simulatedCounts$dataset, 2)$cluster,
+#'                                secondGrouping =
+#'                                   MPLNClustResults$BICresults$BICmodelSelectedLabels,
+#'                                thirdGrouping =
+#'                                   MPLNClustResults$ICLresults$ICLmodelSelectedLabels,
+#'                                fourthGrouping =
+#'                                   MPLNClustResults$AIC3results$AIC3modelSelectedLabels,
 #'                                fileName = paste0('Plot_',date()),
 #'                                printPlot = FALSE,
 #'                                format = 'pdf')
