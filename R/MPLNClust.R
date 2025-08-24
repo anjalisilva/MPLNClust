@@ -108,7 +108,8 @@
 #' Schwarz, G. (1978). Estimating the dimension of a model. \emph{The Annals of Statistics}
 #' 6.
 #'
-#' @docType _PACKAGE
+#' @keywords internal
+"_PACKAGE"
 #' @name MPLNClust
 NULL
 #> NULL
